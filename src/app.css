@@ -1,0 +1,14 @@
+
+*, body {
+    vertical-align: top;
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+
+    font-family: BaseFont;
+}
+
+@font-face {
+    font-family: BaseFont;
+    src: url('fonts/SF-Pro-Text-Regular.otf');
+}
