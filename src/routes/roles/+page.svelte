@@ -20,11 +20,13 @@
     import RoleList from "../../components/RoleList.svelte";
     import { getMods } from "../../lib/ModsDatabase";
     import RoleCard from "../../components/RoleCard.svelte";
+    import { autochooseBOTCTRoles, isSecretBOTCT } from "../../stores/secret-botct-store";
     
     let currentlyOpenObject
 
     function generateRoles() {
-        autochooseRoles($addedPlayers.length, $selectedDifficulty.difficulty)
+        // autochooseRoles($addedPlayers.length, $selectedDifficulty.difficulty)
+        autochooseBOTCTRoles($addedPlayers.length)
     }
     function generateMod() {
         autochooseMod()
@@ -81,6 +83,10 @@
         <p class="text-align-left margin-top-1">
             When every player took a role, scroll down to continue.
         </p>
+        {#if $rolesDistribution.find(role => role.isDrunk) != null}
+            <h3 class="margin-top-1">Drunk: {$rolesDistribution.find(role => role.isDrunk).name}</h3>
+            <p>There is a Drunk in the game: {$rolesDistribution.find(role => role.isDrunk).name}</p>
+        {/if}
         <div class="flex-content center-content margin-top-2">
             <button class="btn big blue" style="position: relative" on:click={onRegenerateClick}>
                 <Tooltip isShown={$hasRegenerateRolesTooltip} left="50%" top="80%" width="200px">

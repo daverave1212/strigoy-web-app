@@ -4,8 +4,8 @@
         <div class="picture-wrapper" on:click={onPortraitClick}>
             <!-- svelte-ignore a11y-missing-attribute -->
             <img
+                class="center"
                 src={state.src == null? 'images/user.png' : state.src}
-                class="{state.isPortraitCentered == true? 'center': ''}"
             />
         </div>
         <div class="right-wrapper">
@@ -55,7 +55,7 @@
     $: SUBCONTENT_CLASS = state.isExpanded ? 'subcontent subcontent--expanded' : 'subcontent'
     
     $: {
-        console.log({state})
+        
     }
 
     onMount(() => {

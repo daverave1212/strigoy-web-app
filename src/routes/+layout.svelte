@@ -31,8 +31,8 @@
 
 <Nav
     options={[
-        { name: 'Play', href:"/new-game"},
-        { name: 'Tutorial', href:"/"},
+        { name: 'Play', href:"/"},
+        { name: 'How To Play', href:"/how-to-play"},
         { name: 'Print', href:"/card"}
     ]}
     isBurgerOpen={isBurgerOpen} setIsBurgerOpen={bool => isBurgerOpen = bool}

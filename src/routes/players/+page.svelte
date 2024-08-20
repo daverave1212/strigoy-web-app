@@ -6,6 +6,7 @@
 </style>
 
 <script>
+	import { getBOTCTRole } from './../../lib/BOTCTDatabase.js';
 	import { rolesDistribution } from './../../stores/roles-store.js';
 	import InspectRoleDrawer from './../../components/InspectRoleDrawer.svelte';
 
@@ -26,6 +27,7 @@
     import { hasExpandTooltip, hasInspectTooltip, hasSetRoleTooltip, hasSortTooltip } from '../../stores/tutorial-store';
     import ModContact from '../../components/Contact/ModContact.svelte';
     import { currentlySelectedMod } from '../../stores/mods-store.js';
+    import { isSecretBOTCT } from '../../stores/secret-botct-store.js';
     
 
     $: shouldShowRoleTooltip = 
@@ -57,7 +59,12 @@
     let currentModalObject = null
     function openModalWithRoleName(roleName) {
         $hasInspectTooltip = false
-        currentModalObject = getRole(roleName)
+        console.log(`Opening modal with ${roleName}`)
+        if ($isSecretBOTCT) {
+            currentModalObject = getBOTCTRole(roleName)
+        } else {
+            currentModalObject = getRole(roleName)
+        }
     }
     function onModPortraitClick() {
         currentModalObject = $currentlySelectedMod
@@ -87,7 +94,7 @@
         const newPlayerState = {
             ...playerState,
             name: newRole.name,
-            src: `images/roles/${newRole.name}.png`,
+            src: newRole.src == null? `images/roles/${newRole.name}.png`: newRole.src,
             role: newRole.name
         }
         $addedPlayers[playerI] = newPlayerState

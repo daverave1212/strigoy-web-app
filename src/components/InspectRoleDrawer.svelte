@@ -35,7 +35,7 @@
     <div class="padded inspector">
         {#if role != null}
             <div class="center-content" style="margin-top: 12vh;">
-                <RoundCardPortrait name={role.name} isBig={true} isValid={true}/>
+                <RoundCardPortrait {...role} isBig={true} isValid={true}/>
             </div>
             <h2 class="margin-top-2">{role.name}</h2>
             <p class="margin-top-1">{role.effect}</p>

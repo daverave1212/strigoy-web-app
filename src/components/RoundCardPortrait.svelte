@@ -35,15 +35,18 @@
 
 <script>
     import { createEventDispatcher } from "svelte";
-
+    import { isSecretBOTCT } from "../stores/secret-botct-store";
 
     const dispatch = createEventDispatcher();
 
     export let name
     export let isValid
     export let isBig = false
+    export let src = null
+
+    $: imagePath = src != null? src : `images/roles/${name}.png`
 </script>
 
 <div class="image-wrapper {isBig? 'big': ''}" on:click={(evt) => dispatch('click', evt)}>
-    <img src="images/roles/{name}.png" class="{!isValid? 'grayscale': ''}"/>
+    <img src={imagePath} class="{!isValid? 'grayscale': ''}"/>
 </div>

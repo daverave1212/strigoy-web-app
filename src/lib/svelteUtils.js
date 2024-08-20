@@ -24,9 +24,8 @@ export function setLocalStorageObject(name, obj) {
 
 export function localStorageWritable(name, defaultValue) {
     const lsValue = getLocalStorageObject(name)
-    console.log(`Initializing store ${name} with value ${lsValue}.`)
     if (browser) {
-        console.log(`   LS: ${window.localStorage.getItem(name)}`)
+        
     }
     const theWritable = writable(hasLocalStorageObject(name) ?  getLocalStorageObject(name) : defaultValue)
     theWritable.subscribe(newWritable => {

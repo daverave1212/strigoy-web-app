@@ -64,7 +64,7 @@
     <RoleList>
         {#each roleStates.keys() as i}
             {#if roleStates[i].isInGame != false}
-                <RoleCard name={roleStates[i].name} on:role-click={(evt) => onPortraitClick(i)} isValid={roleStates[i].isValid}/>
+                <RoleCard name={roleStates[i].name} on:role-click={(evt) => onPortraitClick(i)} isValid={roleStates[i].isValid} src={roleStates[i].src}/>
             {/if}
         {/each}
     </RoleList>
@@ -76,7 +76,7 @@
     <RoleList>
         {#each roleStates.keys() as i}
             {#if roleStates[i].isInGame == false}
-                <RoleCard name={roleStates[i].name} on:role-click={(evt) => onPortraitClick(i)} isValid={roleStates[i].isValid}/>
+                <RoleCard name={roleStates[i].name} on:role-click={(evt) => onPortraitClick(i)} isValid={roleStates[i].isValid}  src={roleStates[i].src}/>
             {/if}
         {/each}
     </RoleList>

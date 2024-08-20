@@ -10,7 +10,7 @@
     import SimpleContact from "../../components/Contact/SimpleContact.svelte";
     import ContactList from "../../components/ContactList.svelte";
     import ContactListHeader from "../../components/ContactListHeader.svelte";
-    import { addedPlayers, addPlayer, setPlayerStateI, removePlayer } from '../../stores/added-players-store'
+    import { addedPlayers, addPlayer, setPlayerStateI, removePlayer, getResetPlayer } from '../../stores/added-players-store'
     import { hasAddPlayerTooltip } from '../../stores/tutorial-store'
     import Tooltip from "../../components-standalone/Tooltip.svelte";
 
@@ -18,18 +18,15 @@
     import { randomInt } from "../../lib/utils";
     import { onMount } from "svelte";
 
+    let isSecretBOTCT = false
+
     function onAddClick() {
         $hasAddPlayerTooltip = false
         addPlayer()
     }
 
     onMount(() => {
-        $addedPlayers = $addedPlayers.map(player => ({
-            ...player,
-            role: null,
-            src: 'images/user.png',
-            hasSpaceUnderneath: false
-        }))
+        $addedPlayers = $addedPlayers.map(player => getResetPlayer(player))
         console.log($addedPlayers)
     })
 
@@ -42,6 +39,9 @@
                     addPlayer({ isEditMode: false, subtitle: 'Player' + i})
                 }, 100 * i)
             }
+        }
+        if (searchParams.get('botct')) {
+            isSecretBOTCT = true
         }
     })
 

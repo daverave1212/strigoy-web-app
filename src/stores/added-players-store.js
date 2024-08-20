@@ -1,6 +1,8 @@
 import { get, writable } from 'svelte/store'
 import { getLocalStorageObject, hasLocalStorageObject, localStorageWritable, setLocalStorageObject } from '../lib/svelteUtils'
 import { NO_PRIORITY, getNightlyRolePriority, getSetupRolePriority } from '../lib/Database'
+import { isSecretBOTCT } from './secret-botct-store'
+import { getBOTCTNightlyRolePriority, getBOTCTSetupRolePriority } from '../lib/BOTCTDatabase'
 
 export const addedPlayers = localStorageWritable('addedPlayers', [])
 
@@ -41,10 +43,12 @@ export function test_addPlayers(nPlayers) {
 }
 
 export function sortCurrentRolesSetup() {
+    const getRolePriority = get(isSecretBOTCT) == true? getBOTCTSetupRolePriority: getSetupRolePriority
+    console.log({getRolePriority})
     const addedPlayersSorted = get(addedPlayers)
-        .sort((a,b) => getSetupRolePriority(a) - getSetupRolePriority(b))
+        .sort((a,b) => getRolePriority(a) - getRolePriority(b))
         .map(player => ({...player, hasSpaceUnderneath: false}))
-    const firstPlayerWithNoPriorityI = addedPlayersSorted.findIndex(player => getSetupRolePriority(player.role) == NO_PRIORITY) - 1
+    const firstPlayerWithNoPriorityI = addedPlayersSorted.findIndex(player => getRolePriority(player.role) == NO_PRIORITY) - 1
     if (firstPlayerWithNoPriorityI >= 0) {
         addedPlayersSorted[firstPlayerWithNoPriorityI].hasSpaceUnderneath = true
     }
@@ -52,12 +56,25 @@ export function sortCurrentRolesSetup() {
 }
 
 export function sortCurrentRolesNightly() {
+    const getRolePriority = get(isSecretBOTCT) == true? getBOTCTNightlyRolePriority: getSetupRolePriority
+    console.log({getRolePriority})
     const addedPlayersSorted = get(addedPlayers)
-        .sort((a,b) => getNightlyRolePriority(a) - getNightlyRolePriority(b))
+        .sort((a,b) => getRolePriority(a) - getRolePriority(b))
         .map(player => ({...player, hasSpaceUnderneath: false}))
-    const firstPlayerWithNoPriorityI = addedPlayersSorted.findIndex(player => getNightlyRolePriority(player.role) == NO_PRIORITY) - 1
+    const firstPlayerWithNoPriorityI = addedPlayersSorted.findIndex(player => getRolePriority(player.role) == NO_PRIORITY) - 1
     if (firstPlayerWithNoPriorityI >= 0) {
         addedPlayersSorted[firstPlayerWithNoPriorityI].hasSpaceUnderneath = true
     }
     addedPlayers.set(addedPlayersSorted)
+}
+
+export function getResetPlayer(player) {
+    return {
+        ...player,
+        role: null,
+        src: 'images/user.png',
+        hasSpaceUnderneath: false,
+        statusEffects: null,
+        isDead: false
+    }
 }

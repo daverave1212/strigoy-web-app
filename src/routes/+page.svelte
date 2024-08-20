@@ -31,14 +31,23 @@
 </style>
 
 <script>
+	import { isSecretBOTCT } from './../stores/secret-botct-store.js';
     import { onMount } from "svelte";
     import RoundCardPortrait from "../components/RoundCardPortrait.svelte";
     import '../utils.css'
     import { fade, fly } from 'svelte/transition'
+    import { page, navigating } from '$app/stores'
 
     let willAnimate = false
     onMount(() => {
         willAnimate = true
+    })
+
+    page.subscribe(data => {
+        const searchParams = data.url.searchParams
+        if (searchParams.get('BOTCT')) {
+            $isSecretBOTCT = true
+        }
     })
 
 </script>

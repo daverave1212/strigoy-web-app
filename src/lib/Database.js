@@ -123,7 +123,7 @@ export const getRoles = () => [
         difficulty: COMPLETE,
         isSpecial: true,
         yagaRole: 'Priest',
-        effect: 'You pretend to be a Priest. There is no other Priest in game.',
+        effect: 'You pretend to be a Priest. The narrator will say "Priest, wake up" as normal. There is no other Priest in this game.',
         notes: 'You don\'t actually have any powers. Just pretend you do.',
         narratorNotes: 'As the narrator, do say "Priest, wake up". Continue with the normal routine, but Yaga can\'t actually save anyone.',
         type: 'Nightly',
@@ -137,7 +137,7 @@ export const getRoles = () => [
         difficulty: COMPLETE,
         isSpecial: true,
         yagaRole: 'Town Guard',
-        effect: 'You pretend to be a Town Guard. There is no other Town Guard in game.',
+        effect: 'You pretend to be a Town Guard. The narrator will say "Town Guard, wake up" as normal. There is no other Town Guard in this game.',
         notes: 'You don\'t actually have any powers. Just pretend you do.',
         narratorNotes: 'As the narrator, do say "Town Guard, wake up". Continue with the normal routine, but Yaga can\'t actually protect anyone.',
         type: 'Nightly',
@@ -173,7 +173,7 @@ export const getRoles = () => [
         isImportant: true,
         effect: 'At game start, pick 2 players. For each, if its role contains letter "O", the narrator nods.',
         narratorNotes: 'The Blind Inspector opens their eyes. First, they point to one player, then you may nod. Then they point to another player, and you may nod again.',
-        type: 'Nightly'
+        type: 'Setup'
     },
     {
         name: "Fortune Teller",
@@ -184,7 +184,8 @@ export const getRoles = () => [
         difficulty: BEGINNER,
         isImportant: true,
         effect: 'At game start, the narrator points at 3 players. At least one of them is Evil.',
-        narratorNotes: 'The Fortune Teller opens their eyes.'
+        narratorNotes: 'The Fortune Teller opens their eyes.',
+        type: 'Setup'
     },
     {
         name: "Lover",
@@ -195,7 +196,8 @@ export const getRoles = () => [
         difficulty: INTERMEDIATE,
         effect: 'At game start (when everyone closes eyes), grab somone by hand. You become lovers. When one of you dies, the other dies too.',
         notes: 'Make sure you let go of their hand when Strigoys open eyes!',
-        narratorNotes: 'If you have this role in game, make sure the players know that they may get grabbed by hand.'
+        narratorNotes: 'If you have this role in game, make sure the players know that they may get grabbed by hand.',
+        type: 'Special Setup'
     },
     {
         name: "Seer",
@@ -206,7 +208,8 @@ export const getRoles = () => [
         difficulty: INTERMEDIATE,
         isImportant: true,
         effect: 'Every night, if nobody was hung last day, wake up.\nChoose a player. The narrator nods if they are a Strigoy.',
-        notes: 'Wait for the narrator to tell you to open eyes.'
+        notes: 'Wait for the narrator to tell you to open eyes.',
+        type: 'Nightly'
     },
     {
         name: "Town Guard",
@@ -217,7 +220,8 @@ export const getRoles = () => [
         difficulty: BEGINNER,
         isImportant: true,
         effect: 'Every night, wake up and pick a player (not yourself). They can\'t die this night. You can\'t pick the same player two nights in a row.',
-        notes: 'If they would die, nothing happens.'
+        notes: 'If they would die, nothing happens.',
+        type: 'Nightly'
     },
     {
         name: "Assassin",
@@ -228,7 +232,8 @@ export const getRoles = () => [
         difficulty: INTERMEDIATE,
         effect: 'Once per game, after Strigoys close eyes, raise your arm if you want to wake up.\nThen kill someone.',
         notes: 'Wait for the narrator to say "Assassin wake up."',
-        narratorNotes: 'Watch out for the Assassin. If their arm is raised, say "Assassin, wake up".\nThey can only do this once per game.'
+        narratorNotes: 'Watch out for the Assassin. If their arm is raised, say "Assassin, wake up".\nThey can only do this once per game.',
+        type: 'Special Nightly'
     },
     {
         name: "Priest",
@@ -239,6 +244,7 @@ export const getRoles = () => [
         difficulty: INTERMEDIATE,
         isImportant: true,
         effect: 'Every night, wake up. You know who died. Once per game, you can revive one player who just died (except yourself).',
+        type: 'Nightly'
     },
     {
         name: "Schizophrenic",
@@ -249,7 +255,8 @@ export const getRoles = () => [
         difficulty: ADVANCED,
         effect: 'Every night, the narrator secretly rolls a die.\nIf they roll 6, you get a heart attack and die (you know in the morning if you died).',
         notes: 'You don\'t necessarily know how you died...',
-        narratorNotes: 'Alternatively, instead of rolling a die, look at the time. If the minutes are divisible by 6, the Schizophrenic dies.'
+        narratorNotes: 'Alternatively, instead of rolling a die, look at the time. If the minutes are divisible by 6, the Schizophrenic dies.',
+        type: 'Special Nightly'
     },
 
     {
@@ -269,7 +276,7 @@ export const getRoles = () => [
         worth: 1.5,
         category: REGULAR,
         difficulty: COMPLETE,
-        effect: 'Secretly ask the narrator a yes/no question about one player. You secretly get a correct reply.',
+        effect: 'Once per game, secretly ask the narrator a YES/NO question about one player. You secretly get a correct reply.',
         notes: 'You can go to the narrator and ask, message them on their phone, etc.'
     },
     {
@@ -337,7 +344,7 @@ export const getRoles = () => [
         worth: 2,
         category: REGULAR,
         difficulty: ADVANCED,
-        effect: "If at least 1 of your 2 neighbors if alive, you can't be eaten at night (nothing happens if you're eaten).",
+        effect: "If at least 1 of your 2 neighbors is alive, you can't be eaten at night (nothing happens if you're eaten).",
         notes: "The night may pass with no one being eaten."
     },
     {
@@ -512,6 +519,7 @@ const setupOrder = [
     'Philosopher',
     'Exorcist',
 
+    'Lover',
     'Mora',
     'Strigoy',
 

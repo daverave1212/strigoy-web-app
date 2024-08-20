@@ -8,6 +8,10 @@
     font-family: BaseFont;
 }
 
+input {
+    font-size: 16px;
+}
+
 @font-face {
     font-family: BaseFont;
     src: url('fonts/SF-Pro-Text-Regular.otf');
