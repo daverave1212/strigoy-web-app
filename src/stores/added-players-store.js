@@ -30,7 +30,7 @@ export function setPlayerStateI(i, newState) {
 }
 
 export function removePlayer(i) {
-    const newAddedPlayers = get(addPlayers)
+    const newAddedPlayers = get(addedPlayers)
     newAddedPlayers.splice(i, 1)
     addedPlayers.set(newAddedPlayers)
 }

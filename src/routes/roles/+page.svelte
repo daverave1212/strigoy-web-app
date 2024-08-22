@@ -110,7 +110,7 @@
             </div>
 
             <div class="margin-top-2">
-                <RoleCard {...$currentlySelectedMod} isValid={true} on:role-click={() => onClickOnSelectedMod()}/>
+                <RoleCard role={$currentlySelectedMod} isValid={true} on:role-click={() => onClickOnSelectedMod()}/>
             </div>
         {/if}
 
@@ -136,7 +136,7 @@
 
             <RoleList>
                 {#each getUnusedMods() as mod}
-                    <RoleCard {...mod} on:role-click={() => onClickOnUnusedMod(mod)}/>
+                    <RoleCard role={mod} on:role-click={() => onClickOnUnusedMod(mod)}/>
                 {/each}
             </RoleList>
         {/if}

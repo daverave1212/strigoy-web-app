@@ -12,7 +12,10 @@
         </div>
         <div class="right-wrapper">
             {#if state.isEditMode}
-                <input class="subtitle-input" on:change={onInputDone} bind:value={_subtitleInputValue} bind:this={domInput}>
+                <div class="edit-div flex-content">
+                    <button class="btn blue" on:click={onInputDone}>Done</button>
+                    <input class="subtitle-input" on:change={onInputDone} bind:value={_subtitleInputValue} bind:this={domInput}>
+                </div>
             {:else}
                 <span class="subtitle" on:click={toggleContent}>{state.subtitle}</span>
             {/if}

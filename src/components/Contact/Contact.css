@@ -25,6 +25,9 @@
 
 .contact .picture-wrapper {
     width: var(--contact-header-height);
+    flex-basis: var(--contact-header-height);
+    flex-grow: 0;
+    flex-shrink: 0;
     height: var(--contact-header-height);
 
     border-radius: 50%;
@@ -71,6 +74,16 @@
     
     height: var(--contact-header-height);
     flex: 1;
+    max-width: 65vw;
+}
+.right-wrapper .edit-div button {
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex: 0.3;
+}
+.right-wrapper .edit-div input {
+    flex: 1;
+    min-width: 50px !important;
 }
 .contact--mod .right-wrapper {
     height: var(--mod-contact-header-height);
@@ -139,4 +152,8 @@
 
 .has-space-underneath {
     margin-bottom: 3rem;
+}
+
+.subtitle-input {
+    font-size: max(1rem, 17px);
 }

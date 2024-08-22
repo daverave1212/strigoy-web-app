@@ -58,7 +58,7 @@
     <p>
         Assuming you're the narrator, go to the <a href="/">main page of this app</a> and hit play.<br>
         Add each player to the app (except the narrator) and hit next.
-        Choose the difficulty and whether you want mods (mods are explained below).
+        Choose the difficulty and whether you want mods (see <a href="/how-to-play#mods">Mods</a>).
     </p>
     <p>
         Then, the app will automatically choose a <i>balanced roles distribution</i> so that neither side is favored.
@@ -78,6 +78,12 @@
     <p>When done, tell them "Close your eyes".</p>
     <p>Do this for each of the Setup roles. Follow the order as sorted with the <b>Sort for Setup</b> button, or on <a href="all-roles">All Roles page</a>.</p>
     <p><b>Unless it specifically says so, nobody is killed or can use their power at this setup! Most people don't know who others are.</b></p>
+
+    <h3>3.1. Clue</h3>
+    <p>Once the setup is done, give the players one clue about the Strigoys. Here are some clue ideas:</p>
+    <ul>
+        <li>dasdasd</li>
+    </ul>
 
     <h3>4. Day</h3>
     <p>Once the Setup is done, say "Everyone, wake up". Players can now talk, speculate and plan.</p>
@@ -99,10 +105,14 @@
     <h3>Game End</h3>
     <p>The game ends when either <b>all the Strigoys are dead</b>, or Strigoys comprise half of all alive players.</p>
 
-
     <h2>Voting and Hanging</h2>
+    <p>At the end of each Day, players can nominate people to hang.</p>
+    <p>For each nominee, say "If you want to hang this person, raise your hand". Count the number of hands raised.</p>
+    <p>The player with most votes dies, but only if they have a number of votes greater than half the number of players (e.g. at 5 votes with 9 players, the person is hanged; at 6 votes with 12 players, the person is not hanged).</p>
 
     <h2>Death</h2>
+    <p>When a player dies, they remain in the game but their power no longer works, and they can't vote. They do NOT reveal their card.</p>
+    <p><b>However</b></p>
 
     <h2>Mods</h2>
 

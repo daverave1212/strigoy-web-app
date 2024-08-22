@@ -7,12 +7,13 @@
     export let name
     export let isValid
     export let src
+    export let role
 
     const dispatch = createEventDispatcher()
 
 </script>
 
 <div class="center-content">
-    <RoundCardPortrait name={name} isValid={isValid == false? false: true} on:click={(evt) => { evt.stopPropagation(); dispatch('role-click', evt) }}  src={src}></RoundCardPortrait>
-    <div class={isValid == false? 'title gray-text strikethrough center-text' : 'title center-text'}>{name}</div>
+    <RoundCardPortrait {...role} on:click={(evt) => { evt.stopPropagation(); dispatch('role-click', evt) }}></RoundCardPortrait>
+    <div class={role.isValid == false? 'title gray-text strikethrough center-text' : 'title center-text'}>{role.name}</div>
 </div>
