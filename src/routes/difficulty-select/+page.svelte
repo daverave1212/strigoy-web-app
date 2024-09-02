@@ -62,7 +62,7 @@
     <div class="cards">
         {#each difficulties as difficulty}
             <div class="card shadowed rounded {$selectedDifficulty.name == difficulty.name? 'colorful' : ''}" on:click={() => onClickOnDifficulty(difficulty)}>
-                <RoundCardPortrait name={difficulty.imageName} isValid={true}/>
+                <RoundCardPortrait role={{name: difficulty.imageName, isValid: true}}/>
                 <h3>{difficulty.name}</h3>
                 <p>{difficulty.description}</p>
             </div>
@@ -80,7 +80,7 @@
     <div class="cards">
         {#each mods as mod}
             <div class="card shadowed rounded {$selectedModOption == mod.name? 'colorful' : ''}" on:click={() => $selectedModOption = mod.name}>
-                <RoundCardPortrait name={mod.imageName} isValid={true}/>
+                <RoundCardPortrait role={{name: mod.imageName, isValid: true}}/>
                 <h3>{mod.name}</h3>
                 <p>{mod.description}</p>
             </div>

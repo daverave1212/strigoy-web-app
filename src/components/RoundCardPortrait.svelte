@@ -15,13 +15,14 @@
         height: var(--role-chooser-image-size-big);
     }
     .image-wrapper img {
-        --width: calc(2 * var(--role-chooser-image-size));
+        --width: calc(1.75 * var(--role-chooser-image-size));
         width: var(--width);
-        margin-left: calc(-0.25 * var(--width));
-        margin-top: calc(-0.07 * var(--width));
+        margin-left: calc(-0.2 * var(--width));
+        margin-top: calc(-0.05 * var(--width));
     }
     .image-wrapper.big img {
-        --width: calc(2 * var(--role-chooser-image-size-big));
+        --width: calc(1.5 * var(--role-chooser-image-size-big));
+        margin-left: calc(-0.15 * var(--width));
     }
     .grayscale {
         -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
@@ -68,16 +69,24 @@
 
     const dispatch = createEventDispatcher();
 
-    export let name
-    export let isValid
-    export let team
-    export let isBig = false
-    export let src = null
-    export let category
-    export let ribbonText
-    export let ribbonColor
+    export let role
 
-    $: imagePath = src != null? src : `images/roles/${name}.png`
+    let {
+        name,
+        isValid,
+        team,
+        isBig = false,
+        src,
+        category,
+        ribbonColor,
+        ribbonText
+    } = role
+    
+
+    $: imagePath = src != null? src : `images/role-thumbnails/${name}.webp`
+    $: {
+        console.log({imagePath})
+    }
     $: ribbon = category != null && categoryToRibbon[category] != null?
         categoryToRibbon[category] :
         null

@@ -117,7 +117,7 @@
     transition: max-height 0.5s;
 }
 .subcontent--expanded {
-    max-height: 20vh;
+    max-height: 20rem;
 }
 .subcontent-content {
     margin-top: calc(0.33 * var(--contact-header-height));

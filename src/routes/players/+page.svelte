@@ -51,6 +51,7 @@
         'Drunk',
         'Lover',
         'Used Ability',
+        'Evil',
         'Out of Game',
     ]
 

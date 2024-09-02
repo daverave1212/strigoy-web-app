@@ -57,7 +57,7 @@
     <div class="hero">
         {#if willAnimate}
             <div class="center-content portrait-wrapper" in:fly={{y: -100, delay: 50 }}>
-                <RoundCardPortrait name="Strigoy" isBig={true} isValid={true}/>
+                <RoundCardPortrait role={{name: 'Strigoy', isBig: true, isValid: true}}/>
             </div>
             <h2 class="space-bottom">Play Strigoy</h2>
             <p class="space-bottom">The free online app for organizing a game of Strigoy, for 8 to 20 players. Print and cut the free Strigoy cards at <a>this link</a> and play!</p>

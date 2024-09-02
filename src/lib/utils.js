@@ -116,6 +116,10 @@ export function clearCanvas(canvas) {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.reset()
 }
+export function clearRect(canvas, x, y, width, height) {
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(x, y, width, height)
+}
 export function drawText({canvas, font, x, y, text, textAlign='center', color}) {
     const ctx = canvas.getContext('2d')
     saveCtxSettings(ctx)

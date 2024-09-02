@@ -12,5 +12,4 @@ export function autochooseBOTCTRoles(nPlayers) {
         rolesInGame = rolesInGame.sort((a, b) => getBOTCTSetupRolePriority(a) - getBOTCTSetupRolePriority(b))
     let rolesNotInGame = allAvailableRoles.filter(role => isRoleInGame(role) == false).map(role => ({...role, isInGame: false}))
     rolesDistribution.set([...rolesInGame, ...rolesNotInGame])
-
 }

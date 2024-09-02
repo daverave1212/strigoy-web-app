@@ -33,6 +33,7 @@
     options={[
         { name: 'Play', href:"/"},
         { name: 'How To Play', href:"/how-to-play"},
+        { name: 'All Roles', href:"/all-roles"},
         { name: 'Print', href:"/card"}
     ]}
     isBurgerOpen={isBurgerOpen} setIsBurgerOpen={bool => isBurgerOpen = bool}
