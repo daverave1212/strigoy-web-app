@@ -67,7 +67,7 @@
             +
         </button>
         
-        <a class="btn big {$addedPlayers.length > 0? 'colorful' : 'gray'}" href="/difficulty-select" style="position: relative;">
+        <a class="btn big {$addedPlayers.length > 0? 'colorful' : 'gray'}" href="/role-select" style="position: relative;">
             Next
         </a>
     </ContactList>

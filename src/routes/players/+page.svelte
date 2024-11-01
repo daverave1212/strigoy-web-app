@@ -6,6 +6,7 @@
 </style>
 
 <script>
+	import { selectedRoles } from './../../stores/selected-roles-store.js';
 	import { getBOTCTRole } from './../../lib/BOTCTDatabase.js';
 	import { rolesDistribution } from './../../stores/roles-store.js';
 	import InspectRoleDrawer from './../../components/InspectRoleDrawer.svelte';
@@ -18,11 +19,11 @@
     import SideMenu from "../../components-standalone/SideMenu.svelte";
     import DrawerPage from "../../components-standalone/DrawerPage.svelte";
     import RoleChooserDrawer from "../../components/RoleChooserDrawer.svelte";
-    import { BEGINNER, getRole, getRoles, getRolesByDifficulty } from "../../lib/Database";
+    import { BEGINNER, getRole, getRoles, getRolesByDifficulty, NIGHTLY, SETUP, SPECIAL_NIGHTLY, SPECIAL_SETUP } from "../../lib/Database";
     import Modal from "../../components-standalone/Modal.svelte";
-    import { randomInt } from "../../lib/utils";
+    import { isNumber, randomInt } from "../../lib/utils";
     import Tooltip from "../../components-standalone/Tooltip.svelte";
-    import { addedPlayers, setPlayerStateI } from "../../stores/added-players-store";
+    import { addedPlayers, addPlayer, removePlayer, setPlayerStateI } from "../../stores/added-players-store";
     import { sortCurrentRolesNightly, sortCurrentRolesSetup } from "../../stores/added-players-store";
     import { hasExpandTooltip, hasInspectTooltip, hasSetRoleTooltip, hasSortTooltip } from '../../stores/tutorial-store';
     import ModContact from '../../components/Contact/ModContact.svelte';
@@ -106,9 +107,27 @@
         }
     }
 
-    function invalidateAvailableRole(i) {
-        $rolesDistribution[i].isValid = false
-        $rolesDistribution = $rolesDistribution
+
+    function isRoleAvailable(roleName) {
+        const rolesWithThisName = $rolesDistribution.filter(role => role.name == roleName)
+        const validRoles = rolesWithThisName.filter(role => role.isValid != false)
+        return validRoles.length > 0
+    }
+    function invalidateAvailableRole(roleIOrRoleName) {
+        if (isNumber(roleIOrRoleName)) {
+            const i = roleIOrRoleName
+            $rolesDistribution[i].isValid = false
+            $rolesDistribution = $rolesDistribution
+        } else {
+            const roleName = roleIOrRoleName
+            const i = $rolesDistribution.findIndex(role => role.name == roleName)
+            if (i == -1) {
+                console.log({roleIOrRoleName})
+                throw `Could not find role to invalidate.`
+            }
+            $rolesDistribution[i].isValid = false
+            $rolesDistribution = $rolesDistribution
+        }
     }
     function validateUnavailbleRole(roleName) {
         const thisRole = $rolesDistribution.find(role => role.name == roleName)
@@ -119,6 +138,9 @@
         thisRole.isValid = true
         $rolesDistribution = $rolesDistribution
     }
+
+
+
 
     function killPlayer(i) {
         const player = $addedPlayers[i]
@@ -148,19 +170,50 @@
         isRoleChooserOpen = false
     }
 
+
+
+    function removePlaceholderRoles() {
+        $addedPlayers = $addedPlayers.filter(player => player.subtitle != '--')
+    }
+    window.removePlaceholderRoles = removePlaceholderRoles
     function onClickOnSortNight() {
-        sortCurrentRolesNightly()
+        removePlaceholderRoles()
+        const isAnyPlayerThisRoleName = roleName => $addedPlayers.find(player => player.role == roleName) != null
+        const selectedRolesNotSet = $selectedRoles.filter(role => isAnyPlayerThisRoleName(role.name) == false)
+        const extraRequiredRoles = selectedRolesNotSet.filter(role => role.category == NIGHTLY || role.category == SPECIAL_NIGHTLY)
+        console.log({extraRequiredRoles})
+        for (const role of extraRequiredRoles) {
+            addPlayer({
+                role: role.name,
+                name: role.name,
+                subtitle: '--',
+                src: `images/roles/${role.name}.png`,
+            })
+        }
+
+        sortCurrentRolesNightly()        
+
+        console.log($addedPlayers)
     }
     function onClickOnSortSetup() {
         $hasSortTooltip = false
+
+        
+        
         sortCurrentRolesSetup()
     }
-    
-
-    
-    console.log(`HMMMMMM`)
-    console.log($currentlySelectedMod)
-    
+    function onClickOnCleanup() {
+        removePlaceholderRoles()
+    }
+    function onRemovePlayer(i) {
+        const player = $addedPlayers[i]
+        if (player.role != null) {
+            if (!isRoleAvailable(player.role)) {
+                validateUnavailbleRole(player.role)
+            }
+        }
+        removePlayer(i)
+    }
 
 </script>
 
@@ -193,6 +246,9 @@
 </RoleChooserDrawer>
 
 <ContactListHeader>
+    <button class="btn" style="background-color: #AA88BB; position: relative;" on:click={onClickOnCleanup}>
+        Cleanup
+    </button>
     <button class="btn" style="background-color: #BB8844; position: relative;" on:click={onClickOnSortSetup}>
         <Tooltip isShown={shouldShowSortTooltip} top="3rem" left="calc(50% - 0.5rem)" width="40vw">Sort players for Setup for Night.</Tooltip>
         Sort for Setup
@@ -227,6 +283,9 @@
                         {#each statusEffects as statusEffect}
                             <button class="btn" style="color: black;" on:click={()=>onClickOnStatusEffect(i, statusEffect)}> <img class="icon" src="/images/status/{statusEffect}.png"/> {statusEffect} </button>
                         {/each}
+                    </div>
+                    <div class="flex-content wrap margin-top-1">
+                        <button class="btn gray" on:click={() => onRemovePlayer(i)}>Remove</button>
                     </div>
                 </div>
             </Contact>

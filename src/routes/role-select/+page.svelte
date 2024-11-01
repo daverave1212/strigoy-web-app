@@ -15,6 +15,7 @@
     import { ADVANCED, BEGINNER, COMPLETE, getNormalRolePriority, getRoles, getRolesByDifficulty, getRolesForDifficulty, getSortRolesWithPriorityFunction, INTERMEDIATE, WEREWOLVES } from "../../lib/Database";
     import { getMods } from "../../lib/ModsDatabase";
     import { selectedRoles } from '../../stores/selected-roles-store'
+    import { goto } from '$app/navigation'
 
     
     let currentInspectorObject = null
@@ -55,7 +56,17 @@
 <div class="page">
 
     <h2 class="center-text margin-top-4">Select Roles In Game</h2>
-    <p class="center-text margin-top-2">Tap on roles you want to include in this game. Tap on included roles to remove them. Tap on gray roles to see details.</p>
+    <p class="center-text margin-top-2">
+        These are the roles that <b>could</b> be in the game.
+        Tap on roles you want to include in this game. Tap on included roles to remove them. Tap on gray roles to see details.
+    </p>
+
+    <h2 class="center-text margin-top-4">Preparing the Cards</h2>
+    <p class="center-text margin-top-2">
+        Assemble the deck with a suitable amount of Strigoy and Negative roles, then add cards from the selected roles until there are as many cards as players (add Peasants if there aren't enough roles).<br/>
+        Finally, add 3 more Peasants. After giving roles to players, there will be 3 unused normal roles.
+    </p>
+    
 
     <h2 class="center-text margin-top-2">Current Roles</h2>
     {#if $selectedRoles.length == 0}
@@ -63,6 +74,11 @@
     {:else}
         <RoleListWithRoles roles={$selectedRoles} on:role-click={evt => onClickOnCurrentRole(evt.detail.role)}/>
     {/if}
+
+    <div class="flex-content center-content margin-top-2">
+        <a class="btn big colorful" href="/add-players" on:click|preventDefault={() => goto('/add-players')}>Back</a>
+        <a class="btn big colorful" style="width: 40vw;" href="/players" on:click|preventDefault={() => goto('/players')}>Next</a>
+    </div>
 
     <br/><br/>
     <hr/>

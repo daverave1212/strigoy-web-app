@@ -8,6 +8,7 @@ export const BEGINNER = 1
 export const INTERMEDIATE = 2
 export const ADVANCED = 3
 export const COMPLETE = 4
+export const BROKEN = 1337
 
 export const REGULAR = 'regular'
 export const SETUP = 'setup'
@@ -21,6 +22,7 @@ export const NIGHTLY_WEREWOLVES = 'nightly-werewolves'
 export const EVIL_COLOR = 'rgb(194, 5, 30)'
 export const SETUP_COLOR = 'rgb(90, 138, 0)'
 export const NIGHTLY_COLOR = 'rgb(88, 50, 255)'
+export const MORNING_COLOR = 'rgb(200, 175, 50)'
 export const SPECIAL_COLOR = '#444444'
 
 const isWorthBalanceAcceptable = worthBalanceFloat => worthBalanceFloat >= 0 && worthBalanceFloat <= 0.75
@@ -187,10 +189,12 @@ export const getRoles = () => [
         nPlayers: 12,
         team: TOWNSFOLK,
         worth: 1.25,
-        category: SPECIAL_NIGHTLY,
+        category: REGULAR,
         difficulty: ADVANCED,
-        effect: 'Once per game, when Strigoys open eyes (keep yours closed), make a THUMBS UP sign. The following day, dead people can vote.',
-        type: 'Special Nightly'
+        effect: 'Every morning, if you are alive, the people who just died at night can talk and vote today (their powers do not work).',
+        notes: 'The narrator announces this every morning. When night falls, they die immediately.',
+        ribbonColor: MORNING_COLOR,
+        ribbonText: 'MORNING'
     },
     {
         name: "Philosopher",
@@ -229,7 +233,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 0.75,
         category: SPECIAL_SETUP,
-        difficulty: INTERMEDIATE,
+        difficulty: ADVANCED,
         effect: "One Townsfolk is secretly drunk - they believe they are that role, but they're just a Peasant. Their ability has no effect or gets wrong information.",
         notes: "Only the narrator knows who the drunk is (unless you can figure it out...)"
     },
@@ -294,7 +298,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 1.5,
         category: NIGHTLY,
-        difficulty: BEGINNER,
+        difficulty: ADVANCED,
         isImportant: true,
         effect: 'Every night, wake up and pick a player (not yourself). They can\'t die this night. You can\'t pick the same player two nights in a row.',
         notes: 'If they would die, nothing happens.',
@@ -308,7 +312,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 1.25,
         category: SPECIAL_NIGHTLY,
-        difficulty: INTERMEDIATE,
+        difficulty: BEGINNER,
         effect: 'Once per game, after Strigoys close eyes, raise your arm if you want to wake up.\nThen kill someone.',
         notes: 'Wait for the narrator to say "Assassin wake up."',
         narratorNotes: 'Watch out for the Assassin. If their arm is raised, say "Assassin, wake up".\nThey can only do this once per game.',
@@ -346,14 +350,14 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 0.75,
         category: REGULAR,
-        difficulty: INTERMEDIATE,
+        difficulty: COMPLETE,
         effect: 'You must always vote the same as the closest alive person to your right.',
         notes: 'If they don\'t vote, you don\'t vote'
     },
     {
         name: "Scout",
         team: TOWNSFOLK,
-        difficulty: ADVANCED,
+        difficulty: BROKEN,
         effect: "Every night, when Strigoys close eyes, point left or right (keep your eyes closed). If the closest alive player in that direction is Evil, you are eaten (instead of whoever the Strigoys chose).",
         category: SPECIAL_NIGHTLY,
         notes: "Make sure the narrator sees you pointing. Make it OBVIOUS. Make sure to stop once the narrator continues.",
@@ -365,7 +369,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 1.5,
         category: REGULAR,
-        difficulty: INTERMEDIATE,
+        difficulty: COMPLETE,
         effect: 'Once per game, secretly ask the narrator a YES/NO question about one player. You secretly get a correct reply.',
         notes: 'You can go to the narrator and ask, message them on their phone, etc.'
     },
@@ -375,7 +379,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 1.5,
         category: REGULAR,
-        difficulty: ADVANCED,
+        difficulty: COMPLETE,
         effect: 'At any point, reveal your card. From then on, your vote counts as 3 votes.',
     },
     {
@@ -393,7 +397,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 1,
         category: REGULAR,
-        difficulty: INTERMEDIATE,
+        difficulty: COMPLETE,
         effect: "Once per game, declare you're a Witch Hunter and publicly pick a player. If the letter 'S' is in their role name, they die immediately.",
         note: 'Note that other players can bluff as a Witch Hunter!'
     },
@@ -414,7 +418,7 @@ export const getRoles = () => [
         worth: 1,
         category: REGULAR,
         difficulty: INTERMEDIATE,
-        effect: 'At any point in the game, reveal your card and pick another player. You each get a new non-Nightly, non-Setup role.',
+        effect: 'At any point in the game, reveal your card and pick another player. You each get a new random role.',
         notes: 'The narrator gives you the role. It could be a Strigoy!'
     },
     {
@@ -453,7 +457,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 2,
         category: REGULAR,
-        difficulty: INTERMEDIATE,
+        difficulty: COMPLETE,
         effect: "If there are 5 or more players in the game, you can't be eaten at night (nothing happens if you're eaten)",
         notes: "The night may pass with no one being eaten."
     },
@@ -512,7 +516,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 0.75,
         category: REGULAR,
-        difficulty: INTERMEDIATE,
+        difficulty: ADVANCED,
         effect: "If you are killed at DAY, reveal your card. The Strigoys win immediately."
     },
     {
@@ -522,7 +526,9 @@ export const getRoles = () => [
         worth: 2,
         category: REGULAR,
         difficulty: ADVANCED,
-        effect: 'If you are eaten at night, a random non-Strigoy Evil player also dies (if any was still alive).'
+        effect: 'If you are eaten at night, a random non-Strigoy Evil player also dies (if any was still alive).',
+        ribbonColor: EVIL_COLOR,
+        ribbonText: 'NEGATIVE'
     },
     {
         name: "Hunter",
@@ -539,7 +545,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 1.35,
         category: REGULAR,
-        difficulty: ADVANCED,
+        difficulty: BROKEN,
         effect: "When you die, publicly choose another player. If they are not a Strigoy, they are revived.",
         notes: 'You do NOT reveal your card.'
     },
@@ -550,7 +556,7 @@ export const getRoles = () => [
         worth: 0.5,
         category: REGULAR,
         difficulty: BEGINNER,
-        effect: "If you are eaten, reveal your card. Next night, the Strigoys kill 2 players.",
+        effect: "If you are killed at night, reveal your card. Next night, the Strigoys kill 2 players.",
         ribbonColor: EVIL_COLOR,
         ribbonText: 'NEGATIVE'
     },
@@ -581,7 +587,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 0.75,
         category: REGULAR,
-        difficulty: INTERMEDIATE,
+        difficulty: COMPLETE,
         effect: "If you would die at night, a random Townsfolk dies instead. If you are hanged, both you and another random Townsfolk die.",
         ribbonColor: EVIL_COLOR,
         ribbonText: 'NEGATIVE'
@@ -594,9 +600,7 @@ export const getRoles = () => [
         category: REGULAR,
         difficulty: INTERMEDIATE,
         effect: "If you die, reveal your card. The next Night happens TWICE.",
-        notes: "There will be 2 nights in a row, without everyone waking up in between.",
-        ribbonColor: EVIL_COLOR,
-        ribbonText: 'NEGATIVE'
+        notes: "There will be 2 nights in a row, without everyone waking up in between."
     },
     {
         name: "Madman",
@@ -604,7 +608,7 @@ export const getRoles = () => [
         team: OTHER,
         worth: 0.5,
         category: OTHER_CATEGORY,
-        difficulty: ADVANCED,
+        difficulty: INTERMEDIATE,
         effect: "You aren't on any team. You win if you are hanged. Then the game goes on."
     },
 
@@ -650,6 +654,8 @@ const setupOrder = [
     'Philosopher',
     'Exorcist',
 
+    'Bell Ringer',
+
     'Lover',
     'Mora',
     'Strigoy',
@@ -686,6 +692,9 @@ const normalOrder = [
     'Silencer',
     'Yaga (Priest)',
     'Yaga (Town Guard)',
+    'Grandma',
+    'Skinny Kid',
+    'Diva',
 
     'Alien',
     'Madman',
@@ -698,7 +707,6 @@ const normalOrder = [
     'Schizophrenic',
 
     'Assassin',
-    'Bell Ringer',
     'Bitten',
     'Priest',
     'Scout',
@@ -722,15 +730,16 @@ export function getNormalRolePriority(roleOrRoleName) {
 const nightlyOrder = [
     'Strigoy',
     'Secondary Strigoy',
+    'Assassin',
     'Bitten',
     'Bell Ringer',
     'Town Guard',
     'Yaga (Town Guard)',
     'Seer',
-    'Assassin',
     'Schizophrenic',
     'Priest',
-    'Yaga (Priest)'
+    'Yaga (Priest)',
+    'Bell Ringer'
 ]
 export function getNightlyRolePriority(roleOrRoleName) {
     if (roleOrRoleName == null) {
@@ -878,3 +887,13 @@ export function setupRoles(nPlayers, difficulty) {
 
     return rolesSoFar
 }
+
+
+/*
+    ---- UPDATED ROLES ------ 
+- Skinny Kid
+- Bell Ringer
+- Thief
+
+
+*/

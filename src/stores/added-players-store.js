@@ -11,6 +11,7 @@ export function addPlayer(extraProps) {
         subtitle: '',
         src: 'images/user.png',
         role: null,
+        name: null,
 
         isPortraitCentered: true,
         isExpanded: false,

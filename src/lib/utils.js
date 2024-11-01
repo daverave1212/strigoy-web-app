@@ -165,3 +165,10 @@ function getLines(ctx, text, maxWidth) {
     lines.push(currentLine);
     return lines;
 }
+
+export function isNumber(val) {
+    return typeof val === 'number'
+}
+export function isNumberOrStringNumber(val) {
+    return isNumber(val) || parseFloat(val) == val
+}
