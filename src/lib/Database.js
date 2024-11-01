@@ -18,35 +18,61 @@ export const OTHER_CATEGORY = 'other-category'
 
 export const NIGHTLY_WEREWOLVES = 'nightly-werewolves'
 
-const EVIL_COLOR = 'rgb(194, 5, 30)'
-const SETUP_COLOR = 'rgb(90, 138, 0)'
-const NIGHTLY_COLOR = 'rgb(88, 50, 255)'
-const SPECIAL_COLOR = '#444444'
+export const EVIL_COLOR = 'rgb(194, 5, 30)'
+export const SETUP_COLOR = 'rgb(90, 138, 0)'
+export const NIGHTLY_COLOR = 'rgb(88, 50, 255)'
+export const SPECIAL_COLOR = '#444444'
 
 const isWorthBalanceAcceptable = worthBalanceFloat => worthBalanceFloat >= 0 && worthBalanceFloat <= 0.75
 
-export const WEREWOLF = 'Strigoy'
+export const STRIGOY = 'Strigoy'
 export const EVIL = 'Any Evil'
+export const NEGATIVE = 'Any Evil'
+const evilsByPlayersOLD = {
+    2:  [[STRIGOY]],
+    3:  [[STRIGOY]],
+    4:  [[STRIGOY]],
+    5:  [[STRIGOY]],
+    6:  [[STRIGOY, EVIL]],
+    7:  [[STRIGOY, EVIL]],
+    8:  [[STRIGOY, EVIL]],
+    9:  [[STRIGOY, EVIL, EVIL]],                               // Too negative
+    10: [[STRIGOY, STRIGOY],  [STRIGOY, EVIL, EVIL]],        // Fine
+    11: [[STRIGOY, STRIGOY, EVIL], [STRIGOY, EVIL, EVIL]],   // Way too negative?
+    12: [[STRIGOY, STRIGOY, EVIL], [STRIGOY, EVIL, EVIL]],
+    13: [[STRIGOY, STRIGOY, EVIL, EVIL], [STRIGOY, EVIL, EVIL, EVIL]],
+    14: [[STRIGOY, STRIGOY, EVIL, EVIL], [STRIGOY, STRIGOY, EVIL, EVIL], [STRIGOY, STRIGOY, STRIGOY]],
+    15: [[STRIGOY, STRIGOY, EVIL, EVIL], [STRIGOY, STRIGOY, EVIL, EVIL], [STRIGOY, STRIGOY, STRIGOY]],
+    16: [[STRIGOY, STRIGOY, STRIGOY, EVIL], [STRIGOY, STRIGOY, EVIL, EVIL]],
+    17: [[STRIGOY, STRIGOY, STRIGOY, EVIL]],
+    18: [[STRIGOY, STRIGOY, STRIGOY, EVIL, EVIL], [STRIGOY, STRIGOY, EVIL, EVIL, EVIL], [STRIGOY, EVIL, EVIL, EVIL, EVIL]],
+    19: [[STRIGOY, STRIGOY, STRIGOY, STRIGOY], [STRIGOY, STRIGOY, STRIGOY, EVIL, EVIL, EVIL]],
+    20: [[STRIGOY, STRIGOY, STRIGOY, STRIGOY], [STRIGOY, STRIGOY, STRIGOY, EVIL, EVIL, EVIL]],
+}
+// Rule of thumb: 25% of players are Strigoy
 const evilsByPlayers = {
-    2:  [[WEREWOLF]],
-    3:  [[WEREWOLF]],
-    4:  [[WEREWOLF]],
-    5:  [[WEREWOLF]],
-    6:  [[WEREWOLF, EVIL]],
-    7:  [[WEREWOLF, EVIL]],
-    8:  [[WEREWOLF, EVIL]],
-    9:  [[WEREWOLF, EVIL, EVIL]],                               // Too negative
-    10: [[WEREWOLF, WEREWOLF],  [WEREWOLF, EVIL, EVIL]],        // Fine
-    11: [[WEREWOLF, WEREWOLF, EVIL], [WEREWOLF, EVIL, EVIL]],   // Way too negative?
-    12: [[WEREWOLF, WEREWOLF, EVIL], [WEREWOLF, EVIL, EVIL]],
-    13: [[WEREWOLF, WEREWOLF, EVIL, EVIL], [WEREWOLF, EVIL, EVIL, EVIL]],
-    14: [[WEREWOLF, WEREWOLF, EVIL, EVIL], [WEREWOLF, WEREWOLF, EVIL, EVIL], [WEREWOLF, WEREWOLF, WEREWOLF]],
-    15: [[WEREWOLF, WEREWOLF, EVIL, EVIL], [WEREWOLF, WEREWOLF, EVIL, EVIL], [WEREWOLF, WEREWOLF, WEREWOLF]],
-    16: [[WEREWOLF, WEREWOLF, WEREWOLF, EVIL], [WEREWOLF, WEREWOLF, EVIL, EVIL]],
-    17: [[WEREWOLF, WEREWOLF, WEREWOLF, EVIL]],
-    18: [[WEREWOLF, WEREWOLF, WEREWOLF, EVIL, EVIL], [WEREWOLF, WEREWOLF, EVIL, EVIL, EVIL], [WEREWOLF, EVIL, EVIL, EVIL, EVIL]],
-    19: [[WEREWOLF, WEREWOLF, WEREWOLF, WEREWOLF], [WEREWOLF, WEREWOLF, WEREWOLF, EVIL, EVIL, EVIL]],
-    20: [[WEREWOLF, WEREWOLF, WEREWOLF, WEREWOLF], [WEREWOLF, WEREWOLF, WEREWOLF, EVIL, EVIL, EVIL]],
+    2:  [[STRIGOY]],
+    3:  [[STRIGOY]],
+    4:  [[STRIGOY]],
+    5:  [[STRIGOY]],
+    6:  [[STRIGOY, NEGATIVE]],
+    7:  [[STRIGOY, NEGATIVE]],
+
+    8:  [[STRIGOY, STRIGOY]],
+
+    9:  [[STRIGOY, STRIGOY]],
+    10: [[STRIGOY, STRIGOY, NEGATIVE]],
+    11: [[STRIGOY, STRIGOY, NEGATIVE]],
+
+    12: [[STRIGOY, STRIGOY, STRIGOY]],
+    13: [[STRIGOY, STRIGOY, STRIGOY, NEGATIVE]],
+    14: [[STRIGOY, STRIGOY, STRIGOY, NEGATIVE]],
+    15: [[STRIGOY, STRIGOY, STRIGOY, NEGATIVE, NEGATIVE]],
+    16: [[STRIGOY, STRIGOY, STRIGOY, STRIGOY]],
+    17: [[STRIGOY, STRIGOY, STRIGOY, STRIGOY, NEGATIVE]],
+    18: [[STRIGOY, STRIGOY, STRIGOY, STRIGOY, NEGATIVE]],
+    19: [[STRIGOY, STRIGOY, STRIGOY, STRIGOY, NEGATIVE, NEGATIVE]],
+    20: [[STRIGOY, STRIGOY, STRIGOY, STRIGOY, STRIGOY]],
 }
 
 export const getRoles = () => [
@@ -81,7 +107,7 @@ export const getRoles = () => [
         team: WEREWOLVES,
         worth: -1.5,
         category: REGULAR,
-        difficulty: BEGINNER,
+        difficulty: COMPLETE,
         effect: "You are Evil, without any special power. You do not open eyes every night (except at game start).",
     },
     {
@@ -90,7 +116,7 @@ export const getRoles = () => [
         team: WEREWOLVES,
         worth: -1.75,
         category: SPECIAL_NIGHTLY,
-        difficulty: INTERMEDIATE,
+        difficulty: COMPLETE,
         type: 'Special Nightly',
         effect: 'Every night and at game start, when Strigoys open eyes, point left or right! The closest alive Townsfolk in that direction gets wrong information, or their ability does nothing.',
         // lineHeight: 29,
@@ -102,7 +128,7 @@ export const getRoles = () => [
         team: WEREWOLVES,
         worth: -2,
         category: SPECIAL_NIGHTLY,
-        difficulty: ADVANCED,
+        difficulty: COMPLETE,
         effect: 'Once per game, when Strigoys open eyes, raise your arm. ALL Townsfolk abilities have no effect until next night. Narrator announces that "everyone is silenced".',
         narratorNotes: 'Pay attention to the Silencer\'s arm sign. When they raise their arm, announce that the Silencer silenced everyone, and nobody\'s role does anything until the start of next night.',
     },
@@ -142,7 +168,9 @@ export const getRoles = () => [
         category: REGULAR,
         difficulty: INTERMEDIATE,
         effect: "You are Evil, but you don't know who other Evils are.",
-        notes: 'At game start, the narrator will point the Evils to you. You NEVER open your eyes.'
+        notes: 'At game start, the narrator will point the Evils to you. You NEVER open your eyes.',
+        ribbonColor: EVIL_COLOR,
+        ribbonText: 'NEGATIVE'
     },
     {
         name: "Bitten",
@@ -211,7 +239,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 1.5,
         category: SETUP,
-        difficulty: INTERMEDIATE,
+        difficulty: COMPLETE,
         isImportant: true,
         effect: 'At game start, pick 2 players. For each, if its role contains letter "O", the narrator nods.',
         narratorNotes: 'The Blind Inspector opens their eyes. First, they point to one player, then you may nod. Then they point to another player, and you may nod again.',
@@ -226,7 +254,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 1.75,
         category: SETUP,
-        difficulty: BEGINNER,
+        difficulty: COMPLETE,
         isImportant: true,
         effect: 'At game start, the narrator points at 3 players. At least one of them is Evil.',
         narratorNotes: 'The Fortune Teller opens their eyes.',
@@ -292,7 +320,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 1.75,
         category: NIGHTLY,
-        difficulty: INTERMEDIATE,
+        difficulty: BEGINNER,
         isImportant: true,
         effect: 'Every night, wake up. You know who died. Once per game, you can revive one player who just died (except yourself).',
         type: 'Nightly',
@@ -318,7 +346,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 0.75,
         category: REGULAR,
-        difficulty: BEGINNER,
+        difficulty: INTERMEDIATE,
         effect: 'You must always vote the same as the closest alive person to your right.',
         notes: 'If they don\'t vote, you don\'t vote'
     },
@@ -337,7 +365,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 1.5,
         category: REGULAR,
-        difficulty: BEGINNER,
+        difficulty: INTERMEDIATE,
         effect: 'Once per game, secretly ask the narrator a YES/NO question about one player. You secretly get a correct reply.',
         notes: 'You can go to the narrator and ask, message them on their phone, etc.'
     },
@@ -385,7 +413,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 1,
         category: REGULAR,
-        difficulty: BEGINNER,
+        difficulty: INTERMEDIATE,
         effect: 'At any point in the game, reveal your card and pick another player. You each get a new non-Nightly, non-Setup role.',
         notes: 'The narrator gives you the role. It could be a Strigoy!'
     },
@@ -435,7 +463,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 1.75,
         category: REGULAR,
-        difficulty: COMPLETE,
+        difficulty: BEGINNER,
         effect: 'You have 2 lives. If you die, you come back to life in the morning. You might not know it happened.',
         notes: "The narrator might announce 'nobody died' or 'you are back in the game'."
     },
@@ -484,7 +512,7 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 0.75,
         category: REGULAR,
-        difficulty: BEGINNER,
+        difficulty: INTERMEDIATE,
         effect: "If you are killed at DAY, reveal your card. The Strigoys win immediately."
     },
     {
@@ -522,7 +550,9 @@ export const getRoles = () => [
         worth: 0.5,
         category: REGULAR,
         difficulty: BEGINNER,
-        effect: "If you are eaten, reveal your card. Next night, the Strigoys kill 2 players."
+        effect: "If you are eaten, reveal your card. Next night, the Strigoys kill 2 players.",
+        ribbonColor: EVIL_COLOR,
+        ribbonText: 'NEGATIVE'
     },
     {
         name: "Grandma",
@@ -530,8 +560,10 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: -1,
         category: REGULAR,
-        difficulty: INTERMEDIATE,
-        effect: 'If you are eaten, you become a Strigoy. The narrator will announce that "Grandma was eaten and became a Strigoy".'
+        difficulty: BEGINNER,
+        effect: 'If you are eaten, you become a Strigoy. The narrator will announce that "Grandma was eaten and became a Strigoy".',
+        ribbonColor: EVIL_COLOR,
+        ribbonText: 'NEGATIVE'
     },
     
     {
@@ -550,7 +582,9 @@ export const getRoles = () => [
         worth: 0.75,
         category: REGULAR,
         difficulty: INTERMEDIATE,
-        effect: "If you would die at night, a random Townsfolk dies instead. If you are hanged, both you and another random Townsfolk die."
+        effect: "If you would die at night, a random Townsfolk dies instead. If you are hanged, both you and another random Townsfolk die.",
+        ribbonColor: EVIL_COLOR,
+        ribbonText: 'NEGATIVE'
     },
     {
         name: "Hobo",
@@ -558,9 +592,11 @@ export const getRoles = () => [
         team: TOWNSFOLK,
         worth: 0.5,
         category: REGULAR,
-        difficulty: ADVANCED,
+        difficulty: INTERMEDIATE,
         effect: "If you die, reveal your card. The next Night happens TWICE.",
-        notes: "There will be 2 nights in a row, without everyone waking up in between."
+        notes: "There will be 2 nights in a row, without everyone waking up in between.",
+        ribbonColor: EVIL_COLOR,
+        ribbonText: 'NEGATIVE'
     },
     {
         name: "Madman",
@@ -628,6 +664,9 @@ const setupOrder = [
     'Fortune Teller'
 ]
 export function getSetupRolePriority(roleOrRoleName) {
+    if (roleOrRoleName == null) {
+        return NO_PRIORITY
+    }
     let roleName = roleOrRoleName.name != null? roleOrRoleName.name : roleOrRoleName
     if (roleName == 'Rival A' || roleName == 'Rival B') {
         roleName = 'Rival'
@@ -669,6 +708,9 @@ const normalOrder = [
     'Peasant'
 ]
 export function getNormalRolePriority(roleOrRoleName) {
+    if (roleOrRoleName == null) {
+        return NO_PRIORITY
+    }
     let roleName = roleOrRoleName.name != null? roleOrRoleName.name : roleOrRoleName
     const index = normalOrder.indexOf(roleName)
     if (index == -1) {
@@ -691,6 +733,9 @@ const nightlyOrder = [
     'Yaga (Priest)'
 ]
 export function getNightlyRolePriority(roleOrRoleName) {
+    if (roleOrRoleName == null) {
+        return NO_PRIORITY
+    }
     let roleName = roleOrRoleName.name != null? roleOrRoleName.name : roleOrRoleName
     if (roleName == 'Mora') {
         roleName = 'Strigoy'
@@ -739,7 +784,7 @@ export function setupRoles(nPlayers, difficulty) {
 
     // First, correctly add enough werewolves and evil roles, judging by the evilsByPlayers table
     const evilsThisGame = randomOf(...evilsByPlayers[nPlayers])
-    const nWerewolvesThisGame = evilsThisGame.filter(roleName => roleName == WEREWOLF).length
+    const nWerewolvesThisGame = evilsThisGame.filter(roleName => roleName == STRIGOY).length
     const nNonWerewolfEvilsThisGame = evilsThisGame.length - nWerewolvesThisGame
     while (evilRoles.length < nNonWerewolfEvilsThisGame) {
         evilRoles.push(getRole('Cultist'))

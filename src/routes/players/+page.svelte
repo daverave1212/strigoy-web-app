@@ -148,6 +148,13 @@
         isRoleChooserOpen = false
     }
 
+    function onClickOnSortNight() {
+        sortCurrentRolesNightly()
+    }
+    function onClickOnSortSetup() {
+        $hasSortTooltip = false
+        sortCurrentRolesSetup()
+    }
     
 
     
@@ -186,14 +193,11 @@
 </RoleChooserDrawer>
 
 <ContactListHeader>
-    <button disabled={areSortButtonsDisabled} class="btn" style="background-color: #BB8844; position: relative;" on:click={() => {
-        $hasSortTooltip = false
-        sortCurrentRolesSetup()
-    }}>
+    <button class="btn" style="background-color: #BB8844; position: relative;" on:click={onClickOnSortSetup}>
         <Tooltip isShown={shouldShowSortTooltip} top="3rem" left="calc(50% - 0.5rem)" width="40vw">Sort players for Setup for Night.</Tooltip>
         Sort for Setup
     </button>
-    <button disabled={areSortButtonsDisabled} class="btn" style="background-color: #44AACC" on:click={sortCurrentRolesNightly}>Sort for Night</button>
+    <button class="btn" style="background-color: #44AACC" on:click={onClickOnSortNight}>Sort for Night</button>
 </ContactListHeader>
 
 <div class="page" style="position: relative;">

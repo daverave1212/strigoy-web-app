@@ -56,7 +56,7 @@
 <script>
     import { createEventDispatcher } from "svelte";
     import { isSecretBOTCT } from "../stores/secret-botct-store";
-    import { NIGHTLY, OTHER_CATEGORY, REGULAR, SETUP, SPECIAL_NIGHTLY, SPECIAL_SETUP, WEREWOLVES } from "../lib/Database";
+    import { EVIL_COLOR, NIGHTLY, OTHER_CATEGORY, REGULAR, SETUP, SPECIAL_NIGHTLY, SPECIAL_SETUP, WEREWOLVES } from "../lib/Database";
 
     const categoryToRibbon = {
         [REGULAR]: null,
@@ -73,7 +73,6 @@
 
     let {
         name,
-        isValid,
         team,
         isBig = false,
         src,
@@ -84,25 +83,28 @@
     
 
     $: imagePath = src != null? src : `images/role-thumbnails/${name}.webp`
-    $: {
-        console.log({imagePath})
-    }
-    $: ribbon = category != null && categoryToRibbon[category] != null?
-        categoryToRibbon[category] :
+    $: ribbon =
+        (category != null && categoryToRibbon[category] != null)? categoryToRibbon[category] :
+        (ribbonText != null && ribbonColor != null)? { text: ribbonText, color: ribbonColor } :
         null
+
+    $: {
+        if (role.name == 'Little Villain') {
+            console.log(`Changing Little Villain at RoundCardPortrait.svelte. role.isValid: ${role.isValid}`)
+        }
+    }
 </script>
 
 <div class="image-wrapper {isBig? 'big': ''}" on:click={(evt) => dispatch('click', evt)}>
     {#if isBig != true}
         {#if team == WEREWOLVES}
-            <div class="ribbon evil" style="background-color: rgb(194, 5, 30)">EVIL</div>
+            <div class="ribbon evil" style={`background-color: ${EVIL_COLOR}`}>EVIL</div>
         {/if}
         {#if ribbon != null}
-            <!-- <div class="ribbon">{ribbonText}</div> -->
             <div class="ribbon" style="background-color: {ribbon.color}">
                 { ribbonText != null ? ribbonText : ribbon.text}
             </div>
         {/if}
     {/if}
-    <img src={imagePath} class="{isValid == false? 'grayscale': ''}"/>
+    <img src={imagePath} class="{role.isValid == false? 'grayscale': ''}"/>
 </div>

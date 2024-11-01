@@ -43,10 +43,9 @@ export function test_addPlayers(nPlayers) {
 }
 
 export function sortCurrentRolesSetup() {
-    const getRolePriority = get(isSecretBOTCT) == true? getBOTCTSetupRolePriority: getSetupRolePriority
-    console.log({getRolePriority})
+    const getRolePriority = getSetupRolePriority
     const addedPlayersSorted = get(addedPlayers)
-        .sort((a,b) => getRolePriority(a) - getRolePriority(b))
+        .sort((a,b) => getRolePriority(a.role) - getRolePriority(b.role))
         .map(player => ({...player, hasSpaceUnderneath: false}))
     const firstPlayerWithNoPriorityI = addedPlayersSorted.findIndex(player => getRolePriority(player.role) == NO_PRIORITY) - 1
     if (firstPlayerWithNoPriorityI >= 0) {
@@ -56,12 +55,18 @@ export function sortCurrentRolesSetup() {
 }
 
 export function sortCurrentRolesNightly() {
-    const getRolePriority = get(isSecretBOTCT) == true? getBOTCTNightlyRolePriority: getSetupRolePriority
-    console.log({getRolePriority})
+    const getRolePriority = getNightlyRolePriority
+    console.log(get(addedPlayers))
     const addedPlayersSorted = get(addedPlayers)
-        .sort((a,b) => getRolePriority(a) - getRolePriority(b))
+        .sort((a,b) => getRolePriority(a.role) - getRolePriority(b.role))
         .map(player => ({...player, hasSpaceUnderneath: false}))
-    const firstPlayerWithNoPriorityI = addedPlayersSorted.findIndex(player => getRolePriority(player.role) == NO_PRIORITY) - 1
+    console.log({addedPlayersSorted})
+    const firstPlayerWithNoPriorityI = addedPlayersSorted.findIndex(player => {
+        const priority = getRolePriority(player.role)
+        console.log(`Role ${player.role} priority: ${priority}`)
+        return priority == NO_PRIORITY
+    }) - 1
+    console.log({firstPlayerWithNoPriorityI})
     if (firstPlayerWithNoPriorityI >= 0) {
         addedPlayersSorted[firstPlayerWithNoPriorityI].hasSpaceUnderneath = true
     }

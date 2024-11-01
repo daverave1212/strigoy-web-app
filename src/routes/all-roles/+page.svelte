@@ -16,6 +16,7 @@
     import { getMods } from "../../lib/ModsDatabase";
 
     let currentInspectorObject = null
+    let filterValue = ''
 
     function onClickOnRole(obj) {
         currentInspectorObject = obj
@@ -35,17 +36,19 @@
     <p class="margin-top-2">Here you can find all roles and mods for the game.</p>
     <p>Green SETUP ribbons indicate roles that wake up on game setup, while purple NIGHT ribbons indicate roles that wake up at night. A 🔇 icon indicates there's something special about that role, which the narrator should pay close attention to.</p>
 
+    <input class="search-input" bind:value={filterValue} placeholder="Filter..."/>
+
     <h2 class="center-text margin-top-2">Beginner Roles</h2>
-    <RoleListWithRoles roles={getSortedRolesForDifficulty(BEGINNER)} on:role-click={evt => onClickOnRole(evt.detail.role)}/>
+    <RoleListWithRoles filter={filterValue} roles={getSortedRolesForDifficulty(BEGINNER)} on:role-click={evt => onClickOnRole(evt.detail.role)}/>
 
     <h2 class="center-text margin-top-4">Intermediate Roles</h2>
-    <RoleListWithRoles roles={getSortedRolesForDifficulty(INTERMEDIATE)} on:role-click={evt => onClickOnRole(evt.detail.role)}/>
+    <RoleListWithRoles filter={filterValue} roles={getSortedRolesForDifficulty(INTERMEDIATE)} on:role-click={evt => onClickOnRole(evt.detail.role)}/>
 
     <h2 class="center-text margin-top-4">Advanced Roles</h2>
-    <RoleListWithRoles roles={getSortedRolesForDifficulty(ADVANCED)} on:role-click={evt => onClickOnRole(evt.detail.role)}/>
+    <RoleListWithRoles filter={filterValue} roles={getSortedRolesForDifficulty(ADVANCED)} on:role-click={evt => onClickOnRole(evt.detail.role)}/>
 
     <h2 class="center-text margin-top-4">Complete Roles</h2>
-    <RoleListWithRoles roles={getSortedRolesForDifficulty(COMPLETE)} on:role-click={evt => onClickOnRole(evt.detail.role)}/>
+    <RoleListWithRoles filter={filterValue} roles={getSortedRolesForDifficulty(COMPLETE)} on:role-click={evt => onClickOnRole(evt.detail.role)}/>
 
     <h2 class="center-text margin-top-4">Mods</h2>
     <RoleListWithRoles roles={getMods()} on:role-click={evt => onClickOnRole(evt.detail.role)}/>
