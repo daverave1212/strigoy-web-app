@@ -1,41 +1,43 @@
 
 <div class="contact shadowed rounded {state.hasSpaceUnderneath? 'has-space-underneath': ''}">
-    <div class="header {state.isDead? 'dead': ''}">
-        <div class="picture-wrapper" on:click={onPortraitClick}>
-            <!-- svelte-ignore a11y-missing-attribute -->
-            <img
-                class="center"
-                src={state.src == null? 'images/user.png' : state.src}
-            />
-        </div>
-        <div class="right-wrapper">
+    {#if state != null}
+        <div class="header {state.isDead? 'dead': ''}">
+            <div class="picture-wrapper" on:click={onPortraitClick}>
+                <!-- svelte-ignore a11y-missing-attribute -->
+                <img
+                    class="center"
+                    src={state.src == null? 'images/user.png' : state.src}
+                />
+            </div>
+            <div class="right-wrapper">
 
-            <div class="half upper-half" on:click={onNameClick}>
-                {#if state.role == null}
-                    <b>Click to set role!</b>
-                {:else}
-                    <b>{state.name == null || state.name.length == 0? 'Unknown' : state.name}</b>
+                <div class="half upper-half" on:click={onNameClick}>
+                    {#if state.role == null}
+                        <b>Click to set role!</b>
+                    {:else}
+                        <b>{state.name == null || state.name.length == 0? 'Unknown' : state.name}</b>
+                    {/if}
+                </div>
+
+                <div class="half lower-half">
+                    <span class="subtitle">{state.subtitle}</span>
+                </div>
+
+                {#if state.statusEffects != null}
+                    <div class="badges">
+                        {#each state.statusEffects as status}
+                            <img src="images/status/{status}.png"/>
+                        {/each}
+                    </div>
                 {/if}
             </div>
-
-            <div class="half lower-half">
-                <span class="subtitle">{state.subtitle}</span>
+        </div>
+        <div class="{SUBCONTENT_CLASS}">
+            <div class="subcontent-content">
+                <slot></slot>
             </div>
-
-            {#if state.statusEffects != null}
-                <div class="badges">
-                    {#each state.statusEffects as status}
-                        <img src="images/status/{status}.png"/>
-                    {/each}
-                </div>
-            {/if}
         </div>
-    </div>
-    <div class="{SUBCONTENT_CLASS}">
-        <div class="subcontent-content">
-            <slot></slot>
-        </div>
-    </div>
+    {/if}
 </div>
 
 

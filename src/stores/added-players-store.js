@@ -1,10 +1,23 @@
 import { get, writable } from 'svelte/store'
 import { getLocalStorageObject, hasLocalStorageObject, localStorageWritable, setLocalStorageObject } from '../lib/svelteUtils'
-import { NO_PRIORITY, getNightlyRolePriority, getSetupRolePriority } from '../lib/Database'
+import { NO_PRIORITY, getNightlyRolePriority, getRole, getRoles, getSetupRolePriority } from '../lib/Database'
 import { isSecretBOTCT } from './secret-botct-store'
 import { getBOTCTNightlyRolePriority, getBOTCTSetupRolePriority } from '../lib/BOTCTDatabase'
 
 export const addedPlayers = localStorageWritable('addedPlayers', [])
+
+export function getAddedPlayerRoleDifficulties() {
+    const rolesInGame = get(addedPlayers)
+        .map(player => player.role != null? getRole(player.role): null)
+        .filter(role => role != null)
+    let foundDifficulties = []
+    for (const role of rolesInGame) {
+        if (foundDifficulties.includes(role.difficulty) == false) {
+            foundDifficulties.push(role.difficulty)
+        }
+    }
+    return foundDifficulties
+}
 
 export function addPlayer(extraProps) {
     let newContact = {
@@ -22,6 +35,33 @@ export function addPlayer(extraProps) {
         newContact = {...newContact, ...extraProps}
     }
     addedPlayers.set([...get(addedPlayers), newContact])
+    if (newContact == null) {
+        console.log(extraProps)
+        console.error('ERROR: Null newContact!')
+        console.log(new Error())
+    }
+    return newContact
+}
+export function addPlayerAdded(extraProps, name) {
+    return addPlayer({
+        subtitle: name,
+        isEditMode: false,
+        ...extraProps
+    })
+}
+export function addPlayerTemporary(roleName) {
+    return addPlayer({
+        role: roleName,
+        name: roleName,
+        subtitle: '--',
+        src: `images/roles/${roleName}.png`,
+    })
+}
+export function isPlayerTemporary(player) {
+    return player.subtitle == '--'
+}
+export function removePlaceholderRoles() {
+    addedPlayers.set(get(addedPlayers).filter(player => isPlayerTemporary(player) == false))
 }
 
 export function setPlayerStateI(i, newState) {

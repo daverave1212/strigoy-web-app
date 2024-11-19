@@ -29,6 +29,11 @@ export function localStorageWritable(name, defaultValue) {
     }
     const theWritable = writable(hasLocalStorageObject(name) ?  getLocalStorageObject(name) : defaultValue)
     theWritable.subscribe(newWritable => {
+        if (name == 'addedPlayers') {
+            console.log(`Setting localStorage item "${name}" to value:`)
+            console.log(newWritable)
+            console.log(new Error())
+        }
         setLocalStorageObject(name, newWritable)
     })
 

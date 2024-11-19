@@ -2,13 +2,19 @@
     :root {
         --role-chooser-image-size: 20vw;
         --role-chooser-image-size-big: 20vh;
+        --badge-size: 4vw;
     }
     .image-wrapper {
         width: var(--role-chooser-image-size);
         height: var(--role-chooser-image-size);
-        overflow: hidden;
-        border-radius: 50%;
         position: relative;
+    }
+    .image-wrapper .content {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        overflow: hidden;
+        position: inherit;
     }
     .image-wrapper.big {
         width: var(--role-chooser-image-size-big);
@@ -51,12 +57,33 @@
         left: calc(-0.25 * var(--role-chooser-image-size));
         transform: rotate(-25deg);
     }
+
+    .badge {
+        position: absolute;
+        width: var(--badge-size);
+        height: var(--badge-size);
+        border-radius: 50%;
+
+        color: white;
+        background-color: rgb(46, 46, 46);
+        transform: rotate(15deg);
+
+        text-align: center;
+        font-family: SingleDay;
+
+        font-size: 0.85rem;
+        height: 1.25rem;
+        line-height: 1.25rem;
+
+        top: calc(0.15 * var(--role-chooser-image-size));
+        right: calc(-0.05 * var(--role-chooser-image-size));
+    }
 </style>
 
 <script>
     import { createEventDispatcher } from "svelte";
     import { isSecretBOTCT } from "../stores/secret-botct-store";
-    import { EVIL_COLOR, NIGHTLY, OTHER_CATEGORY, REGULAR, SETUP, SPECIAL_NIGHTLY, SPECIAL_SETUP, WEREWOLVES } from "../lib/Database";
+    import { EVIL_COLOR, MORNING_COLOR, NIGHTLY, NIGHTLY_COLOR, OTHER_CATEGORY, REGULAR, SETUP, SETUP_COLOR, SPECIAL_COLOR, SPECIAL_NIGHTLY, SPECIAL_SETUP, WEREWOLVES } from "../lib/Database";
 
     const categoryToRibbon = {
         [REGULAR]: null,
@@ -84,9 +111,29 @@
 
     $: imagePath = src != null? src : `images/role-thumbnails/${name}.webp`
     $: ribbon =
-        (category != null && categoryToRibbon[category] != null)? categoryToRibbon[category] :
         (ribbonText != null && ribbonColor != null)? { text: ribbonText, color: ribbonColor } :
+        (category != null && categoryToRibbon[category] != null)? categoryToRibbon[category] :
         null
+    $: badgeText =
+        role.worth <= -3?
+            null:
+        role.worth < 0.75?
+            '-':
+        role.worth >= 0.75 && role.worth <= 1?  // -1 because role worth baseline is 1
+            '~':
+        role.worth > 1 && role.worth <= 1.5?
+            '+':
+        role.worth > 1.5?
+            '++':
+        '?'
+    const badgeToColorMapping = {
+        '-': EVIL_COLOR,
+        '~': SPECIAL_COLOR,
+        '+': SETUP_COLOR,
+        '++': NIGHTLY_COLOR,
+        '?': '#CC55AA'
+    }
+        
 
     $: {
         if (role.name == 'Little Villain') {
@@ -96,15 +143,20 @@
 </script>
 
 <div class="image-wrapper {isBig? 'big': ''}" on:click={(evt) => dispatch('click', evt)}>
-    {#if isBig != true}
-        {#if team == WEREWOLVES}
-            <div class="ribbon evil" style={`background-color: ${EVIL_COLOR}`}>EVIL</div>
+    <div class="content">
+        {#if isBig != true}
+            {#if team == WEREWOLVES}
+                <div class="ribbon evil" style={`background-color: ${EVIL_COLOR}`}>EVIL</div>
+            {/if}
+            {#if ribbon != null}
+                <div class="ribbon" style="background-color: {ribbon.color}">
+                    { ribbonText != null ? ribbonText : ribbon.text}
+                </div>
+            {/if}
         {/if}
-        {#if ribbon != null}
-            <div class="ribbon" style="background-color: {ribbon.color}">
-                { ribbonText != null ? ribbonText : ribbon.text}
-            </div>
-        {/if}
+        <img src={imagePath} class="{role.isValid == false? 'grayscale': ''}"/>
+    </div>
+    {#if badgeText != null && badgeToColorMapping[badgeText] != null}
+        <div class="badge" style="background-color: {badgeToColorMapping[badgeText]}">{badgeText}</div>
     {/if}
-    <img src={imagePath} class="{role.isValid == false? 'grayscale': ''}"/>
 </div>

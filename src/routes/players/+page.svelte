@@ -19,17 +19,25 @@
     import SideMenu from "../../components-standalone/SideMenu.svelte";
     import DrawerPage from "../../components-standalone/DrawerPage.svelte";
     import RoleChooserDrawer from "../../components/RoleChooserDrawer.svelte";
-    import { BEGINNER, getRole, getRoles, getRolesByDifficulty, NIGHTLY, SETUP, SPECIAL_NIGHTLY, SPECIAL_SETUP } from "../../lib/Database";
+    import { ADVANCED, BEGINNER, COMPLETE, difficultyNames, getAllRoleDifficulties, getRole, getRoles, getRolesByDifficulty, INTERMEDIATE, NIGHTLY, SETUP, SPECIAL_NIGHTLY, SPECIAL_SETUP } from "../../lib/Database";
     import Modal from "../../components-standalone/Modal.svelte";
     import { isNumber, randomInt } from "../../lib/utils";
     import Tooltip from "../../components-standalone/Tooltip.svelte";
-    import { addedPlayers, addPlayer, removePlayer, setPlayerStateI } from "../../stores/added-players-store";
+    import { addedPlayers, addPlayer, addPlayerAdded, addPlayerTemporary, getAddedPlayerRoleDifficulties, removePlaceholderRoles, removePlayer, setPlayerStateI } from "../../stores/added-players-store";
     import { sortCurrentRolesNightly, sortCurrentRolesSetup } from "../../stores/added-players-store";
     import { hasExpandTooltip, hasInspectTooltip, hasSetRoleTooltip, hasSortTooltip } from '../../stores/tutorial-store';
     import ModContact from '../../components/Contact/ModContact.svelte';
     import { currentlySelectedMod } from '../../stores/mods-store.js';
     import { isSecretBOTCT } from '../../stores/secret-botct-store.js';
+    import RoleChooserManyDrawer from '../../components/RoleChooserManyDrawer.svelte';
+
+    import '../../components/add-contact-button.css'
+    import SimpleContact from '../../components/Contact/SimpleContact.svelte';
     
+    $:{
+        console.log('added:')
+        console.log($addedPlayers)
+    }
 
     $: shouldShowRoleTooltip = 
         $hasSetRoleTooltip == false &&
@@ -76,6 +84,7 @@
     }
 
     // Role chooser
+    let allRoles = getRoles()
     let isRoleChooserOpen = false
     let currentlySelectedRoleI
 
@@ -89,7 +98,8 @@
         console.log($hasSetRoleTooltip)
     }
     function changeRole(playerI, newRoleI) {
-        const newRole = $rolesDistribution[newRoleI]
+        console.log(`Player ${playerI} clicked on role ${newRoleI}`)
+        const newRole = allRoles[newRoleI]
         isRoleChooserOpen = false
         const playerState = $addedPlayers[playerI]
         const previousRole = playerState.role
@@ -106,40 +116,6 @@
             validateUnavailbleRole(previousRole)
         }
     }
-
-
-    function isRoleAvailable(roleName) {
-        const rolesWithThisName = $rolesDistribution.filter(role => role.name == roleName)
-        const validRoles = rolesWithThisName.filter(role => role.isValid != false)
-        return validRoles.length > 0
-    }
-    function invalidateAvailableRole(roleIOrRoleName) {
-        if (isNumber(roleIOrRoleName)) {
-            const i = roleIOrRoleName
-            $rolesDistribution[i].isValid = false
-            $rolesDistribution = $rolesDistribution
-        } else {
-            const roleName = roleIOrRoleName
-            const i = $rolesDistribution.findIndex(role => role.name == roleName)
-            if (i == -1) {
-                console.log({roleIOrRoleName})
-                throw `Could not find role to invalidate.`
-            }
-            $rolesDistribution[i].isValid = false
-            $rolesDistribution = $rolesDistribution
-        }
-    }
-    function validateUnavailbleRole(roleName) {
-        const thisRole = $rolesDistribution.find(role => role.name == roleName)
-        if (thisRole == null) {
-            console.log("ERROR: Role to validate " + roleName + " not found!")
-            return
-        }
-        thisRole.isValid = true
-        $rolesDistribution = $rolesDistribution
-    }
-
-
 
 
     function killPlayer(i) {
@@ -170,40 +146,37 @@
         isRoleChooserOpen = false
     }
 
-
-
-    function removePlaceholderRoles() {
-        $addedPlayers = $addedPlayers.filter(player => player.subtitle != '--')
-    }
-    window.removePlaceholderRoles = removePlaceholderRoles
-    function onClickOnSortNight() {
+    function addMissingRequiredRoles(filterExtraRequiredRolesFunc) {
         removePlaceholderRoles()
         const isAnyPlayerThisRoleName = roleName => $addedPlayers.find(player => player.role == roleName) != null
-        const selectedRolesNotSet = $selectedRoles.filter(role => isAnyPlayerThisRoleName(role.name) == false)
-        const extraRequiredRoles = selectedRolesNotSet.filter(role => role.category == NIGHTLY || role.category == SPECIAL_NIGHTLY)
-        console.log({extraRequiredRoles})
+
+        const difficultiesInGame = getAddedPlayerRoleDifficulties()
+        const allPossibleRoles = getRoles().filter(role => difficultiesInGame.includes(role.difficulty))
+
+        const selectedRolesNotSet = allPossibleRoles.filter(role => isAnyPlayerThisRoleName(role.name) == false)
+        const extraRequiredRoles = selectedRolesNotSet.filter(filterExtraRequiredRolesFunc)
         for (const role of extraRequiredRoles) {
-            addPlayer({
-                role: role.name,
-                name: role.name,
-                subtitle: '--',
-                src: `images/roles/${role.name}.png`,
-            })
+            addPlayerTemporary(role.name)
         }
+    }
 
-        sortCurrentRolesNightly()        
-
-        console.log($addedPlayers)
+    function onClickOnSortNight() {
+        const filterExtraRequiredRolesFunc = role => role => role.category == NIGHTLY || role.category == SPECIAL_NIGHTLY
+        addMissingRequiredRoles(filterExtraRequiredRolesFunc)
+        sortCurrentRolesNightly()
     }
     function onClickOnSortSetup() {
         $hasSortTooltip = false
-
-        
-        
+        const filterExtraRequiredRolesFunc = role => role => role.category == SETUP || role.category == SPECIAL_SETUP
+        addMissingRequiredRoles(filterExtraRequiredRolesFunc)
         sortCurrentRolesSetup()
     }
     function onClickOnCleanup() {
         removePlaceholderRoles()
+    }
+    function onClickOnAdd() {
+        const name = prompt('Player name')
+        const player = addPlayerAdded({}, name)
     }
     function onRemovePlayer(i) {
         const player = $addedPlayers[i]
@@ -213,6 +186,16 @@
             }
         }
         removePlayer(i)
+    }
+
+    function getSectionFilters() {
+        const difficulties = getAllRoleDifficulties()
+        const filterFunctions = []
+        for (const difficulty of difficulties) {
+            const filter = i => allRoles[i].difficulty == difficulty
+            filterFunctions.push(filter)
+        }
+        return filterFunctions
     }
 
 </script>
@@ -226,24 +209,17 @@
     }}
 />
 
-<RoleChooserDrawer
+<RoleChooserManyDrawer
     isOpen={isRoleChooserOpen}
-    roleStates={[...$rolesDistribution]}
+    roles={getRoles()}
+    
+    sectionFilters={getSectionFilters()}
+    sectionTitles={getAllRoleDifficulties().map(difficulty => difficultyNames[difficulty])}
+    sectionTexts={getAllRoleDifficulties().map(difficulty => '')}
+
     onClickOnRole={clickedRoleI => changeRole(currentlySelectedRoleI, clickedRoleI)}
     onClickOutside={() => closeRoleChooserDrawerWithoutSideEffects()}
->
-    <div slot="top" class="center-content center-text padded">
-        <h2>Roles in this game</h2>
-        <br>
-        <p>These are all the roles automatically selected to be in this game.</p>
-    </div>
-
-    <div slot="middle" class="center-content center-text padded">
-        <h2>Roles not in game</h2>
-        <br>
-        <p>These roles are NOT in the game (Strigoy can bluff as them, Philosopher gets one of them, etc).</p>
-    </div>
-</RoleChooserDrawer>
+></RoleChooserManyDrawer>
 
 <ContactListHeader>
     <button class="btn" style="background-color: #AA88BB; position: relative;" on:click={onClickOnCleanup}>
@@ -265,7 +241,6 @@
     <ContactList>
 
         {#each $addedPlayers.keys() as i (`${$addedPlayers[i].name}${i}`)}
-
 
             <Contact
                 state={$addedPlayers[i]} setState={(newState) => setPlayerStateI(i, newState)}
@@ -291,12 +266,13 @@
             </Contact>
 
 
+
         {/each}
 
+        <button class="add-contact-button shadowed rounded" on:click={onClickOnAdd} style="position: relative;">
+            +
+        </button>
 
-        <ModContact state={$currentlySelectedMod} on:show-portrait={onModPortraitClick}>
-            Some content
-        </ModContact>
 
         <h3 class="center-text margin-top-1">To restart the game, open the menu and hit Play. All players are saved.</h3>
     

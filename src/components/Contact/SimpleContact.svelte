@@ -2,30 +2,32 @@
 
 
 <div class="contact shadowed rounded">
-    <div class="header">
-        <div class="picture-wrapper" on:click={toggleContent}>
-            <!-- svelte-ignore a11y-missing-attribute -->
-            <img
-                src={state.src == null? 'images/user.png' : state.src}
-                class="{state.isPortraitCentered == true? 'center': ''}"
-            />
+    {#if state != null}
+        <div class="header">
+            <div class="picture-wrapper" on:click={toggleContent}>
+                <!-- svelte-ignore a11y-missing-attribute -->
+                <img
+                    src={state.src == null? 'images/user.png' : state.src}
+                    class="{state.isPortraitCentered == true? 'center': ''}"
+                />
+            </div>
+            <div class="right-wrapper">
+                {#if state.isEditMode}
+                    <div class="edit-div flex-content">
+                        <button class="btn blue" on:click={onInputDone}>Done</button>
+                        <input class="subtitle-input" on:change={onInputDone} bind:value={_subtitleInputValue} bind:this={domInput}>
+                    </div>
+                {:else}
+                    <span class="subtitle" on:click={toggleContent}>{state.subtitle}</span>
+                {/if}
+            </div>
         </div>
-        <div class="right-wrapper">
-            {#if state.isEditMode}
-                <div class="edit-div flex-content">
-                    <button class="btn blue" on:click={onInputDone}>Done</button>
-                    <input class="subtitle-input" on:change={onInputDone} bind:value={_subtitleInputValue} bind:this={domInput}>
-                </div>
-            {:else}
-                <span class="subtitle" on:click={toggleContent}>{state.subtitle}</span>
-            {/if}
+        <div class="{SUBCONTENT_CLASS}">
+            <div class="subcontent-content">
+                <slot></slot>
+            </div>
         </div>
-    </div>
-    <div class="{SUBCONTENT_CLASS}">
-        <div class="subcontent-content">
-            <slot></slot>
-        </div>
-    </div>
+    {/if}
 </div>
 
 
@@ -34,11 +36,14 @@
     import { createEventDispatcher, onMount } from 'svelte'
     import { page, navigating } from '$app/stores'
     import './Contact.css'
-
-    const dispatch = createEventDispatcher()
+    import { addedPlayers } from '../../stores/added-players-store';
 
     export let state
     export let setState
+
+    $:{
+        console.log({state})
+    }
 
     let _subtitleInputValue
     let domInput
@@ -56,10 +61,10 @@
     $: {
         if (state.isEditMode) {
             setTimeout(() => {
-            if (domInput != null) {
-                domInput.focus()
-            }
-        }, 100)
+                if (domInput != null) {
+                    domInput.focus()
+                }
+            }, 100)
         }
     }
 

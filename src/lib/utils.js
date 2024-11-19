@@ -93,6 +93,17 @@ function loadCtxSettings(ctx) {
         ctx[key] = ctxSettings[key]
     }
 }
+export function groupArrayBy(arr, splitBySelector) {
+    const objects = {}
+    for (const elem of arr) {
+        const elemValue = splitBySelector(elem)
+        if (objects[elemValue] == null) {
+            objects[elemValue] = []
+        }
+        objects[elemValue].push(elem)
+    }
+    return objects
+}
 
 export function drawImageOnCanvasAsync(canvas, path, x, y, width, height) {
     const ctx = canvas.getContext('2d')
