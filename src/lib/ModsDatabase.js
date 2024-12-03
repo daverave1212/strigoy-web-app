@@ -7,7 +7,7 @@ export const getMods = () => [
     },
     {
         name: 'Thick Mist',
-        effect: "Pick another Condition and keep it secret. The players don't know what it is, if possible (or until time comes to reveal it).",
+        effect: "Pick another Mod and keep it secret. The players don't know what it is, if possible (or until time comes to reveal it).",
         isMod: true
     },
     {
@@ -56,6 +56,12 @@ export const getMods = () => [
         isMod: true
     },
     {
+        name: "The Gun",
+        effect: "Use the gun to choose and kill one person. The gun then goes away.",
+        notes: "The gun starts at a random player. When killed, the gun passes to another random player.",
+        isMod: true
+    },
+    {
         name: "Winter Is Coming",
         effect: "Every day lasts exactly 4 minutes - 3 minutes for talking, and exactly 1 minute to resolve voting.",
         notes: "If players didn't have time to vote, tough luck! It's already night!",
@@ -68,12 +74,12 @@ export const getMods = () => [
     },
     {
         name: "Stolen Election",
-        effect: "Each dead player can vote once after they died (except the Mayor).",
+        effect: "Each dead player can vote the (next) day after they died (except the Mayor).",
         isMod: true
     },
-    {
-        name: "Evil Whispers",
-        effect: "All Evils know who other Evils are on game start.",
-        isMod: true
-    }
+    // {
+    //     name: "Evil Whispers",
+    //     effect: "All Evils know who other Evils are on game start.",
+    //     isMod: true
+    // }
 ]

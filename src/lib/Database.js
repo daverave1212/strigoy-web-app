@@ -101,7 +101,6 @@ export const evilsByPlayers = {
     7:  [[STRIGOY, NEGATIVE]],
 
     8:  [[STRIGOY, STRIGOY]],
-
     9:  [[STRIGOY, STRIGOY]],
     10: [[STRIGOY, STRIGOY, NEGATIVE]],
     11: [[STRIGOY, STRIGOY, NEGATIVE]],
@@ -110,10 +109,12 @@ export const evilsByPlayers = {
     13: [[STRIGOY, STRIGOY, STRIGOY, NEGATIVE]],
     14: [[STRIGOY, STRIGOY, STRIGOY, NEGATIVE]],
     15: [[STRIGOY, STRIGOY, STRIGOY, NEGATIVE, NEGATIVE]],
+
     16: [[STRIGOY, STRIGOY, STRIGOY, STRIGOY]],
     17: [[STRIGOY, STRIGOY, STRIGOY, STRIGOY, NEGATIVE]],
     18: [[STRIGOY, STRIGOY, STRIGOY, STRIGOY, NEGATIVE]],
     19: [[STRIGOY, STRIGOY, STRIGOY, STRIGOY, NEGATIVE, NEGATIVE]],
+
     20: [[STRIGOY, STRIGOY, STRIGOY, STRIGOY, STRIGOY]],
 }
 
@@ -393,7 +394,6 @@ export const getRoles = () => {
             narratorNotes: 'Alternatively, instead of rolling a die, look at the time. If the minutes are divisible by 6, the Schizophrenic dies.',
             type: 'Special Nightly'
         },
-    
         {
             name: "Butler",
             nPlayers: 0,
@@ -538,9 +538,11 @@ export const getRoles = () => {
             worth: 1,
             category: REGULAR,
             difficulty: FOR_MODS,
-            effect: 'If you win and you are alive, all alive Townsfolk get 50% more points (if playing with points).',
-            notes: 'Rounded down.',
-            narratorNotes: 'Only add this role to the game if you play with Points.'
+            effect: 'If you are alive, when one of your neighbors is hanged, gain 1 point.',
+            notes: "Only immediate neighbors (max +2 points per game).",
+            narratorNotes: 'Only add this role to the game if you play with Points.',
+            ribbonColor: MORNING_COLOR,
+            ribbonText: 'REMINDER'
         },
         {
             name: "Fool",
@@ -592,14 +594,23 @@ export const getRoles = () => {
             effect: "When you die, reveal your card and pick a player. That player also dies."
         },
         {
-            name: "Graveyard Keeper",
+            name: "Exorcist",
             nPlayers: 0,
             team: TOWNSFOLK,
             worth: 0.75,
             category: REGULAR,
-            difficulty: BROKEN,
-            effect: "When you die, publicly choose another player. If they are not a Strigoy, they are revived.",
-            notes: 'You do NOT reveal your card.'
+            difficulty: FOR_MODS,
+            effect: "When you die, reveal your card. Choose 1 of 3 mods to add to the game.",
+            notes: "The narrator picks 3 possible mods, and you choose one of them. You're still dead, sorry!"
+        },
+        {
+            name: "Gravedigger",
+            team: TOWNSFOLK,
+            worth: 1.25,
+            category: REGULAR,
+            difficulty: ADVANCED,
+            effect: "When you die, reveal your card. You remain in the game as a ghost. After the next time you vote, you are out!",
+            notes: "You are good. You can't be killed as a ghost. You still close your eyes at night."
         },
         {
             name: "Skinny Kid",
@@ -720,6 +731,7 @@ export function sortRolesNormal(roles) {
         SPECIAL_SETUP,
         SETUP,
         'Bell Ringer',
+        'Archaeologist',
         NIGHTLY,
         SPECIAL_NIGHTLY,
         REGULAR,
@@ -834,13 +846,13 @@ const nightlyOrder = [
     'Assassin',
     'Bitten',
     'Bell Ringer',
+    'Archaeologist',
     'Town Guard',
     'Yaga (Town Guard)',
     'Seer',
     'Schizophrenic',
     'Priest',
     'Yaga (Priest)',
-    'Bell Ringer'
 ]
 export function getNightlyRolePriority(roleOrRoleName) {
     if (roleOrRoleName == null) {
@@ -995,10 +1007,15 @@ export function setupRoles(nPlayers, difficulty) {
 - Skinny Kid
 - Bell Ringer
 - Thief
+- Archaeologist
 - Saint ("if you are hanged" instead of "if you die at day")
 - Silencer ("Then you die...")
 - Cultist (has notes)
 - Mora (has notes)
 - Lover (simplified)
+- (NEW) Exorcist
+- (NEW) Gravedigger
+
+- (NEW) Gun 
 
 */
