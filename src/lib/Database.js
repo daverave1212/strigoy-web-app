@@ -216,7 +216,8 @@ export const getRoles = () => {
             worth: -0.25,
             category: EVIL_SETUP,
             difficulty: INTERMEDIATE,
-            effect: "You are Evil, but you don't know who other Evils are.",
+            effect: `You are <b color="red">Evil,</b> but <br/> you <span font="64px Aladin">don't know</span> who <img src="https://e7.pngegg.com/pngimages/881/437/png-clipart-emoji-emoji-tongue-icon-smiley-miscellaneous-heart-thumbnail.png"/> other <span font="64px Aladin">Evils</span> are.`,
+            // effect: "evil .",
             notes: 'At game start, the narrator will point the Evils to you. You NEVER open your eyes.',
             ribbonColor: EVIL_COLOR,
             ribbonText: 'NEGATIVE'

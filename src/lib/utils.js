@@ -105,12 +105,21 @@ export function groupArrayBy(arr, splitBySelector) {
     return objects
 }
 
-export function drawImageOnCanvasAsync(canvas, path, x, y, width, height) {
+export function drawImageOnCanvasAsync(canvas, pathOrImage, x, y, width, height, alpha) {
     const ctx = canvas.getContext('2d')
-    const image = new Image()
-    image.src = path
+    let image
+    if (typeof pathOrImage === 'string' || pathOrImage instanceof String) {
+        image = new Image()
+        image.src = pathOrImage
+    } else {
+        image = pathOrImage
+    }
     return new Promise((res, rej) => {
         image.onload = function() {
+            saveCtxSettings(ctx)
+            if (alpha != null) {
+                ctx.globalAlpha = alpha
+            }
             if (width != null && height == null) {
                 ctx.drawImage(image, x, y, width)
             } else if (width != null && height != null) {
@@ -118,6 +127,7 @@ export function drawImageOnCanvasAsync(canvas, path, x, y, width, height) {
             } else {
                 ctx.drawImage(image, x, y)
             }
+            loadCtxSettings(ctx)
             res()
         }
     })
@@ -131,24 +141,24 @@ export function clearRect(canvas, x, y, width, height) {
     const ctx = canvas.getContext('2d')
     ctx.clearRect(x, y, width, height)
 }
-export function drawText({canvas, font, x, y, text, textAlign='center', color}) {
+export function drawText({canvas, font, x, y, text, textAlign='left', color}) {
     const ctx = canvas.getContext('2d')
-    saveCtxSettings(ctx)
+    ctx.save()
+    // saveCtxSettings(ctx)
     if (color != null) {
         ctx.fillStyle = color
     }
     ctx.textAlign = textAlign
     ctx.font = font
     ctx.fillText(text, x, y)
-    loadCtxSettings(ctx)
+    // loadCtxSettings(ctx)
+    ctx.restore()
 }
 
 export function drawTextLines({canvas, font, x, y, width, text, lineHeight, textAlign='center', color}) {
     const ctx = canvas.getContext('2d')
     ctx.font = font
     const lines = getLines(ctx, text, width)
-    console.log(`Got lines as`)
-    console.log({lines})
     const totalHeight = lines.length * lineHeight
     const startY = y - totalHeight / 2
     for (let i = 0; i < lines.length; i++) {
@@ -157,6 +167,184 @@ export function drawTextLines({canvas, font, x, y, width, text, lineHeight, text
         drawText({canvas, font, x, y: thisY, text: textLine, textAlign, color})
     }
 }
+
+export async function drawTextWordsWithHTML({
+    canvas,
+    font,
+    x,
+    y,
+    width,
+    
+    text,
+
+    lineHeight,
+    textAlign = 'center',
+    color,
+
+    isCenteredY = true,
+    strokeColor,
+    strokeSize
+}) {
+    const ctx = canvas.getContext('2d')
+    saveCtxSettings(ctx, 'drawTextLines')
+    ctx.font = font
+
+    const openSymbol = '<'
+    const closeSymbol = '>'
+
+    const wordsWithPos = await getWordsToDrawXML({
+        ctx,
+        text,
+        maxWidth: width,
+        lineHeight,
+        openSymbol,
+        closeSymbol
+    })
+
+    console.log({wordsWithPos})
+
+    function normalizeXForTextAlign() {
+        if (textAlign == 'left') {
+            return
+        }
+
+        let textHeight = 0
+        function normalizeAlignCenterForY(y) {
+            const wordsOnLine = wordsWithPos.filter(word => word.y == y)
+            const nSpaces = wordsOnLine.length - 1
+            const spaceWidth = nSpaces * getTextWidth(font, ' ')
+            const wordsWidth = wordsOnLine.map(word => word.width).reduce((iter, e) => iter + e, 0)
+            const lineWidth = spaceWidth + wordsWidth
+            const padding = (width - lineWidth) / 2
+            for (const word of wordsOnLine) {
+                word.x = word.x - lineWidth / 2
+            }
+            textHeight += lineHeight
+        }
+
+        for (let i = 1; i < wordsWithPos.length; i++) {
+            const word = wordsWithPos[i]
+            const prevWord = wordsWithPos[i - 1]
+            if (prevWord.y != word.y) {
+                normalizeAlignCenterForY(prevWord.y)
+            }
+        }
+
+        const lastWord = wordsWithPos[wordsWithPos.length - 1]
+        normalizeAlignCenterForY(lastWord.y)
+
+        if (isCenteredY) {
+            for (const word of wordsWithPos) {
+                word.y -= textHeight / 2
+            }
+        }
+    }
+
+    normalizeXForTextAlign()
+
+    for (let i = 0; i < wordsWithPos.length; i++) {
+        const word = wordsWithPos[i]
+        const drawX = x + word.x
+        const drawY = y + word.y
+
+        const drawTextParms = {
+            canvas,
+            font,
+            x: drawX,
+            y: drawY,
+            text: word.word,
+            color,
+            strokeColor,
+            strokeSize
+        }
+
+        if (isXML(word.word)) {
+            const xml = word.word
+            
+            if (xml.tagName == 'img') {
+                const imagePath = xml.getAttribute('src')    
+                await drawImageOnCanvasAsync(canvas, imagePath, drawX, drawY - lineHeight + lineHeight / 4, word.width, lineHeight, 1)
+                continue
+            }
+            let drawParams = {
+                ...drawTextParms,
+                text: xml.innerHTML,
+                color: xml.getAttribute('color') ?? color,
+                font: xml.getAttribute('font') ?? font
+            }
+            if (xml.tagName == 'b') {
+                drawParams.font = 'bold ' + font
+            }
+            if (xml.tagName == 'i') {
+                drawParams.font = 'bold ' + italic
+            }
+            drawText(drawParams)
+            continue
+        }
+
+        drawText(drawTextParms)
+    }
+
+    loadCtxSettings(ctx, 'drawTextLines')
+    return wordsWithPos
+}
+
+function isXML(obj) {
+    return typeof(obj) == 'object'
+}
+export function xmlToJson(str) {
+    let xmlNode = new DOMParser().parseFromString(str, 'text/xml')
+    return xmlNode.children[0]
+}
+window.xmlToJson = xmlToJson
+
+function splitTextBySymbols(text, openSymbol, closeSymbol) {
+    const letters = text.split('')
+
+    let state = 'reading-text'
+    let currentTextPart = ''
+    let textParts = []
+    for (let i = 0; i < letters.length; i++) {
+        const char = letters[i]
+
+        switch (state) {
+            case 'reading-text':
+                if (char != openSymbol) {
+                    currentTextPart += char
+                }
+                if (char == openSymbol) {
+                    if (currentTextPart.length > 0) {
+                        textParts = [...textParts, currentTextPart]
+                    }
+                    currentTextPart = char
+                    state = 'reading-symbol'
+                }
+                break
+            case 'reading-symbol':
+                currentTextPart += char
+                if (char == closeSymbol) {
+                    textParts = [...textParts, currentTextPart]
+                    currentTextPart = ''
+                    state = 'reading-text'
+                }
+                break
+        }
+    }
+
+    if (currentTextPart.length > 0) {
+        textParts = [...textParts, currentTextPart]
+    }
+
+    return textParts
+}
+
+export function splitTextByXML(text) {
+    const formattedText = '<xml>' + text + '</xml>'
+    const xml = xmlToJson(formattedText)
+    const children = Array.from(xml.childNodes)
+    return children.map(node => node.nodeName == '#text' ? node.nodeValue : node)
+}
+
 
 function getLines(ctx, text, maxWidth) {
     var words = text.split(" ");
@@ -177,9 +365,89 @@ function getLines(ctx, text, maxWidth) {
     return lines;
 }
 
+async function getWordsToDrawXML({
+    ctx,
+    text,
+    maxWidth,
+    lineHeight
+}) {
+    const textParts = splitTextByXML(text)
+    console.log({textParts})
+    const words = textParts
+        .map(part => isXML(part) ? part : part.trim().split(' '))
+        .reduce((arr, elem) => Array.isArray(elem) ? [...arr, ...elem] : [...arr, elem], []) // Flatten array
+    console.log({words})
+    const imageWidth = lineHeight
+    const spaceWidth = ctx.measureText(' ').width
+
+    let y = 0
+    let x = 0
+    let wordsToDraw = [] // { x: number, y: number, word: string, width: number }
+
+    for (var i = 0; i < words.length; i++) {
+        let word = words[i]
+        
+        let wordWidth = 0
+        if (word.tagName == 'br') {
+            x = 0
+            y += lineHeight
+            continue
+        } else if (word.tagName == 'img') {
+            wordWidth = imageWidth
+        } else if (word.tagName != null && word.innerHTML) {
+            const font = word.getAttribute('font')
+            if (font != null) {
+                const backupFont = ctx.font
+                ctx.font = font
+                wordWidth = ctx.measureText(word.innerHTML).width
+                ctx.font = backupFont
+            } else {
+                wordWidth = ctx.measureText(word.innerHTML).width
+            }
+        } else {
+            wordWidth = ctx.measureText(word).width
+        }
+
+        if (x >= maxWidth) {
+            x = 0
+            y += lineHeight
+        }
+
+        wordsToDraw = [...wordsToDraw, {
+            x: x,
+            y: y,
+            word: word,
+            width: wordWidth,
+            spaceWidth
+        }]
+
+        x = x + spaceWidth + wordWidth
+    }
+
+    return wordsToDraw
+}
+
+
 export function isNumber(val) {
     return typeof val === 'number'
 }
 export function isNumberOrStringNumber(val) {
     return isNumber(val) || parseFloat(val) == val
+}
+
+export function getTextWidth(font, text) {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    ctx.font = font
+    const width = ctx.measureText(text).width
+    return width
+}
+export function getOnlyKey(obj) {
+    return Object.keys(obj)[0]
+}
+
+export async function wait(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms)
+    }, () => {})
 }
