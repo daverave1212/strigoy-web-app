@@ -27,11 +27,7 @@
  */
 declare module '$env/static/private' {
 	export const ALLUSERSPROFILE: string;
-	export const ANDROID_HOME: string;
-	export const ANDROID_SDK_ROOT: string;
 	export const APPDATA: string;
-	export const ChocolateyInstall: string;
-	export const ChocolateyLastPathUpdate: string;
 	export const COLOR: string;
 	export const CommonProgramFiles: string;
 	export const CommonProgramW6432: string;
@@ -39,7 +35,7 @@ declare module '$env/static/private' {
 	export const ComSpec: string;
 	export const DriverData: string;
 	export const EDITOR: string;
-	export const GOPATH: string;
+	export const GIT_LFS_PATH: string;
 	export const HAXEPATH: string;
 	export const HOME: string;
 	export const HOMEDRIVE: string;
@@ -51,8 +47,7 @@ declare module '$env/static/private' {
 	export const NEKO_INSTPATH: string;
 	export const NODE: string;
 	export const NODE_ENV: string;
-	export const NODE_EXE: string;
-	export const NPM_CLI_JS: string;
+	export const NODE_EXTRA_CA_CERTS: string;
 	export const npm_command: string;
 	export const npm_config_cache: string;
 	export const npm_config_engine_strict: string;
@@ -60,10 +55,11 @@ declare module '$env/static/private' {
 	export const npm_config_global_prefix: string;
 	export const npm_config_init_module: string;
 	export const npm_config_local_prefix: string;
-	export const npm_config_metrics_registry: string;
 	export const npm_config_node_gyp: string;
 	export const npm_config_noproxy: string;
+	export const npm_config_npm_version: string;
 	export const npm_config_prefix: string;
+	export const npm_config_registry: string;
 	export const npm_config_userconfig: string;
 	export const npm_config_user_agent: string;
 	export const npm_execpath: string;
@@ -73,10 +69,9 @@ declare module '$env/static/private' {
 	export const npm_package_json: string;
 	export const npm_package_name: string;
 	export const npm_package_version: string;
-	export const NPM_PREFIX_NPM_CLI_JS: string;
 	export const NUMBER_OF_PROCESSORS: string;
 	export const OneDrive: string;
-	export const OneDriveConsumer: string;
+	export const OneDriveCommercial: string;
 	export const OS: string;
 	export const Path: string;
 	export const PATHEXT: string;
@@ -90,21 +85,24 @@ declare module '$env/static/private' {
 	export const PROMPT: string;
 	export const PSModulePath: string;
 	export const PUBLIC: string;
-	export const SECRET_OPENAI_KEY: string;
 	export const SESSIONNAME: string;
+	export const SF_MESSAGING_URL: string;
 	export const SystemDrive: string;
 	export const SystemRoot: string;
 	export const TEMP: string;
 	export const TMP: string;
+	export const USERDNSDOMAIN: string;
 	export const USERDOMAIN: string;
 	export const USERDOMAIN_ROAMINGPROFILE: string;
 	export const USERNAME: string;
 	export const USERPROFILE: string;
-	export const VBOX_HWVIRTEX_IGNORE_SVM_IN_USE: string;
+	export const VSINSTALLDIR: string;
 	export const windir: string;
 	export const WSLENV: string;
 	export const WT_PROFILE_ID: string;
 	export const WT_SESSION: string;
+	export const ZES_ENABLE_SYSMAN: string;
+	export const __PSLockDownPolicy: string;
 }
 
 /**
@@ -137,11 +135,7 @@ declare module '$env/static/public' {
 declare module '$env/dynamic/private' {
 	export const env: {
 		ALLUSERSPROFILE: string;
-		ANDROID_HOME: string;
-		ANDROID_SDK_ROOT: string;
 		APPDATA: string;
-		ChocolateyInstall: string;
-		ChocolateyLastPathUpdate: string;
 		COLOR: string;
 		CommonProgramFiles: string;
 		CommonProgramW6432: string;
@@ -149,7 +143,7 @@ declare module '$env/dynamic/private' {
 		ComSpec: string;
 		DriverData: string;
 		EDITOR: string;
-		GOPATH: string;
+		GIT_LFS_PATH: string;
 		HAXEPATH: string;
 		HOME: string;
 		HOMEDRIVE: string;
@@ -161,8 +155,7 @@ declare module '$env/dynamic/private' {
 		NEKO_INSTPATH: string;
 		NODE: string;
 		NODE_ENV: string;
-		NODE_EXE: string;
-		NPM_CLI_JS: string;
+		NODE_EXTRA_CA_CERTS: string;
 		npm_command: string;
 		npm_config_cache: string;
 		npm_config_engine_strict: string;
@@ -170,10 +163,11 @@ declare module '$env/dynamic/private' {
 		npm_config_global_prefix: string;
 		npm_config_init_module: string;
 		npm_config_local_prefix: string;
-		npm_config_metrics_registry: string;
 		npm_config_node_gyp: string;
 		npm_config_noproxy: string;
+		npm_config_npm_version: string;
 		npm_config_prefix: string;
+		npm_config_registry: string;
 		npm_config_userconfig: string;
 		npm_config_user_agent: string;
 		npm_execpath: string;
@@ -183,10 +177,9 @@ declare module '$env/dynamic/private' {
 		npm_package_json: string;
 		npm_package_name: string;
 		npm_package_version: string;
-		NPM_PREFIX_NPM_CLI_JS: string;
 		NUMBER_OF_PROCESSORS: string;
 		OneDrive: string;
-		OneDriveConsumer: string;
+		OneDriveCommercial: string;
 		OS: string;
 		Path: string;
 		PATHEXT: string;
@@ -200,21 +193,24 @@ declare module '$env/dynamic/private' {
 		PROMPT: string;
 		PSModulePath: string;
 		PUBLIC: string;
-		SECRET_OPENAI_KEY: string;
 		SESSIONNAME: string;
+		SF_MESSAGING_URL: string;
 		SystemDrive: string;
 		SystemRoot: string;
 		TEMP: string;
 		TMP: string;
+		USERDNSDOMAIN: string;
 		USERDOMAIN: string;
 		USERDOMAIN_ROAMINGPROFILE: string;
 		USERNAME: string;
 		USERPROFILE: string;
-		VBOX_HWVIRTEX_IGNORE_SVM_IN_USE: string;
+		VSINSTALLDIR: string;
 		windir: string;
 		WSLENV: string;
 		WT_PROFILE_ID: string;
 		WT_SESSION: string;
+		ZES_ENABLE_SYSMAN: string;
+		__PSLockDownPolicy: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}
