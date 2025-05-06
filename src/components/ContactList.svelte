@@ -11,6 +11,12 @@
     }
 </style>
 
-<div class="contact-list-wrapper">
+<script>
+
+    export let className = ''
+
+</script>
+
+<div class={`contact-list-wrapper ${className}`}>
     <slot/>
 </div>

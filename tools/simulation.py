@@ -1,8 +1,11 @@
 import random
 from enum import Enum
 from dataclasses import dataclass
+import os
 
 Townsfolk = 'Townsfolk'
+TownGuard = 'Town Guard'
+
 Ghoul = 'Ghoul'
 Vampire = 'Vampire'
 Nosferatu = 'Nosferatu'
@@ -16,6 +19,7 @@ Reveal = 'Reveal Card'
 DelayedReveal = 'Delayed Reveal Card'
 MaybeReveal = 'Maybe Reveal'
 MaybeKillAndReveal = 'Maybe Kill and Reveal'
+KillAndMaybeReveal = 'Kill and Maybe Reveal'
 
 Other = 'Other Card'
 DontDieOnce = 'Dont Die Once'
@@ -61,9 +65,16 @@ class Location:
 
 
 
-# Config
-N_PLAYERS = 10
+# Config [Config]
+N_SIMULATIONS = 51300
+IS_DEBUG = False
+
 EVILS = [Ghoul, Ghoul]
+TOWNSFOLK = [
+    TownGuard, TownGuard, TownGuard, Townsfolk,
+    Townsfolk, Townsfolk, Townsfolk, Townsfolk
+]
+N_PLAYERS = len(EVILS) + len(TOWNSFOLK)
 
 N_TOWNSFOLK = N_PLAYERS - len(EVILS)
 
@@ -157,6 +168,9 @@ def pick_protect_location_i(locations):
     return random_of(locations).i
 
 def blow_card_from_location(location):
+    if len(location.cards) == 0:
+        print(f'WARNING: location {location.i} has no cards to blow!')
+        return None
     card_drawn = location.cards.pop()
     return card_drawn
 
@@ -222,9 +236,13 @@ def add_red_card_to_good_location(board):
 
 evil_effect_mapping = {
     'Ghoul': None,
-    'Vampire': Reveal,
+    'Vampire': MaybeReveal,
     'Nosferatu': Kill,
-    'Strigoy': MaybeKillAndReveal,
+    'Strigoy': KillAndMaybeReveal
+}
+townsfolk_effect_mapping = {
+    'Townsfolk': None,
+    'Town Guard': DontDieOnce
 }
 
 # Simulation
@@ -234,7 +252,8 @@ def simulate_one_game(is_debug=False):
     winner = None
     round_number = 0
 
-    remaining_evil_powers = [evil_effect_mapping[evil] for evil in EVILS]
+    remaining_evil_powers = [evil_effect_mapping[evil] for evil in EVILS if evil_effect_mapping[evil] is not None]
+    remaining_good_powers = [townsfolk_effect_mapping[tf] for tf in TOWNSFOLK if townsfolk_effect_mapping[tf] is not None]
 
     delayed_kills = []
     delayed_reveals = []
@@ -261,7 +280,9 @@ def simulate_one_game(is_debug=False):
         board_state = get_board_state()
         print(board_state)
 
-    def players_with_done_card_effect(card_effect):
+    def players_with_done_card_effect(card_effect, players_in_game):
+        if players_in_game is None:
+            raise Error('players_in_game is None')
         if card_effect == Kill:
             if len(maybe_dont_dies) > 0 and percent_chance(50):
                 maybe_dont_dies.pop()
@@ -278,15 +299,18 @@ def simulate_one_game(is_debug=False):
             (is_finished, winner) = is_game_over(players_in_game, board)
             if is_finished:
                 return players_in_game
-            return players_with_done_card_effect(blown_card.get_random_effect())
+            return players_with_done_card_effect(blown_card.get_random_effect(), players_in_game)
         if card_effect == DelayedReveal:
             maybe_print(f'    🟧 There will be a delayed blown card!')
             delayed_reveals.append(True)
         if card_effect == MaybeKillAndReveal:
             result = random_of([Kill, Reveal, Other])
-            return players_with_done_card_effect(result)
+            return players_with_done_card_effect(result, players_in_game)
         if card_effect == MaybeReveal and percent_chance(50):
-            return players_with_done_card_effect(Reveal)
+            return players_with_done_card_effect(Reveal, players_in_game)
+        if card_effect == KillAndMaybeReveal:
+            new_players_in_game = players_with_done_card_effect(Kill, players_in_game)
+            return players_with_done_card_effect(MaybeReveal, new_players_in_game)
 
         if card_effect == AddRedCard:
             add_red_card_to_good_location(board)
@@ -300,7 +324,7 @@ def simulate_one_game(is_debug=False):
     def blow_and_trigger_card_at_i(location_i):
         card_drawn = blow_card_from_location(board[location_i])
         card_effect = card_drawn.get_random_effect()
-        new_players_in_game = players_with_done_card_effect(card_effect)
+        new_players_in_game = players_with_done_card_effect(card_effect, players_in_game)
         return (new_players_in_game, card_drawn, card_effect)
 
     def players_with_attack_and_protect():
@@ -324,12 +348,14 @@ def simulate_one_game(is_debug=False):
 
         # If any delayed kills and reveals
         if len(delayed_kills) > 0 and percent_chance(50):
-            players_in_game = players_with_done_card_effect(Kill)
+            maybe_print(f'    🔻 Doing a Delayed Kill')
+            players_in_game = players_with_done_card_effect(Kill, players_in_game)
             delayed_kills.pop()
 
         if len(delayed_reveals) > 0 and percent_chance(50):
-            players_in_game = players_with_done_card_effect(Reveal)
-            delayed_reveals .pop()
+            maybe_print(f'    🟧 Doing a Delayed Reveal')
+            players_in_game = players_with_done_card_effect(Reveal, players_in_game)
+            delayed_reveals.pop()
 
         # Check win
         (is_finished, winner) = is_game_over(players_in_game, board)
@@ -337,10 +363,23 @@ def simulate_one_game(is_debug=False):
             break
 
         # Evil powers
-        if len(remaining_evil_powers) > 1 and round_number > 1:
+        if len(remaining_evil_powers) > 0 and round_number > 1:
             evil_effect = remaining_evil_powers.pop()
+            maybe_print(f'    Using an evil power with effect: {evil_effect}')
             if evil_effect != None:
-                players_in_game = players_with_done_card_effect(evil_effect)
+                players_in_game = players_with_done_card_effect(evil_effect, players_in_game)
+
+        # Check win
+        (is_finished, winner) = is_game_over(players_in_game, board)
+        if is_finished:
+            break
+
+        # Good powers
+        if len(remaining_good_powers) > 0:
+            good_effect = remaining_good_powers.pop()
+            maybe_print(f'    Using a townsfolk power with effect: {good_effect}')
+            if good_effect != None:
+                players_in_game = players_with_done_card_effect(good_effect, players_in_game)
 
         # Attack and protect
         players_in_game = players_with_attack_and_protect()
@@ -381,10 +420,6 @@ def simulate_one_game(is_debug=False):
         'reason': reason
     }
 
-
-n_simulations = 50000
-is_debug = False
-
 townsfolk_wins = 0
 evil_wins = 0
 evil_kill_wins = 0
@@ -394,8 +429,11 @@ total_townsfolk_win_duration = 0
 total_kill_wins_duration = 0
 total_location_wins_duration = 0
 
-for i in range(n_simulations):
-    game_status = simulate_one_game(is_debug)
+for i in range(N_SIMULATIONS):
+    game_status = simulate_one_game(IS_DEBUG)
+    if i % 1500 == 0 and IS_DEBUG is False:
+        os.system('cls')
+        print(f'{int(i / N_SIMULATIONS * 100)}%...')
     
     if game_status['winner'] == TownsfolkWin:
         townsfolk_wins += 1
@@ -412,8 +450,8 @@ for i in range(n_simulations):
         total_location_wins_duration += game_status['rounds']
 
 
-townsfolk_win_percentage = townsfolk_wins / n_simulations * 100
-evil_win_percentage = evil_wins / n_simulations * 100
+townsfolk_win_percentage = townsfolk_wins / N_SIMULATIONS * 100
+evil_win_percentage = evil_wins / N_SIMULATIONS * 100
 evil_kill_win_percentage = evil_kill_wins / max(evil_wins, 1) * 100
 evil_location_win_percentage = 100 - evil_kill_win_percentage
 
@@ -422,5 +460,6 @@ average_location_win_duration = total_location_wins_duration / max(evil_location
 average_kill_win_duration = total_kill_wins_duration / max(evil_kill_wins, 1)
 
 print('Results:')
-print(f'Townsfolk wins: {round(townsfolk_win_percentage, 2)}%    Evil wins: {round(evil_win_percentage, 2)}% of which kill wins: {evil_kill_win_percentage}%, location wins: {round(evil_location_win_percentage, 2)}%')
+print(f'Townsfolk wins: {round(townsfolk_win_percentage, 2)}%')
+print(f'Evil wins: {round(evil_win_percentage, 2)}% of which kill wins: {round(evil_kill_win_percentage, 2)}%, location wins: {round(evil_location_win_percentage, 2)}%')
 print(f'Tonsfolk win duration: {round(average_townsfolk_win_duration, 2)}, Evil kill win duration: {round(average_kill_win_duration, 2)}, Evil location win duration: {round(average_location_win_duration, 2)}')

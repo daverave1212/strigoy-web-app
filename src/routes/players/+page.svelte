@@ -33,6 +33,8 @@
 
     import '../../components/add-contact-button.css'
     import SimpleContact from '../../components/Contact/SimpleContact.svelte';
+    import ColorDisplay from '../../components/ColorDisplay.svelte';
+    import LocationPicker from '../../components/LocationPicker.svelte';
     
     $:{
         console.log('added:')
@@ -83,6 +85,10 @@
         currentModalObject = null
     }
 
+    // Color drawer
+    let currentColor = null
+    $: isColorDrawerOpen = currentColor != null
+
     // Role chooser
     let allRoles = getRoles()
     let isRoleChooserOpen = false
@@ -111,10 +117,6 @@
         }
         $addedPlayers[playerI] = newPlayerState
         $addedPlayers = $addedPlayers
-        invalidateAvailableRole(newRoleI)
-        if (previousRole != null) {
-            validateUnavailbleRole(previousRole)
-        }
     }
 
 
@@ -180,11 +182,6 @@
     }
     function onRemovePlayer(i) {
         const player = $addedPlayers[i]
-        if (player.role != null) {
-            if (!isRoleAvailable(player.role)) {
-                validateUnavailbleRole(player.role)
-            }
-        }
         removePlayer(i)
     }
 
@@ -199,6 +196,15 @@
     }
 
 </script>
+
+<DrawerPage
+    isOpen={currentColor != null}
+    zIndex="486 !important"
+    on:click={() => currentColor = null}
+>
+    <div style={`width: 100vw; height: 100vh; background-color: ${currentColor};`}>
+    </div>
+</DrawerPage>
 
 <InspectRoleDrawer
     role={currentModalObject}
@@ -236,9 +242,10 @@
     <Tooltip isShown={$hasSetRoleTooltip} top="calc(var(--contact-header-height) * 1.5)" left="50%" width="70vw">Set each player's role to the card they drew.</Tooltip>
     <Tooltip isShown={shouldShowRoleTooltip} top="calc(var(--contact-header-height) * 1.5)" left="calc(7.5vw + 0.75rem + var(--contact-header-height) / 2)" width="70vw" isLefty={true}>Click on the image to see role details.</Tooltip>
     <Tooltip isShown={shouldShowExpandTooltip} top="calc(var(--contact-header-height) * 1.5)" left="50%" width="70vw">Click to show more options (click again to hide).</Tooltip>
-    
 
-    <ContactList>
+    <LocationPicker></LocationPicker>
+
+    <ContactList className="margin-top-1">
 
         {#each $addedPlayers.keys() as i (`${$addedPlayers[i].name}${i}`)}
 
@@ -279,4 +286,8 @@
     </ContactList>   
     
     
+    <ColorDisplay
+        className="rounded shadowed margin-top-1"
+        onClickOnColor={color => currentColor = color}
+    />
 </div>

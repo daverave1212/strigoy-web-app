@@ -5,12 +5,6 @@
 
     export let role
 
-    $: {
-        if (role.name == 'Little Villain') {
-            console.log(`Changing Little Villain at RoleCard.svelte. role.isValid: ${role.isValid}`)
-        }
-    }
-
     const dispatch = createEventDispatcher()
 
 </script>

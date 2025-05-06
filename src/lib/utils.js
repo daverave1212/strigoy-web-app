@@ -276,7 +276,7 @@ export async function drawTextWordsWithHTML({
                 drawParams.font = 'bold ' + font
             }
             if (xml.tagName == 'i') {
-                drawParams.font = 'bold ' + italic
+                drawParams.font = 'italic ' + font
             }
             drawText(drawParams)
             continue
@@ -296,7 +296,7 @@ export function xmlToJson(str) {
     let xmlNode = new DOMParser().parseFromString(str, 'text/xml')
     return xmlNode.children[0]
 }
-window.xmlToJson = xmlToJson
+
 
 function splitTextBySymbols(text, openSymbol, closeSymbol) {
     const letters = text.split('')

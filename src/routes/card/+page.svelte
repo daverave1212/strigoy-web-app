@@ -29,7 +29,7 @@
 
 <script>
     import { onMount } from "svelte";
-    import { clearCanvas, clearRect, drawImageOnCanvasAsync, drawText, drawTextLines } from "../../lib/utils";
+    import { clearCanvas, clearRect, drawImageOnCanvasAsync, drawText, drawTextLines, drawTextWordsWithHTML } from "../../lib/utils";
     import RoleChooserDrawer from "../../components/RoleChooserDrawer.svelte";
     import { getNormalRolePriority, getRole, getRoles, getSortRolesWithPriorityFunction, WEREWOLVES } from "../../lib/Database";
     import { getMods } from "../../lib/ModsDatabase";
@@ -65,12 +65,12 @@
 
         const hasNotes = objectBeingDrawn.notes != null
         const effectY = hasNotes? cardHeight * 0.8225 : cardHeight * 0.85
-        drawTextLines({
+        drawTextWordsWithHTML({
             canvas,
             font: '40px SingleDay',
             x: x + cardWidth / 2,
             y: y + effectY,
-            width: cardWidth * 0.8,
+            width: cardWidth * 0.75,
             lineHeight: objectBeingDrawn.lineHeight == null ? 40 : objectBeingDrawn.lineHeight,
             text: objectBeingDrawn.effect,
             textAlign: 'center'
@@ -79,12 +79,12 @@
         const brownTextColor = 'rgb(113, 108, 95)'
         if (hasNotes) {
             const notesY = cardHeight * 0.92
-            drawTextLines({
+            drawTextWordsWithHTML({
                 canvas,
                 font: '33px SingleDay',
                 x: x + cardWidth / 2,
                 y: y + notesY,
-                width: cardWidth * 0.85,
+                width: cardWidth * 0.8,
                 lineHeight: 22,
                 text: objectBeingDrawn.notes,
                 textAlign: 'center',

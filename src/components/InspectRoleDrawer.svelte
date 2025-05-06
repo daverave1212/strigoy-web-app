@@ -37,10 +37,16 @@
             <div class="center-content" style="margin-top: 12vh;">
                 <RoundCardPortrait role={{...role, isBig: true, isValid: true}}/>
             </div>
-            <h2 class="margin-top-2">{role.name}</h2>
-            <p class="margin-top-1">{role.effect}</p>
+            <h2 class="margin-top-2">
+                {@html role.name}
+            </h2>
+            <p class="margin-top-1">
+                {@html role.effect}
+            </p>
             {#if role.notes != null && role.notes.length > 0}
-                <p class="margin-top-2" style="color: gray"><i>{role.notes}</i></p>
+                <p class="margin-top-2" style="color: gray"><i>
+                    {@html role.notes}
+                </i></p>
             {/if}
             {#if role.narratorNotes != null && role.narratorNotes.length > 0}
                 <p class="margin-top-2" style="color: blue"><b>Tips for narrator</b>: {role.narratorNotes}</p>
