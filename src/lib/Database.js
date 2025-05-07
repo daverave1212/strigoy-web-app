@@ -104,23 +104,53 @@ export const getRoles = () => {
             team: WEREWOLVES,
             isWerewolf: true,
             nPlayers: 0,                        // Minimum number of players in game to have this role
-            worth: -4.5,                        // A heuristic for balancing
+            worth: -1,                          // A heuristic for balancing
             category: NIGHTLY_WEREWOLVES,       // Categorization
             difficulty: BEGINNER,               // Role categories are split into difficulty categories
             isImportant: false,                 // The game must contain at least a number of important roles
             type: 'Nightly',
-            effect: 'Every night, choose a location to attack. The Townsfolk will have to guess which location you chose!',
+            effect: 'Once per game, during the Evil phase, raise your hand and point a player to instantly kill them (<i>but not on first night</i>).',
         },
         {
-            name: "Mora",
+            name: "Ghoul",
             isWerewolf: true,
-            nPlayers: 10,
             team: WEREWOLVES,
-            worth: -4.5,
+            worth: 0,
             category: NIGHTLY_WEREWOLVES,
             difficulty: BEGINNER,
             type: 'Nightly',
-            effect: 'Hand Raise: Choose a player to instantly kill TODO.',
+            effect: '<b>Hand Raise (once per game)</b>: No other Townsfolk can wake up right now.',
+            notes: 'You raise your hand during the Townsfolk night phase.'
+        },
+        {
+            name: "Cultist",
+            nPlayers: 0,
+            team: WEREWOLVES,
+            worth: 0,
+            category: REGULAR,
+            difficulty: BEGINNER,
+            effect: "On game start, you know 3 roles that are not in the game (<i>so you can pretend to be them</i>).",
+        },
+        {
+            name: "Vampire",
+            nPlayers: 0,
+            team: WEREWOLVES,
+            worth: 0,
+            category: REGULAR,
+            difficulty: BEGINNER,
+            effect: "Once per game, during the Evil phase, you can make one more attack and Townsfolk can protect one more time.",
+            notes: "The Storyteller must announce it. You can attack the same location even, and the same location can be protected again."
+        },
+        {
+            name: "Nosferatu",
+            isWerewolf: true,
+            nPlayers: 10,
+            team: WEREWOLVES,
+            worth: -2,
+            category: NIGHTLY_WEREWOLVES,
+            difficulty: BEGINNER,
+            type: 'Nightly',
+            effect: 'Once per game, during the Evil phase, raise your hand and choose a player to instantly kill (<i>but not on first night</i>).',
         },
         {
             name: "Nosferatu",
@@ -155,24 +185,13 @@ export const getRoles = () => {
             type: 'Nightly',
             effect: 'You are a Evil. On the first night, you know 3 roles that are not in the game.',
         },
-
-        {
-            name: "Cultist",
-            nPlayers: 0,
-            team: WEREWOLVES,
-            worth: -1.5,
-            category: REGULAR,
-            difficulty: FOR_MODS,
-            effect: "You are Evil, without any special power. You do not open eyes every night (except at game start).",
-            narratorNotes: "Only play with Cultists to replace Strigoys for certain mods like Blood Moon. Oherwise, only add them to the game if you think evils are too strong."
-        },
         {
             name: "Hazer",
             nPlayers: 11,
             team: WEREWOLVES,
             worth: -1.75,
             category: SPECIAL_NIGHTLY,
-            difficulty: DRUNKEN_TAVERN,
+            difficulty: BROKEN,
             type: 'Special Nightly',
             effect: 'Every night and at game start, when Strigoys open eyes, point left or right! The closest alive Townsfolk in that direction gets wrong information, or their ability does nothing.',
             notes: 'You are part of the Strigoys team but not a Strigoy, and open your eyes on setup. Townsfolk win if all Strigoys are killed.',
@@ -293,7 +312,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0.75,
             category: SPECIAL_SETUP,
-            difficulty: DRUNKEN_TAVERN,
+            difficulty: BROKEN,
             effect: "One Townsfolk is secretly drunk - they believe they are that role, but they're just a Peasant. Their ability has no effect or gets wrong information.",
             notes: "Only the narrator knows who the drunk is (unless you can figure it out...)",
             narratorNotes: "Do NOT announce if there is an Innkeeper in the game! Let players figure it out themselves."
@@ -304,7 +323,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 1.5,
             category: SETUP,
-            difficulty: CHAOS,
+            difficulty: ADVANCED,
             isImportant: true,
             effect: 'At game start, pick 2 players. For each, if its role contains letter "O", the narrator nods.',
             narratorNotes: 'The Blind Inspector opens their eyes. First, they point to one player, then you may nod. Then they point to another player, and you may nod again.',
@@ -331,7 +350,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0.5,
             category: SETUP,
-            difficulty: CHAOS,
+            difficulty: BEGINNER,
             effect: 'At game start, grab a neighbor by hand. You become lovers. When one of you dies, the other dies too.',
             notes: 'The narrator will wake you up to grab someone by hand.',
             narratorNotes: 'If you have this role in game, make sure the players know that they may get grabbed by hand.',
@@ -357,7 +376,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 2,
             category: NIGHTLY,
-            difficulty: BROKEN,
+            difficulty: BEGINNER,
             isImportant: true,
             effect: 'Every night, wake up and pick a player (not yourself). They can\'t die this night. You can\'t pick the same player two nights in a row.',
             notes: 'If they would die, nothing happens.',
@@ -371,7 +390,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 1.25,
             category: SPECIAL_NIGHTLY,
-            difficulty: BEGINNER,
+            difficulty: INTERMEDIATE,
             effect: 'Once per game, after Strigoys close eyes, raise your arm if you want to wake up.\nThen kill someone.',
             notes: 'Wait for the narrator to say "Assassin wake up."',
             narratorNotes: 'Watch out for the Assassin. If their arm is raised, say "Assassin, wake up".\nThey can only do this once per game.',
@@ -438,7 +457,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 1.5,
             category: NIGHTLY,
-            difficulty: BEGINNER,
+            difficulty: INTERMEDIATE,
             effect: '<b>Hand Raise:</b> Learn which team the Storyteller believes is winning.',
         },
         {
@@ -447,7 +466,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0.5,
             category: REGULAR,
-            difficulty: EXTRAS,
+            difficulty: ADVANCED,
             effect: 'When you die, reveal your card. Nobody can be hanged the upcoming day.',
         },
         {
@@ -456,7 +475,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 1.25,
             category: REGULAR,
-            difficulty: INTERMEDIATE,
+            difficulty: BROKEN,
             effect: "Once per game, declare you're a Witch Hunter and publicly pick a player. If the letter 'S' is in their role name, they die immediately.",
             note: 'Note that other players can bluff as a Witch Hunter!'
         },
@@ -486,7 +505,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0.75,
             category: REGULAR,
-            difficulty: CHAOS,
+            difficulty: ADVANCED,
             effect: "If you are hanged, reveal your card.\nYou don't die.\nThe person who argued most to hang you dies instead.",
             notes: 'Up to the narrator who that person is.'
         },
@@ -559,7 +578,7 @@ export const getRoles = () => {
             worth: 0.75,
             category: REGULAR,
             difficulty: DRUNKEN_TAVERN,
-            effect: "You are immune to other Townsfolks' abilities. If they would get information about you, it might be wrong information.",
+            effect: "You are immune to other players' abilities. If they would get information about you, it might be wrong information.",
             notes: "You can still be hanged or eaten."
         },
         {
@@ -650,7 +669,7 @@ export const getRoles = () => {
             worth: 1,
             category: OTHER_CATEGORY,
             difficulty: DRUNKEN_TAVERN,
-            effect: "You aren't on any team. You win if you are eaten. Then the game goes on."
+            effect: "You aren't on any team. You win if you die, but not by hanging. Then the game goes on."
         },
         {
             name: "Diva",
@@ -669,7 +688,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0.5,
             category: REGULAR_NEGATIVE,
-            difficulty: BROKEN,
+            difficulty: ADVANCED,
             effect: "If you die, reveal your card. The next Night happens TWICE.",
             notes: "There will be 2 nights in a row, without everyone waking up in between."
         },

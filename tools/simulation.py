@@ -12,9 +12,10 @@ Negative = 'Negative'
 Ghoul = 'Ghoul'
 Vampire = 'Vampire'
 HorribleVampire = 'Horrible Vampire'
-Nosferatu = 'Nosferatu'
 Strigoy = 'Strigoy'
+Nosferatu = 'Nosferatu'
 Mora = 'Mora'
+Dhampir = 'Dhampir'
 
 # Enums for distribution
 Kill = 'Kill Card'
@@ -27,6 +28,7 @@ MaybeReveal = 'Maybe Reveal'
 MaybeKillAndReveal = 'Maybe Kill and Reveal'
 KillAndMaybeReveal = 'Kill and Maybe Reveal'
 ExtraAttack = 'Extra Attack'
+RandomOrangeEffect = 'RandomOrangeEffect'
 
 Other = 'Other Card'
 DontDieOnce = 'Dont Die Once'
@@ -58,8 +60,8 @@ class Card:
             return '🔴'
 
 GreenCard = Card('Green', [MaybeProtect, AddRedCard, DontDieOnce, ExtraMaybeHang, Other, Other, Other, Other, Other, Other, Other])
-YellowCard = Card('Yellow', [DelayedReveal, DelayedReveal, Kill, DelayedKill, Other, Other])
-OrangeCard = Card('Orange', [Reveal, MaybeReveal, MaybeReveal, DelayedKill, DelayedKill, MaybeKillAndReveal])
+YellowCard = Card('Yellow', [DelayedReveal, Kill, DelayedKill, DelayedKill, Other, Other, Reveal, MaybeReveal, DelayedReveal, MaybeReveal, DelayedKill, MaybeKillAndReveal, Other])
+OrangeCard = Card('Orange', [Reveal, MaybeReveal, DelayedReveal, MaybeReveal, DelayedKill, MaybeKillAndReveal, Other])
 RedCard = Card('Red', [Reveal, Kill, Kill])
 
 @dataclass
@@ -82,23 +84,26 @@ GET_BOARD_SETUP = lambda: [
     [GreenCard, YellowCard, RedCard]
 ]
 
-EVILS = [Nosferatu, Nosferatu, Nosferatu]  
+EVILS = [Strigoy, Vampire]  
 TOWNSFOLK = [
-    Townsfolk, Townsfolk, Townsfolk, Townsfolk, Townsfolk,
-    Townsfolk, Townsfolk, Townsfolk, Townsfolk, Townsfolk,
-    Townsfolk, Townsfolk, Townsfolk, Townsfolk
+    Townsfolk, Townsfolk, Townsfolk, Townsfolk,
+    Townsfolk, Townsfolk, Townsfolk, Townsfolk,
+    Townsfolk, Townsfolk, Townsfolk
 ]
 
-# Sweet spot heuristic: 20% evils
-# No protection roles:
-# 9   [+1]  VG - 29%       kill: 40%       kill speed: 5.82        location speed: 5.56
-# 10        GG - 34.5%     kill: 54%       kill speed: 6.16        location speed: 6.18
-# 11        NG - 35.5%     kill: 57%       kill speed: 6.07        location speed: 6.07
-# 12        NN - 35.5%     kill: 58%       kill speed: 6.04        location speed: 6.04
-# 13  [-1]  NN - 35%       kill: 61%       kill speed: 5.94        location speed: 6
-# 14  [-1]  NN - 35%       kill: 44%       kill speed: 6.7         location speed: 6.3
-# 15  [-2]  NN - 35%       kill: 45%       kill speed: 6.6         location speed: 6.25
-# 16  [-3]  NN - 35%       kill: 45%       kill speed: 6.6         location speed: 6.25
+# Final Settings
+# 7   [+3] [🟡] GV - 34.2%     kill: 68%       kill speed: 4.14        location speed: 4.55
+# 8   [+2] [🟡] GV - 34.2%     kill: 51%       kill speed: 5.14        location speed: 4.94
+# 9   [+1] [🟡] GG - 35.2%     kill: 52%       kill speed: 6.17        location speed: 6.21
+# 10       [🟡] GG - 34.5%     kill: 54%       kill speed: 6.16        location speed: 6.18
+# 11       [🟡] SG - 37%       kill: 60%       kill speed: 5.88        location speed: 5.75
+# 12       [🟡] SS - 36.0%     kill: 44%       kill speed: 6.62        location speed: 6.12
+# 13       [🟡] SS - 35%       kill: 61%       kill speed: 5.94        location speed: 6
+# 14  [-1] [🟡] SS - 36%       kill: 44%       kill speed: 6.5         location speed: 6
+# 15  [-2] [🟡] SS - 35%       kill: 45%       kill speed: 6.6         location speed: 6.25
+# 16  [-3] [🟡] SS - 35%       kill: 45%       kill speed: 6.6         location speed: 6.25
+
+
 # 17       NNN - 35.5%     kill: 58%       kill speed: 6.04        location speed: 6.04
 
 
@@ -121,7 +126,7 @@ TOWNSFOLK = [
     Therefore having more kills also speeds up the game for winning by locations.
     The aim is to have 50% kill win and 50% location win
 
-    At 10 players with 1 Nosferatu, player win rate = 36%, with 50% kill win and 50% location win
+    At 10 players with 1 Strigoy, player win rate = 36%, with 50% kill win and 50% location win
     There are 3 possibilities:
     - Players hang all evils
     - Evils kill all players
@@ -129,10 +134,10 @@ TOWNSFOLK = [
 '''
 
 N_PLAYERS = len(EVILS) + len(TOWNSFOLK)
-
+N_EVILS = len(EVILS)
 N_TOWNSFOLK = N_PLAYERS - len(EVILS)
 
-CHANCE_TO_HANG_EVERY_NIGHT = 66
+CHANCE_TO_HANG_EVERY_NIGHT = 75
 
 
 
@@ -149,14 +154,15 @@ def shuffled(arr):
     return new_arr
 def random_of(arr):
     return random.choice(arr)
-
+def round_to_nearest_quarter(x):
+    return round(x * 4) / 4
 
 # Simulation functions
 TownsfolkWin = 'Townsfolk Win'
 EvilWin = 'Evil Win'
 
 def is_bad_role(role):
-    return role == Ghoul or role == Vampire or role == Nosferatu or role == Strigoy
+    return role == Ghoul or role == Vampire or role == Strigoy or role == Nosferatu
 
 def is_game_over(roles_in_game, board):
     for location in board:
@@ -278,9 +284,10 @@ evil_effect_mapping = {
     'Ghoul': None,
     'Vampire': ExtraAttack,
     'Horrible Vampire': Reveal,
-    'Nosferatu': Kill,
-    'Strigoy': KillAndMaybeReveal,
-    'Mora': DoubleKill
+    'Strigoy': Kill,
+    'Nosferatu': KillAndMaybeReveal,
+    'Mora': DoubleKill,
+    'Dhampir': RandomOrangeEffect
 }
 townsfolk_effect_mapping = {
     'Townsfolk': None,
@@ -388,7 +395,7 @@ def simulate_one_game(is_debug=False):
             return players_in_game
         location_attack_i = pick_attack_location(board)
         location_protect_i = pick_protect_location_i(board)
-        maybe_print(f'  Strigoys attacked {location_attack_i}, players predicted {location_protect_i}')
+        maybe_print(f'  Nosferatus attacked {location_attack_i}, players predicted {location_protect_i}')
         if location_attack_i != location_protect_i:
             (new_players_in_game, card_drawn, card_effect) = blow_and_trigger_card_at_i(location_attack_i)
             maybe_print(f'  Predict failed! {card_drawn.get_emoji()}Card {card_drawn.name} was blown from location {location_attack_i}. Card effect: {card_effect}')
@@ -437,6 +444,8 @@ def simulate_one_game(is_debug=False):
                 remaining_evil_powers.append(Kill)
                 random.shuffle(remaining_evil_powers)
                 players_in_game = players_with_done_card_effect(Kill, players_in_game)
+            elif evil_effect == RandomOrangeEffect:
+                players_in_game = players_with_done_card_effect(YellowCard.get_random_effect(), players_in_game)
             elif evil_effect != None:
                 players_in_game = players_with_done_card_effect(evil_effect, players_in_game)
 
@@ -482,13 +491,19 @@ def simulate_one_game(is_debug=False):
     return {
         'winner': winner,
         'rounds': board_state['rounds'],
-        'reason': reason
+        'reason': reason,
+        'players_in_game': players_in_game,
+        'evils': len([None for player in players_in_game if is_bad_role(player)]),
+        'townsfolk': len([None for player in players_in_game if is_bad_role(player) == False]),
     }
 
 townsfolk_wins = 0
 evil_wins = 0
 evil_kill_wins = 0
+evil_kill_wins_kill_distribution = {}
+evil_kill_wins_length_distribution = {}
 evil_location_wins = 0
+evil_location_wins_length_distribution = {}
 
 total_townsfolk_win_duration = 0
 total_kill_wins_duration = 0
@@ -509,10 +524,21 @@ for i in range(N_SIMULATIONS):
     if game_status['reason'] == 'kills':
         evil_kill_wins += 1
         total_kill_wins_duration += game_status['rounds']
+        n_kills = N_TOWNSFOLK - game_status['townsfolk']
+        if n_kills not in evil_kill_wins_kill_distribution:
+            evil_kill_wins_kill_distribution[n_kills] = 0
+        evil_kill_wins_kill_distribution[n_kills] += 1
+        rounds = game_status['rounds']
+        if rounds not in evil_kill_wins_length_distribution:
+            evil_kill_wins_length_distribution[rounds] = 0
+        evil_kill_wins_length_distribution[rounds] += 1
     else:
-
         evil_location_wins += 1
         total_location_wins_duration += game_status['rounds']
+        rounds = game_status['rounds']
+        if rounds not in evil_location_wins_length_distribution:
+            evil_location_wins_length_distribution[rounds] = 0
+        evil_location_wins_length_distribution[rounds] += 1
 
 
 townsfolk_win_percentage = townsfolk_wins / N_SIMULATIONS * 100
@@ -524,7 +550,28 @@ average_townsfolk_win_duration = total_townsfolk_win_duration / max(townsfolk_wi
 average_location_win_duration = total_location_wins_duration / max(evil_location_wins, 1)
 average_kill_win_duration = total_kill_wins_duration / max(evil_kill_wins, 1)
 
+
+os.system('cls')
 print(f'Results for {N_PLAYERS} and evils {EVILS}:')
 print(f'Townsfolk wins: {round(townsfolk_win_percentage, 2)}%')
 print(f'Evil wins: {round(evil_win_percentage, 2)}% of which kill wins: {round(evil_kill_win_percentage, 2)}%, location wins: {round(evil_location_win_percentage, 2)}%')
 print(f'Tonsfolk win duration: {round(average_townsfolk_win_duration, 2)}, Evil kill win duration: {round(average_kill_win_duration, 2)}, Evil location win duration: {round(average_location_win_duration, 2)}')
+
+if False:
+    times = sorted([int(key) for key in evil_location_wins_length_distribution.keys()])
+    n_games_per_time = [evil_location_wins_length_distribution[time] for time in times]
+    print(f'\nLocation win times distribution:')
+    print(times)
+    print(n_games_per_time)
+
+    times = sorted([int(key) for key in evil_kill_wins_length_distribution.keys()])
+    n_games_per_time = [evil_kill_wins_length_distribution[time] for time in times]
+    print(f'\nKill win times distribution:')
+    print(times)
+    print(n_games_per_time)
+
+    killses = sorted([int(key) for key in evil_kill_wins_kill_distribution.keys()])
+    n_kills_per_game = [evil_kill_wins_kill_distribution[kills] for kills in killses]
+    print(f'\nKills distribution:')
+    print(killses)
+    print(n_kills_per_game)
