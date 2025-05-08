@@ -72,8 +72,7 @@
         font-family: SingleDay;
 
         font-size: 0.85rem;
-        height: 1.25rem;
-        line-height: 1.25rem;
+        line-height: var(--badge-size);
 
         top: calc(0.15 * var(--role-chooser-image-size));
         right: calc(-0.05 * var(--role-chooser-image-size));
@@ -115,18 +114,19 @@
         (category != null && categoryToRibbon[category] != null)? categoryToRibbon[category] :
         null
     $: badgeText =
-        role.worth <= -3?
-            null:
-        role.worth < 0.75?
+        role.worth <= -2?
+            '--':
+        role.worth <= -1?
             '-':
-        role.worth >= 0.75 && role.worth <= 1?  // -1 because role worth baseline is 1
+        role.worth == 0?
             '~':
-        role.worth > 1 && role.worth <= 1.5?
-            '+':
-        role.worth > 1.5?
+        role.worth >= 2?
+            '++':
+        role.worth >= 1?
             '++':
         '?'
     const badgeToColorMapping = {
+        '--': EVIL_COLOR,
         '-': EVIL_COLOR,
         '~': SPECIAL_COLOR,
         '+': SETUP_COLOR,
@@ -134,12 +134,6 @@
         '?': '#CC55AA'
     }
         
-
-    $: {
-        if (role.name == 'Little Villain') {
-            console.log(`Changing Little Villain at RoundCardPortrait.svelte. role.isValid: ${role.isValid}`)
-        }
-    }
 </script>
 
 <div class="image-wrapper {isBig? 'big': ''}" on:click={(evt) => dispatch('click', evt)}>

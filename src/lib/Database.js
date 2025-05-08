@@ -5,6 +5,7 @@ export const WEREWOLVES = 'werewolves'
 export const TOWNSFOLK = 'townsfolk'
 export const OTHER = 'other'
 
+export const ALL_EVILS = 0
 export const BEGINNER = 1
 export const INTERMEDIATE = 2
 export const CHAOS = 2.5
@@ -19,6 +20,7 @@ export const COMPLETE = 8
 export const BROKEN = 99
 
 export const difficultyNames = {
+    [ALL_EVILS]: 'Evils',
     [BEGINNER]: 'Base Roles',
     [INTERMEDIATE]: 'Intermediate',
     [ADVANCED]: 'Advanced & Complex',
@@ -32,6 +34,7 @@ export const difficultyNames = {
     [MORE_CHAOS]: 'More Chaos',
 }
 export const difficultyDescriptions = {
+    [ALL_EVILS]: 'These are all the Evils in the game. Not all may be used in the game you are playing. For example, Vampires are only used for 7 or 8 players.',
     [BEGINNER]: 'Use these roles for the base game. Every night, call out each nightly role, even if no player is that role. The game will automatically show you the roles you should remember.',
     [INTERMEDIATE]: 'Extra roles to add to make it more interesting. Every game, there should NOT be both a Town Guard and a Priest (unless there are more than 15 players). You don\'t have to play with all of them. Only choose which roles you like to play with.',
     [CHAOS]: 'Roles that add more randomnes and crazyness in the game. Everyone will go mad!',
@@ -100,16 +103,14 @@ export const evilsByPlayers = {
 export const getRoles = () => {
     const roles = [
         {
-            name: "Strigoy",
+            name: "Cultist",
             team: WEREWOLVES,
-            isWerewolf: true,
-            nPlayers: 0,                        // Minimum number of players in game to have this role
-            worth: -1,                          // A heuristic for balancing
-            category: NIGHTLY_WEREWOLVES,       // Categorization
-            difficulty: BEGINNER,               // Role categories are split into difficulty categories
-            isImportant: false,                 // The game must contain at least a number of important roles
-            type: 'Nightly',
-            effect: 'Once per game, during the Evil phase, raise your hand and point a player to instantly kill them (<i>but not on first night</i>).',
+            worth: 0,
+            category: REGULAR,
+            difficulty: ALL_EVILS,
+            effect: "On game start, you know 3 roles that are not in the game (<i>so you can pretend to be them</i>).",
+            ribbonColor: SETUP_COLOR,
+            ribbonText: 'SETUP'
         },
         {
             name: "Ghoul",
@@ -117,19 +118,26 @@ export const getRoles = () => {
             team: WEREWOLVES,
             worth: 0,
             category: NIGHTLY_WEREWOLVES,
-            difficulty: BEGINNER,
+            difficulty: ALL_EVILS,
             type: 'Nightly',
             effect: '<b>Hand Raise (once per game)</b>: No other Townsfolk can wake up right now.',
-            notes: 'You raise your hand during the Townsfolk night phase.'
+            notes: 'You raise your hand during the Townsfolk night phase.',
+            ribbonColor: NIGHTLY_COLOR,
+            ribbonText: 'HAND RAISE'
         },
         {
-            name: "Cultist",
-            nPlayers: 0,
+            name: "Strigoy",
             team: WEREWOLVES,
-            worth: 0,
-            category: REGULAR,
-            difficulty: BEGINNER,
-            effect: "On game start, you know 3 roles that are not in the game (<i>so you can pretend to be them</i>).",
+            isWerewolf: true,
+            nPlayers: 0,                        // Minimum number of players in game to have this role
+            worth: -1,                          // A heuristic for balancing
+            category: NIGHTLY_WEREWOLVES,       // Categorization
+            difficulty: ALL_EVILS,               // Role categories are split into difficulty categories
+            isImportant: false,                 // The game must contain at least a number of important roles
+            type: 'Nightly',
+            effect: 'Once per game, during the Evil phase, raise your hand to kill a player. <i>(but not on first night</i>)',
+            ribbonColor: SPECIAL_COLOR,
+            ribbonText: 'EVIL PHASE'
         },
         {
             name: "Vampire",
@@ -137,9 +145,11 @@ export const getRoles = () => {
             team: WEREWOLVES,
             worth: 0,
             category: REGULAR,
-            difficulty: BEGINNER,
+            difficulty: ALL_EVILS,
             effect: "Once per game, during the Evil phase, you can make one more attack and Townsfolk can protect one more time.",
-            notes: "The Storyteller must announce it. You can attack the same location even, and the same location can be protected again."
+            notes: "The Storyteller must announce it. You can attack the same location, and the same location can be protected one more time.",
+            ribbonColor: SPECIAL_COLOR,
+            ribbonText: 'EVIL PHASE'
         },
         {
             name: "Nosferatu",
@@ -148,20 +158,11 @@ export const getRoles = () => {
             team: WEREWOLVES,
             worth: -2,
             category: NIGHTLY_WEREWOLVES,
-            difficulty: BEGINNER,
+            difficulty: ALL_EVILS,
             type: 'Nightly',
             effect: 'Once per game, during the Evil phase, raise your hand and choose a player to instantly kill (<i>but not on first night</i>).',
-        },
-        {
-            name: "Nosferatu",
-            isWerewolf: true,
-            // nPlayers: 10,
-            team: WEREWOLVES,
-            worth: -4.5,
-            category: NIGHTLY_WEREWOLVES,
-            difficulty: INTERMEDIATE,
-            type: 'Nightly',
-            effect: '',
+            ribbonColor: SPECIAL_COLOR,
+            ribbonText: 'EVIL PHASE'
         },
         {
             name: "Samca",
@@ -170,20 +171,9 @@ export const getRoles = () => {
             team: WEREWOLVES,
             worth: -4.5,
             category: NIGHTLY_WEREWOLVES,
-            difficulty: INTERMEDIATE,
+            difficulty: BROKEN,
             type: 'Nightly',
             effect: 'You are a Evil. On the first night, you know the color of the first card in each location',
-        },
-        {
-            name: "Vampire",
-            isWerewolf: true,
-            nPlayers: 10,
-            team: WEREWOLVES,
-            worth: -4.5,
-            category: NIGHTLY_WEREWOLVES,
-            difficulty: ADVANCED,
-            type: 'Nightly',
-            effect: 'You are a Evil. On the first night, you know 3 roles that are not in the game.',
         },
         {
             name: "Hazer",
@@ -341,7 +331,7 @@ export const getRoles = () => {
             isImportant: true,
             effect: '<b>Hand Raise:</b> Point at 2 players. The Storyteller nods if either of them is Evil.',
             type: 'Nightly',
-            ribbonText: 'NIGHTLY',
+            ribbonText: 'HAND RAISE',
             ribbonColor: NIGHTLY_COLOR,
         },
         {
@@ -546,8 +536,8 @@ export const getRoles = () => {
             worth: 1.5,
             category: REGULAR,
             difficulty: BROKEN,
-            effect: 'You have 2 lives. If you die, you come back to life in the morning. You might not know it happened.',
-            notes: "The narrator might announce 'nobody died' or 'you are back in the game'."
+            effect: 'You have 2 lives (unless hanged). If you would die the first time, nothing happens.',
+            notes: "You might not know you lost one life."
         },
         {
             name: "Bard",
@@ -573,13 +563,15 @@ export const getRoles = () => {
         },
         {
             name: "Fool",
-            nPlayers: 0,
+            nPlayers: 2,
             team: TOWNSFOLK,
-            worth: 0.75,
+            worth: 1,
             category: REGULAR,
             difficulty: DRUNKEN_TAVERN,
-            effect: "You are immune to other players' abilities. If they would get information about you, it might be wrong information.",
-            notes: "You can still be hanged or eaten."
+            effect: "You are immune to other players' abilities and items. If they would get information about you, it might be wrong information.",
+            notes: "You are immune to Evil abilities as well, but you may still be hanged or affected by cards.",
+            ribbonColor: MORNING_COLOR,
+            ribbonText: 'REMINDER'
         },
         {
             name: "Sad Poet",
@@ -656,7 +648,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: -1,
             category: REGULAR_NEGATIVE,
-            difficulty: BROKEN,
+            difficulty: BEGINNER,
             effect: 'If you are eaten, you become a Strigoy. The narrator will announce that "Grandma was eaten and became a Strigoy".',
             ribbonColor: EVIL_COLOR,
             ribbonText: 'NEGATIVE'
@@ -715,6 +707,52 @@ export const getRoles = () => {
     
     ]
     return sortRolesNormal(roles)
+}
+
+export function getLocations() {
+    const locations = [
+        {
+            name: 'Park',
+            effect: ''
+        },
+        {
+            name: 'Town Hall',
+            effect: 'This game, a majority is not needed to hang someone - the person with most votes is hanged.'
+        },
+        {
+            name: 'Church',
+            effect: 'While intact, Peasants can\'t die.'
+        },
+        {
+            name: 'Tower',
+            effect: 'Cards here are face up.'
+        },
+        {
+            name: 'Tavern',
+            effect: 'Has only Yellow Cards, but at game start a random player becomes Drunk.'
+        },
+        {
+            name: 'Fields',
+            effect: 'Has only 2 cards and no Red card.'
+        },
+        {
+            name: 'Marketplace',
+            effect: 'Has twice as many cards. When attacked, 2 players must each Blow a card here.',
+        },
+        {
+            name: 'Catacombs',
+            effect: 'Cards here are ordered by color (Red is first).'
+        },
+        {
+            name: 'Circus',
+            effect: 'Cards Blown here go to a random player instead of who Blew it.'
+        },
+        {
+            name: 'Library',
+            effect: 'On game start, the Storyteller gives 2 pieces of information. One is false, one is true.'
+        },
+    ]
+    return locations
 }
 
 export function getRolesByDifficulty(difficulty) {

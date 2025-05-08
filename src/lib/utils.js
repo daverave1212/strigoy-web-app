@@ -183,7 +183,9 @@ export async function drawTextWordsWithHTML({
 
     isCenteredY = true,
     strokeColor,
-    strokeSize
+    strokeSize,
+
+    isDebug = false
 }) {
     const ctx = canvas.getContext('2d')
     saveCtxSettings(ctx, 'drawTextLines')
@@ -282,7 +284,20 @@ export async function drawTextWordsWithHTML({
             continue
         }
 
+        
+
         drawText(drawTextParms)
+    }
+
+    if (isDebug) {
+        ctx.beginPath();
+        ctx.lineWidth = "6";
+        ctx.strokeStyle = "red";
+        ctx.fillStyle = "red";
+        const fullHeight = wordsWithPos[wordsWithPos.length - 1].y - wordsWithPos[0].y
+        console.log({wordsWithPos, width, fullHeight})
+        ctx.rect(x + wordsWithPos[0].x, y + wordsWithPos[0].y, width, fullHeight);
+        ctx.fill();
     }
 
     loadCtxSettings(ctx, 'drawTextLines')
@@ -344,7 +359,12 @@ export function splitTextByXML(text) {
     const children = Array.from(xml.childNodes)
     return children.map(node => node.nodeName == '#text' ? node.nodeValue : node)
 }
-
+export function splitTextByXMLV2(text) {
+    let textParts = []
+    for (let i = 0; i < text.length; i++) {
+        const char = text.charAt(i)
+    }
+}
 
 function getLines(ctx, text, maxWidth) {
     var words = text.split(" ");
@@ -407,8 +427,7 @@ async function getWordsToDrawXML({
         } else {
             wordWidth = ctx.measureText(word).width
         }
-
-        if (x >= maxWidth) {
+        if (x + wordWidth >= maxWidth) {
             x = 0
             y += lineHeight
         }
