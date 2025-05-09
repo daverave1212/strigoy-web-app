@@ -82,7 +82,7 @@
 <script>
     import { createEventDispatcher } from "svelte";
     import { isSecretBOTCT } from "../stores/secret-botct-store";
-    import { EVIL_COLOR, MORNING_COLOR, NIGHTLY, NIGHTLY_COLOR, OTHER_CATEGORY, REGULAR, SETUP, SETUP_COLOR, SPECIAL_COLOR, SPECIAL_NIGHTLY, SPECIAL_SETUP, WEREWOLVES } from "../lib/Database";
+    import { EVIL_COLOR, MORNING_COLOR, NIGHTLY, NIGHTLY_COLOR, OTHER_CATEGORY, PINK_COLOR, REGULAR, SETUP, SETUP_COLOR, SPECIAL_COLOR, SPECIAL_NIGHTLY, SPECIAL_SETUP, WEREWOLVES } from "../lib/Database";
 
     const categoryToRibbon = {
         [REGULAR]: null,
@@ -114,6 +114,8 @@
         (category != null && categoryToRibbon[category] != null)? categoryToRibbon[category] :
         null
     $: badgeText =
+        role.worth == null?
+            null:
         role.worth <= -2?
             '--':
         role.worth <= -1?
@@ -131,7 +133,7 @@
         '~': SPECIAL_COLOR,
         '+': SETUP_COLOR,
         '++': NIGHTLY_COLOR,
-        '?': '#CC55AA'
+        '?': PINK_COLOR
     }
         
 </script>

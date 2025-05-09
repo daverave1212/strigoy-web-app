@@ -31,7 +31,7 @@
     import { onMount } from "svelte";
     import { clearCanvas, clearRect, drawImageOnCanvasAsync, drawText, drawTextLines, drawTextWordsWithHTML } from "../../lib/utils";
     import RoleChooserDrawer from "../../components/RoleChooserDrawer.svelte";
-    import { getNormalRolePriority, getRole, getRoles, getSortRolesWithPriorityFunction, WEREWOLVES } from "../../lib/Database";
+    import { EVIL_COLOR, getLocationCards, getNormalRolePriority, getRole, getRoles, getSortRolesWithPriorityFunction, SPECIAL_COLOR, WEREWOLVES } from "../../lib/Database";
     import { getMods } from "../../lib/ModsDatabase";
 
     const cardWidth = 756
@@ -39,6 +39,7 @@
 
     const allRoles = getSortRolesWithPriorityFunction(getRoles(), getNormalRolePriority)
     const allMods = getMods()
+    const allEvents = getLocationCards()
 
     let canvasDiv
     let cardCanvas
@@ -53,7 +54,11 @@
     async function draw(objectBeingDrawn, canvas, x, y) {
         clearRect(canvas, x, y, cardWidth, cardHeight)
         await drawImageOnCanvasAsync(canvas, `/images/roles/${objectBeingDrawn.name}.png`, x, y, cardWidth, cardWidth)
-        await drawImageOnCanvasAsync(canvas, '/images/card-templating/CardTemplate.png', x, y)
+        if (objectBeingDrawn.isLocationCard) {
+            await drawImageOnCanvasAsync(canvas, `/images/card-templating/CardTemplate_${objectBeingDrawn.color}.png`, x, y)
+        } else {
+            await drawImageOnCanvasAsync(canvas, '/images/card-templating/CardTemplate.png', x, y)
+        }
         drawText({
             canvas,
             font: '64px Aladin',
@@ -96,6 +101,9 @@
         }
         if (objectBeingDrawn.isMod) {
             await drawImageOnCanvasAsync(canvas, '/images/card-templating/Mod Badge.png', x + cardWidth - 196 - 20, y + 0 + 20)
+        }
+        if (objectBeingDrawn.isLocationCard) {
+            await drawImageOnCanvasAsync(canvas, `/images/card-templating/LC Badge ${objectBeingDrawn.color}.png`, x + cardWidth - 196 - 20, y + 0 + 20)
         }
         if (objectBeingDrawn.type != null) {
             const tribeBadgeHeight = 66
@@ -172,6 +180,7 @@
 <div class="flex-content padded center">
     <button class="btn colorful" on:click={() => { roleChooserObjects = allMods; isRoleChooserOpen = true}}>Open Mods</button>
     <button class="btn blue" on:click={() => { roleChooserObjects = allRoles; isRoleChooserOpen = true }}>Open Roles</button>
+    <button class="btn" style={`background-color: ${SPECIAL_COLOR};`} on:click={() => { roleChooserObjects = allEvents; isRoleChooserOpen = true }}>Open Events</button>
 </div>
 <div class="flex-content center">
     <button class="btn colorful" on:click={() => generatePrints()}>Generate Prints</button>

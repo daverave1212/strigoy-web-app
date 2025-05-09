@@ -8,7 +8,7 @@
     import RoleCard from "../../components/RoleCard.svelte";
     import RoleList from "../../components/RoleList.svelte";
     import RoleListWithRoles from "../../components/RoleListWithRoles.svelte";
-    import { ADVANCED, BEGINNER, COMPLETE, difficultyDescriptions, difficultyNames, getAllRoleDifficulties, getNormalRolePriority, getRoles, getRolesByDifficulty, getRolesForDifficulty, getSortRolesWithPriorityFunction, INTERMEDIATE, WEREWOLVES } from "../../lib/Database";
+    import { ADVANCED, BEGINNER, COMPLETE, difficultyDescriptions, difficultyNames, getAllRoleDifficulties, getLocationCards, getNormalRolePriority, getRoles, getRolesByDifficulty, getRolesForDifficulty, getSortRolesWithPriorityFunction, INTERMEDIATE, WEREWOLVES } from "../../lib/Database";
     import { getMods } from "../../lib/ModsDatabase";
 
     let currentInspectorObject = null
@@ -43,4 +43,7 @@
 
     <h2 class="center-text margin-top-4">Mods</h2>
     <RoleListWithRoles roles={getMods()} on:role-click={evt => onClickOnRole(evt.detail.role)}/>
+
+    <h2 class="center-text margin-top-4">Events</h2>
+    <RoleListWithRoles roles={getLocationCards()} on:role-click={evt => onClickOnRole(evt.detail.role)}/>
 </div>

@@ -64,6 +64,7 @@ export const EVIL_COLOR = 'rgb(194, 5, 30)'
 export const SETUP_COLOR = 'rgb(90, 138, 0)'
 export const NIGHTLY_COLOR = 'rgb(88, 50, 255)'
 export const MORNING_COLOR = 'rgb(200, 175, 50)'
+export const PINK_COLOR = '#CC55AA'
 export const SPECIAL_COLOR = '#444444'
 
 const isWorthBalanceAcceptable = worthBalanceFloat => worthBalanceFloat >= 0 && worthBalanceFloat <= 0.75
@@ -154,7 +155,6 @@ export const getRoles = () => {
         {
             name: "Nosferatu",
             isWerewolf: true,
-            nPlayers: 10,
             team: WEREWOLVES,
             worth: -2,
             category: NIGHTLY_WEREWOLVES,
@@ -165,81 +165,56 @@ export const getRoles = () => {
             ribbonText: 'EVIL PHASE'
         },
         {
-            name: "Samca",
-            isWerewolf: true,
-            nPlayers: 10,
-            team: WEREWOLVES,
-            worth: -4.5,
-            category: NIGHTLY_WEREWOLVES,
-            difficulty: BROKEN,
-            type: 'Nightly',
-            effect: 'You are a Evil. On the first night, you know the color of the first card in each location',
-        },
-        {
-            name: "Hazer",
-            nPlayers: 11,
-            team: WEREWOLVES,
-            worth: -1.75,
-            category: SPECIAL_NIGHTLY,
-            difficulty: BROKEN,
-            type: 'Special Nightly',
-            effect: 'Every night and at game start, when Strigoys open eyes, point left or right! The closest alive Townsfolk in that direction gets wrong information, or their ability does nothing.',
-            notes: 'You are part of the Strigoys team but not a Strigoy, and open your eyes on setup. Townsfolk win if all Strigoys are killed.',
-            ribbonText: 'SE + NI'
-        },
-        {
-            name: "Silencer",
-            nPlayers: 12,
-            team: WEREWOLVES,
-            worth: -2,
-            category: SPECIAL_NIGHTLY,
-            difficulty: BROKEN,
-            effect: 'Once per game, when Strigoys open eyes, raise your arm. ALL Townsfolk abilities have no effect until next night. Then you die.',
-            notes: 'You never open your eyes. The narrator will show the Strigoys who you are.',
-            narratorNotes: 'Pay attention to the Silencer\'s arm sign. When they raise their arm, announce that the Silencer silenced everyone, and nobody\'s role does anything until the start of next night.',
-            ribbonColor: EVIL_COLOR,
-            ribbonText: 'NEGATIVE'
-        },
-        {
-            name: "Yaga (Priest)",
-            nPlayers: 12,
-            team: WEREWOLVES,
-            worth: -3.5,
-            category: NIGHTLY,
-            difficulty: BROKEN,
-            isSpecial: true,
-            yagaRole: 'Priest',
-            effect: 'You pretend to be a Priest. The narrator will say "Priest, wake up" as normal. There is no other Priest in this game.',
-            notes: 'You don\'t actually have any powers. Just pretend you do.',
-            narratorNotes: 'As the narrator, do say "Priest, wake up". Continue with the normal routine, but Yaga can\'t actually save anyone.',
-            type: 'Nightly'
-        },
-        {
-            name: "Yaga (Town Guard)",
-            nPlayers: 12,
-            team: WEREWOLVES,
-            worth: -3.5,
-            category: NIGHTLY,
-            difficulty: BROKEN,
-            isSpecial: true,
-            yagaRole: 'Town Guard',
-            effect: 'You pretend to be a Town Guard. The narrator will say "Town Guard, wake up" as normal. There is no other Town Guard in this game.',
-            notes: 'You don\'t actually have any powers. Just pretend you do.',
-            narratorNotes: 'As the narrator, do say "Town Guard, wake up". Continue with the normal routine, but Yaga can\'t actually protect anyone.',
-            type: 'Nightly'
-        },
-        {
             name: "Little Villain",
             nPlayers: 0,
             team: WEREWOLVES,
-            worth: -0.25,
+            worth: -2,
             category: EVIL_SETUP,
             difficulty: ADVANCED,
-            effect: "You are <b>Evil,</b> but you don't know who other Evils are.",
+            effect: "You win if the Evils win. You don't know who the Evils are. Evils know who you are.",
             notes: 'At game start, the narrator will point the Evils to you. You NEVER open your eyes.',
             ribbonColor: EVIL_COLOR,
             ribbonText: 'NEGATIVE'
         },
+        {
+            name: "Werewolf",
+            team: TOWNSFOLK,
+            worth: 1,
+            category: SPECIAL_NIGHTLY,
+            difficulty: BEGINNER,
+            effect: "At night, you can't die.<br/> You die immediately if both your neighbors are dead or Evil.",
+            type: 'Nightly',
+            deathReminder: "Remember the Werewolf can't be killed at night."
+        },
+        {
+            name: "Cat",
+            nPlayers: 10,
+            team: TOWNSFOLK,
+            worth: 2,
+            category: REGULAR,
+            difficulty: BEGINNER,
+            effect: 'You have 2 lives (unless hanged). If you would die the first time, nothing happens.',
+            notes: "You might not know you lost one life.",
+            deathReminder: "Was it the cat's last life?"
+        },
+        {
+            name: "Blacksmith",
+            nPlayers: 10,
+            team: TOWNSFOLK,
+            worth: 2,
+            category: REGULAR,
+            difficulty: BEGINNER,
+            effect: "While you're holding an <b>Item</b>, your neighbors can't die at night.",
+            notes: "You might not know you lost one life.",
+            deathReminder: "Was it the cat's last life?"
+        },
+    ]
+    return roles
+}
+
+export const getRoles_OLD = () => {
+    const roles = [
+        
         {
             name: "Bitten",
             nPlayers: 12,
@@ -530,16 +505,6 @@ export const getRoles = () => {
             notes: "The night may pass with no one being eaten."
         },
         {
-            name: "Cat",
-            nPlayers: 10,
-            team: TOWNSFOLK,
-            worth: 1.5,
-            category: REGULAR,
-            difficulty: BROKEN,
-            effect: 'You have 2 lives (unless hanged). If you would die the first time, nothing happens.',
-            notes: "You might not know you lost one life."
-        },
-        {
             name: "Bard",
             nPlayers: 10,
             team: TOWNSFOLK,
@@ -685,6 +650,70 @@ export const getRoles = () => {
             notes: "There will be 2 nights in a row, without everyone waking up in between."
         },
         {
+            name: "Samca",
+            isWerewolf: true,
+            nPlayers: 10,
+            team: WEREWOLVES,
+            worth: -4.5,
+            category: NIGHTLY_WEREWOLVES,
+            difficulty: BROKEN,
+            type: 'Nightly',
+            effect: 'You are a Evil. On the first night, you know the color of the first card in each location',
+        },
+        {
+            name: "Hazer",
+            nPlayers: 11,
+            team: WEREWOLVES,
+            worth: -1.75,
+            category: SPECIAL_NIGHTLY,
+            difficulty: BROKEN,
+            type: 'Special Nightly',
+            effect: 'Every night and at game start, when Strigoys open eyes, point left or right! The closest alive Townsfolk in that direction gets wrong information, or their ability does nothing.',
+            notes: 'You are part of the Strigoys team but not a Strigoy, and open your eyes on setup. Townsfolk win if all Strigoys are killed.',
+            ribbonText: 'SE + NI'
+        },
+        {
+            name: "Silencer",
+            nPlayers: 12,
+            team: WEREWOLVES,
+            worth: -2,
+            category: SPECIAL_NIGHTLY,
+            difficulty: BROKEN,
+            effect: 'Once per game, when Strigoys open eyes, raise your arm. ALL Townsfolk abilities have no effect until next night. Then you die.',
+            notes: 'You never open your eyes. The narrator will show the Strigoys who you are.',
+            narratorNotes: 'Pay attention to the Silencer\'s arm sign. When they raise their arm, announce that the Silencer silenced everyone, and nobody\'s role does anything until the start of next night.',
+            ribbonColor: EVIL_COLOR,
+            ribbonText: 'NEGATIVE'
+        },
+        {
+            name: "Yaga (Priest)",
+            nPlayers: 12,
+            team: WEREWOLVES,
+            worth: -3.5,
+            category: NIGHTLY,
+            difficulty: BROKEN,
+            isSpecial: true,
+            yagaRole: 'Priest',
+            effect: 'You pretend to be a Priest. The narrator will say "Priest, wake up" as normal. There is no other Priest in this game.',
+            notes: 'You don\'t actually have any powers. Just pretend you do.',
+            narratorNotes: 'As the narrator, do say "Priest, wake up". Continue with the normal routine, but Yaga can\'t actually save anyone.',
+            type: 'Nightly'
+        },
+        {
+            name: "Yaga (Town Guard)",
+            nPlayers: 12,
+            team: WEREWOLVES,
+            worth: -3.5,
+            category: NIGHTLY,
+            difficulty: BROKEN,
+            isSpecial: true,
+            yagaRole: 'Town Guard',
+            effect: 'You pretend to be a Town Guard. The narrator will say "Town Guard, wake up" as normal. There is no other Town Guard in this game.',
+            notes: 'You don\'t actually have any powers. Just pretend you do.',
+            narratorNotes: 'As the narrator, do say "Town Guard, wake up". Continue with the normal routine, but Yaga can\'t actually protect anyone.',
+            type: 'Nightly'
+        },
+        {
             name: "Madman",
             nPlayers: 0,
             team: OTHER,
@@ -753,6 +782,219 @@ export function getLocations() {
         },
     ]
     return locations
+}
+
+export function getLocationCards() {
+    const cards = [
+        {
+            color: "Purple",
+            name: "Death and Decay",
+            effect: "Choose a Location. <b>Blow</b> a card from it. Evils will choose someone to instantly kill tonight.",
+            isLocationCard: true
+        },
+        {
+            color: "Purple",
+            name: "Plague Infection",
+            effect: "When you draw this, you die. Then a random player gets a Spreading Infection.",
+            notes: "If the Spreading Infection is already in the game, use a random unused Yellow card instead.",
+            isLocationCard: true
+            
+        },
+        {
+            color: "Purple",
+            name: "Sucked Blood",
+            effect: "Next time after an Evil dies, a random Townsfolk becomes a Ghoul.",
+            notes: "During that Evil phase, the Storyteller will touch someone to wake up to know they became a Ghoul.",
+            isLocationCard: true
+        },
+        
+        
+        {
+            color: "Red",
+            name: "Stakes and Crosses",
+            effect: "Choose a Location. Blow a card from it.",
+            isLocationCard: true
+        },
+        {
+            color: "Red",
+            name: "Killing",
+            effect: "Next Evil phase, the Evils will choose one more player to instantly kill.",
+            isLocationCard: true
+        },
+        {
+            color: "Red",
+            name: "Ambush",
+            effect: "You die.",
+            isLocationCard: true
+        },
+
+
+        {
+            color: "Yellow",
+            name: "Famine",
+            effect: "Choose a Location with at least 2 Cards. <b>Blow</b> a card from it. <i>If there isn't one, get a random unused Yellow card instead.</i>",
+            isLocationCard: true
+        },
+        {
+            color: "Yellow",
+            name: "Pentagram",
+            effect: "Refresh the Abilities of all Evils. A random player who is not a Peasant gets a random unused Green card.",
+            isLocationCard: true
+        },
+        {
+            color: "Yellow",
+            name: "Double Attack",
+            effect: "Next Evil phase, the Evils will attack 2 Locations. You don't get to protect 2 locations.",
+            isLocationCard: true
+        },
+        {
+            color: "Yellow",
+            name: "Swamp Gas",
+            effect: "A random player becomes <b>Drunk</b>. A Location publicly chosen by the Storyteller can't be protected tomorrow.",
+            isLocationCard: true
+        },
+        {
+            color: "Yellow",
+            name: "Bait",
+            effect: "<b>Item.</b> The next time Townsfolk successfully protect a Location, you die.",
+            isLocationCard: true
+        },
+        {
+            color: "Yellow",
+            name: "Mass Hysteria",
+            effect: "The next <b>Blown</b> card is replaced by an unused card that is <i>one color worse</i>.",
+            notes: "For example, a Green card becomes Yellow, Yellow becomes Red, Red becomes Purple.",
+            isLocationCard: true
+        },
+        {
+            color: "Yellow",
+            name: "Damned Excavation",
+            effect: "Your 2 alive neighbors get a random unused Green and Yellow card (one each). You choose who gets which.",
+            isLocationCard: true
+        },
+        {
+            color: "Yellow",
+            name: "Dead Man's Map",
+            effect: "<b>Item.</b> When the Townsfolk successfully protect a Location, <b>Blow</b> a card from a chosen Location and get a random unused Green card.",
+            isLocationCard: true
+        },
+        {
+            color: "Yellow",
+            name: "Winter Is Coming",
+            effect: "Next day lasts 5 minutes. If overtime, a talkative or silent player must <b>Blow</b> a card from a Location they choose.",
+            notes: "Day counts as all the time from when players wake up to when they go to sleep. Includes protecting and hanging.",
+            isLocationCard: true
+        },
+        {
+            color: "Yellow",
+            name: "Rabies",
+            effect: "Item. After the next Night, you die.",
+            isLocationCard: true
+        },
+        {
+            color: "Yellow",
+            name: "Spying Through Walls",
+            effect: "The next time 2 players want to wake up (legally), one of them dies (prioritizes Townsfolk death).",
+            notes: "A Townsfolk from them dies if there is any. Ghouls, don't screw up!",
+            isLocationCard: true
+        },
+        {
+            color: "Yellow",
+            name: "Cursed Amulet",
+            effect: "<b>Item.</b> While you're alive, your closest alive neighbors can't vote and their Role Abilities don't work.",
+            isLocationCard: true
+        },
+
+
+        {
+            color: "Green",
+            name: "Garlic",
+            effect: "<b>Item. Use once:</b> Today, protect one more Location. If you do, a random player becomes <b>Drunk</b>.",
+            notes: "Alternatively, you can use Garlic to cure Rabies or Infections!",
+            isLocationCard: true
+        },
+        {
+            color: "Green",
+            name: "Elden Tools",
+            effect: "<b>Item. Use once:</b> Add a random unused Red Card on top of any Location.",
+            isLocationCard: true
+        },
+        {
+            color: "Green",
+            name: "Crucifix",
+            effect: "<b>Item. Use once:</b> Choose a player. The next time they would die, lose this <b>Item</b> instead.",
+            isLocationCard: true
+        },
+        {
+            color: "Green",
+            name: "Holy Book",
+            effect: "<b>Item. Use once: Blow</b> a card from a Location. If you don't die, resurrect a dead player.",
+            isLocationCard: true
+        },
+        {
+            color: "Green",
+            name: "Grampa's Shield",
+            effect: "<b>Item.</b> The next time you would die, you don't. Then lose this <b>Item.</b>",
+            isLocationCard: true
+        },
+        {
+            color: "Green",
+            name: "Crossbow",
+            effect: "<b>Item. Use once:</b> Kill a player that is not your closest alive neighbor.",
+            isLocationCard: true
+        },
+        {
+            color: "Green",
+            name: "Blood Dagger",
+            effect: "<b>Item. Kept through death.</b> When someone else would die, you die instead. You can vote while dead.",
+            isLocationCard: true
+        },
+        {
+            color: "Green",
+            name: "Monocle",
+            effect: "<b>Item. Use once:</b> The Storyteller secretly tells you the role of another random player.",
+            isLocationCard: true
+        },
+        {
+            color: "Green",
+            name: "Wooden Stake",
+            effect: "<b>Item. Use once:</b> Choose a player. If their Role name contains letter 'O', they die.",
+            isLocationCard: true
+        },
+        {
+            color: "Green",
+            name: "Mind Parasite",
+            effect: "<b>Get an extra random Role card.</b>",
+            notes: "If it's Evil, you become Evil. You do NOT have 2 lives. You're not a cat, get over it.",
+            isLocationCard: true
+        },
+        {
+            color: "Green",
+            name: "Ouija Board",
+            effect: "<b>Item. Use once:</b> Choose a dead player. Reveal their role.",
+            isLocationCard: true
+        },
+        {
+            color: "Green",
+            name: "Medicine",
+            effect: "<b>Item. Use once:</b> Remove an item from a different player (if any). They then get a random unused Green Card.",
+            isLocationCard: true
+        },
+        {
+            color: "Green",
+            name: "Torch",
+            effect: "<b>Item.</b> When a player dies, reveal their Role card. Then lose this <b>Item.</b>",
+            isLocationCard: true
+        },
+        {
+            color: "Green",
+            name: "Illumination",
+            effect: "Choose a Location. Take its first card, look at it privately, then put it back on any Location.",
+            isLocationCard: true
+        },
+
+    ]
+    return cards
 }
 
 export function getRolesByDifficulty(difficulty) {
