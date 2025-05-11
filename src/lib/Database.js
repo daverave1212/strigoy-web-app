@@ -8,6 +8,8 @@ export const OTHER = 'other'
 export const ALL_EVILS = 0
 export const BEGINNER = 1
 export const INTERMEDIATE = 2
+export const CHURCH = 2.25
+export const TOWN_CENTER = 2.35
 export const CHAOS = 2.5
 export const ADVANCED = 3
 export const DRUNKEN_TAVERN = 3.5
@@ -23,6 +25,8 @@ export const difficultyNames = {
     [ALL_EVILS]: 'Evils',
     [BEGINNER]: 'Base Roles',
     [INTERMEDIATE]: 'Intermediate',
+    [CHURCH]: 'Churchmen & Law',
+    [TOWN_CENTER]: 'Townsfolk Importants',
     [ADVANCED]: 'Advanced & Complex',
     [DRUNKEN_TAVERN]: 'Drunken Tavern',
     [FOR_MODS]: 'Mods & Points',
@@ -36,6 +40,8 @@ export const difficultyNames = {
 export const difficultyDescriptions = {
     [ALL_EVILS]: 'These are all the Evils in the game. Not all may be used in the game you are playing. For example, Vampires are only used for 7 or 8 players.',
     [BEGINNER]: 'Use these roles for the base game. Every night, call out each nightly role, even if no player is that role. The game will automatically show you the roles you should remember.',
+    [CHURCH]: 'More balanced, easy to understand roles to make the game more intriguing! Who will be who?',
+    [TOWN_CENTER]: ""
     [INTERMEDIATE]: 'Extra roles to add to make it more interesting. Every game, there should NOT be both a Town Guard and a Priest (unless there are more than 15 players). You don\'t have to play with all of them. Only choose which roles you like to play with.',
     [CHAOS]: 'Roles that add more randomnes and crazyness in the game. Everyone will go mad!',
     [ADVANCED]: 'Roles for advanced players who know the game and want more challenge. Beware: having these roles in the game will make it more difficult to narrate!',
@@ -167,7 +173,7 @@ export const getRoles = () => {
         {
             name: "Little Villain",
             nPlayers: 0,
-            team: WEREWOLVES,
+            team: TOWNSFOLK,
             worth: -2,
             category: EVIL_SETUP,
             difficulty: ADVANCED,
@@ -181,86 +187,277 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 1,
             category: SPECIAL_NIGHTLY,
-            difficulty: BEGINNER,
-            effect: "At night, you can't die.<br/> You die immediately if both your neighbors are dead or Evil.",
-            type: 'Nightly',
-            deathReminder: "Remember the Werewolf can't be killed at night."
+            difficulty: INTERMEDIATE,
+            effect: "You can't die at night.<br/>If suspected of being a Werewolf, you die immediately.",
+            notes: "If players check everyone of being a Werewolf or try to cheat suspicion, it doesn't work! Apply common sense.",
+            deathReminder: "Remember the Werewolf can't be killed at night.",
+            ribbonColor: MORNING_COLOR,
+            ribbonText: 'REMINDER'
         },
         {
             name: "Cat",
             nPlayers: 10,
             team: TOWNSFOLK,
-            worth: 2,
+            worth: 1,
             category: REGULAR,
             difficulty: BEGINNER,
-            effect: 'You have 2 lives (unless hanged). If you would die the first time, nothing happens.',
+            effect: 'You have 2 lives. If you would die the first time, nothing happens.',
             notes: "You might not know you lost one life.",
             deathReminder: "Was it the cat's last life?"
         },
         {
             name: "Blacksmith",
-            nPlayers: 10,
             team: TOWNSFOLK,
             worth: 2,
             category: REGULAR,
-            difficulty: BEGINNER,
+            difficulty: INTERMEDIATE,
             effect: "While you're holding an <b>Item</b>, your neighbors can't die at night.",
             notes: "You might not know you lost one life.",
             deathReminder: "Was it the cat's last life?"
         },
-    ]
-    return roles
-}
-
-export const getRoles_OLD = () => {
-    const roles = [
-        
         {
-            name: "Bitten",
-            nPlayers: 12,
+            name: "Town Guard",
+            team: TOWNSFOLK,
+            worth: 1,
+            category: NIGHTLY,
+            difficulty: BEGINNER,
+            effect: "<b>Hand Raise:</b> Choose another player to protect. While you're alive, they can't die at night.",
+            notes: "Using this ability again changes your protectee.",
+            type: 'Nightly',
+            ribbonText: 'NIGHT',
+            ribbonColor: NIGHTLY_COLOR,
+        },
+        {
+            name: "Priest",
+            team: TOWNSFOLK,
+            worth: 1,
+            category: NIGHTLY,
+            difficulty: CHURCH,
+            effect: "<b>Hand Raise:</b> Choose a dead player to resurrect. Then you die.",
+            type: 'Nightly',
+            ribbonText: 'NIGHT',
+            ribbonColor: NIGHTLY_COLOR,
+        },
+        {
+            name: "Assassin",
             team: TOWNSFOLK,
             worth: 0,
-            category: SPECIAL_NIGHTLY,
-            difficulty: EXTRAS,
-            effect: 'When the Strigoys open their eyes, make a ROCK sign with your hand. You become a Werewolf. You may open your eyes.',
+            category: NIGHTLY,
+            difficulty: INTERMEDIATE,
+            effect: "<b>Hand Raise:</b> Choose a player to instantly kill.",
             type: 'Nightly',
+            ribbonText: 'NIGHT',
+            ribbonColor: NIGHTLY_COLOR,
+        },
+        {
+            name: "Seer",
+            team: TOWNSFOLK,
+            worth: 0,
+            category: NIGHTLY,
+            difficulty: BEGINNER,
+            effect: "<b>Hand Raise:</b> Choose a Location. The Storyteller tells you the color of its top card.",
+            type: 'Nightly',
+            ribbonText: 'NIGHT',
+            ribbonColor: NIGHTLY_COLOR,
+        },
+        {
+            name: "Fortune Teller",
+            team: TOWNSFOLK,
+            worth: 1,
+            category: NIGHTLY,
+            difficulty: BEGINNER,
+            effect: "<b>Hand Raise:</b> Choose 2 players. The Storyteller shows YES if exactly one of them is Evil.",
+            type: 'Nightly',
+            ribbonText: 'NIGHT',
+            ribbonColor: NIGHTLY_COLOR,
+        },
+        {
+            name: "Politician",
+            team: TOWNSFOLK,
+            worth: 0,
+            category: NIGHTLY,
+            difficulty: CHURCH,
+            effect: "<b>Hand Raise:</b> Choose a player. The Storyteller shows YES if they are a Peasant.",
+            notes: "They could be alive or dead.",
+            type: 'Nightly',
+            ribbonText: 'NIGHT',
+            ribbonColor: NIGHTLY_COLOR,
+        },
+        {
+            name: "Inspector",
+            team: TOWNSFOLK,
+            worth: 0,
+            category: NIGHTLY,
+            difficulty: ADVANCED,
+            effect: "<b>Hand Raise:</b> Learn how many people away from you is the closest Evil.<br/><i>This has a margin of error of 1.</i>",
+            notes: "E.g. your neighbors are 1 person away, but with a margin of error of 1, the Storyteller may say 2. Dead players count.",
+            type: 'Nightly',
+            ribbonText: 'NIGHT',
+            ribbonColor: NIGHTLY_COLOR,
+        },
+        {
+            name: "Scout",
+            team: TOWNSFOLK,
+            worth: 1,
+            category: NIGHTLY,
+            difficulty: BEGINNER,
+            effect: "<b>Hand Raise:</b> Learn one Location the Evils did NOT just attack.",
+            type: 'Nightly',
+            ribbonText: 'NIGHT',
+            ribbonColor: NIGHTLY_COLOR,
+        },
+        {
+            name: "Mime",
+            team: TOWNSFOLK,
+            worth: 0,
+            category: NIGHTLY,
+            difficulty: ADVANCED,
+            effect: "<b>Hand Raise:</b> Choose a player. Copy their ability right now (or until next night).",
+            notes: "If you don't know their ability, tough luck! Guess!",
+            type: 'Nightly',
+            ribbonText: 'NIGHT',
+            ribbonColor: NIGHTLY_COLOR,
+        },
+        {
+            name: "Skinny Kid",
+            team: TOWNSFOLK,
+            worth: -1,
+            category: REGULAR_NEGATIVE,
+            difficulty: BEGINNER,
+            effect: "When you die, reveal your Role card.<br/>The Evils will kill an extra player next night.",
+            deathReminder: "Next night, Evils will kill an extra player.",
             ribbonColor: EVIL_COLOR,
             ribbonText: 'NEGATIVE'
         },
         {
-            name: "Bell Ringer",
-            nPlayers: 12,
+            name: "Great Grandfather",
             team: TOWNSFOLK,
-            worth: 1.25,
+            worth: -1,
+            category: REGULAR_NEGATIVE,
+            difficulty: BEGINNER,
+            effect: "When you die, reveal your Role card.<br/>Choose someone to get a random unused Yellow card",
+            deathReminder: "Great Grandfather gives someone a new Yellow Card.",
+            ribbonColor: EVIL_COLOR,
+            ribbonText: 'NEGATIVE'
+        },
+        {
+            name: "Grandma",
+            team: TOWNSFOLK,
+            worth: -1,
+            category: REGULAR_NEGATIVE,
+            difficulty: INTERMEDIATE,
+            effect: "When you die, an Evil's ability is secretly refreshed (do NOT reveal your Role card).",
+            notes: "The Storyteller will let the Evil know their ability was refreshed.",
+            deathReminder: "Refresh an Evil's ability.",
+            ribbonColor: EVIL_COLOR,
+            ribbonText: 'NEGATIVE'
+        },
+        {
+            name: "Bartender",
+            team: TOWNSFOLK,
+            worth: 0,
+            category: REGULAR_NEGATIVE,
+            difficulty: ADVANCED,
+            effect: "When you die, someone (secretly) becomes <b>Drunk</b> (do NOT reveal your Role card).",
+            deathReminder: "You will secretly choose someone will become Drunk.",
+            ribbonColor: EVIL_COLOR,
+            ribbonText: 'NEGATIVE'
+        },
+        {
+            name: "Bombmaker",
+            team: TOWNSFOLK,
+            worth: 0,
+            category: REGULAR_NEGATIVE,
+            difficulty: INTERMEDIATE,
+            effect: "When you die, reveal your Role card.<br/>Someone you choose must <b>Blow</b> a card from any Location they want.",
+            deathReminder: "Bombmaker will choose someone to Blow a card.",
+            ribbonColor: EVIL_COLOR,
+            ribbonText: 'NEGATIVE'
+        },
+        {
+            name: "Santa Claus",
+            team: TOWNSFOLK,
+            worth: 1,
+            category: REGULAR_NEGATIVE,
+            difficulty: ADVANCED,
+            effect: "When you die (except by hanging), reveal your Role card.<b/>EVERYONE alive has 50% chance to get a random unused Green Card.",
+            deathReminder: "Reveal the Santa. All alive players have 50% chance to get a Green card."
+        },
+        {
+            name: "Mayor",
+            team: TOWNSFOLK,
+            worth: 0,
             category: REGULAR,
-            difficulty: BROKEN,
-            effect: 'Every morning, if you are alive, the people who just died at night can talk and vote today (their powers do not work).',
-            notes: 'The narrator still announces who died this morning, but also announces Bell Ringer is in game. When night falls, they die immediately.',
+            difficulty: ADVANCED,
+            effect: "Your vote secretly counts as 3 votes.",
+            ribbonText: 'REMINDER',
             ribbonColor: MORNING_COLOR,
-            ribbonText: 'MORNING'
+        },
+        {
+            name: "Goblins",
+            team: TOWNSFOLK,
+            worth: 0,
+            category: REGULAR,
+            difficulty: ADVANCED,
+            effect: "You are a copy of someone else's role. If someone suspects you're the Goblins, you die immediately.",
+            notes: "If players check everyone of being Goblins or try to cheat suspicion, it doesn't work! Apply common sense.",
+            ribbonText: 'SETUP',
+            ribbonColor: SETUP_COLOR,
+        },
+        {
+            name: "Joe",
+            team: TOWNSFOLK,
+            worth: 0,
+            category: REGULAR,
+            difficulty: ADVANCED,
+            effect: "You believe you are (and get) a different Role card (not this card).<br/>You are actually a Peasant. Your Ability acts as if you're <b>Drunk.</b>",
+            notes: "If players check everyone of being Goblins or try to cheat suspicion, it doesn't work! Apply common sense.",
+            ribbonText: 'SETUP',
+            ribbonColor: SETUP_COLOR,
+        },
+        {
+            name: "Thief",
+            nPlayers: 0,
+            team: TOWNSFOLK,
+            worth: 0,
+            category: REGULAR,
+            difficulty: CHAOS,
+            effect: 'At any point in the game, reveal your card and pick another player. You each get a new random role.',
+            notes: 'You could get an Evil! If an Evil player became a different role, they remain Evil.'
         },
         {
             name: "Philosopher",
-            nPlayers: 0,
             team: TOWNSFOLK,
-            worth: 1.25,
+            worth: 0,
             category: SPECIAL_SETUP,
             difficulty: INTERMEDIATE,
-            effect: 'When you get your role card, pick a different role from 3 unused options (could be a Strigoy)!',
+            effect: 'When you get your role card, pick a different role from 3 unused options (could be an Evil)!',
             narratorNotes: 'Draw 3 role cards from the unused roles (randomly, or as you like) and let the Philosopher pick one. Make sure you change the Philosopher\'s role on the app.',
             ribbonText: '*SETUP',
             ribbonColor: SETUP_COLOR,
-    
         },
         {
             name: "Fallen Angel",
-            nPlayers: 0,
             team: TOWNSFOLK,
-            worth: 1,
+            worth: 0,
             category: REGULAR,
             difficulty: FOR_MODS,
-            effect: "If you win (even if dead), secretly pick someone else to become the Fallen Angel next game. If you lose, you can pick your role next game.",
+            effect: "  If you win and are still alive, you start next match with a random unused Green Card and you can secretly pick someone else to become the Fallen Angel next game. Otherwise, you can pick your role next game.",
             notes: "You pick who becomes the Fallen Angel before roles are drawn."
+        },
+        {
+            name: "Lover",
+            team: TOWNSFOLK,
+            worth: -1,
+            category: SETUP,
+            difficulty: INTERMEDIATE,
+            effect: 'At game start, grab a neighbor by hand. You become lovers. When one of you dies, the other dies too.',
+            notes: 'The Storyteller will wake you up to grab someone by hand.',
+            narratorNotes: 'If you have this role in game, make sure the players know that they may get grabbed by hand.',
+            deathReminder: "The Lover's lover will also be killed.",
+            type: 'Special Setup',
+            ribbonText: "NEGATIVE",
+            ribbonColor: EVIL_COLOR
         },
         {
             name: "Leper",
@@ -270,109 +467,6 @@ export const getRoles_OLD = () => {
             category: REGULAR,
             difficulty: BROKEN,
             effect: "If you are hanged or eaten, reveal your card. The next Night happens TWICE (in a row).",
-        },
-        {
-            name: "Innkeeper",
-            nPlayers: 0,
-            team: TOWNSFOLK,
-            worth: 0.75,
-            category: SPECIAL_SETUP,
-            difficulty: BROKEN,
-            effect: "One Townsfolk is secretly drunk - they believe they are that role, but they're just a Peasant. Their ability has no effect or gets wrong information.",
-            notes: "Only the narrator knows who the drunk is (unless you can figure it out...)",
-            narratorNotes: "Do NOT announce if there is an Innkeeper in the game! Let players figure it out themselves."
-        },
-        {
-            name: "Blind Inspector",
-            nPlayers: 0,
-            team: TOWNSFOLK,
-            worth: 1.5,
-            category: SETUP,
-            difficulty: ADVANCED,
-            isImportant: true,
-            effect: 'At game start, pick 2 players. For each, if its role contains letter "O", the narrator nods.',
-            narratorNotes: 'The Blind Inspector opens their eyes. First, they point to one player, then you may nod. Then they point to another player, and you may nod again.',
-            type: 'Setup',
-            ribbonText: 'SETUP',
-            ribbonColor: SETUP_COLOR,
-        },
-        {
-            name: "Fortune Teller",
-            nPlayers: 10,
-            team: TOWNSFOLK,
-            worth: 1.75,
-            category: NIGHTLY,
-            difficulty: BEGINNER,
-            isImportant: true,
-            effect: '<b>Hand Raise:</b> Point at 2 players. The Storyteller nods if either of them is Evil.',
-            type: 'Nightly',
-            ribbonText: 'HAND RAISE',
-            ribbonColor: NIGHTLY_COLOR,
-        },
-        {
-            name: "Lover",
-            nPlayers: 10,
-            team: TOWNSFOLK,
-            worth: 0.5,
-            category: SETUP,
-            difficulty: BEGINNER,
-            effect: 'At game start, grab a neighbor by hand. You become lovers. When one of you dies, the other dies too.',
-            notes: 'The narrator will wake you up to grab someone by hand.',
-            narratorNotes: 'If you have this role in game, make sure the players know that they may get grabbed by hand.',
-            type: 'Special Setup'
-        },
-        {
-            name: "Seer",
-            nPlayers: 0,
-            team: TOWNSFOLK,
-            worth: 1.5,
-            category: SPECIAL_NIGHTLY,
-            difficulty: BEGINNER,
-            isImportant: true,
-            effect: '<b>Hand Raise:</b> See color of the top card of a location.',
-            notes: 'Wait for the narrator to tell you to open eyes.',
-            type: 'Nightly',
-            ribbonText: 'NIGHT',
-            ribbonColor: NIGHTLY_COLOR,
-        },
-        {
-            name: "Town Guard",
-            nPlayers: 0,
-            team: TOWNSFOLK,
-            worth: 2,
-            category: NIGHTLY,
-            difficulty: BEGINNER,
-            isImportant: true,
-            effect: 'Every night, wake up and pick a player (not yourself). They can\'t die this night. You can\'t pick the same player two nights in a row.',
-            notes: 'If they would die, nothing happens.',
-            type: 'Nightly',
-            ribbonText: 'NIGHT',
-            ribbonColor: NIGHTLY_COLOR,
-        },
-        {
-            name: "Assassin",
-            nPlayers: 0,
-            team: TOWNSFOLK,
-            worth: 1.25,
-            category: SPECIAL_NIGHTLY,
-            difficulty: INTERMEDIATE,
-            effect: 'Once per game, after Strigoys close eyes, raise your arm if you want to wake up.\nThen kill someone.',
-            notes: 'Wait for the narrator to say "Assassin wake up."',
-            narratorNotes: 'Watch out for the Assassin. If their arm is raised, say "Assassin, wake up".\nThey can only do this once per game.',
-            type: 'Special Nightly'
-        },
-        {
-            name: "Priest",
-            nPlayers: 0,
-            team: TOWNSFOLK,
-            worth: 2,
-            category: NIGHTLY,
-            difficulty: BROKEN,
-            isImportant: true,
-            effect: '<b>Hand Raise:</b> Resurrect a dead player.<br/><i>(Once per game)</i>',
-            type: 'Nightly',
-            ribbonText: 'NIGHT',
-            ribbonColor: NIGHTLY_COLOR,
         },
         {
             name: "Schizophrenic",
@@ -397,14 +491,15 @@ export const getRoles_OLD = () => {
             notes: 'If they don\'t vote, you don\'t vote'
         },
         {
-            name: "Scout",
+            name: "Innkeeper",
+            nPlayers: 0,
             team: TOWNSFOLK,
-            difficulty: ROLES_NO_ONE_UNDERSTANDS,
-            worth: 1.5,
-            effect: "Every night, when Strigoys close eyes, point left or right (keep your eyes closed). If the closest alive player in that direction is Evil, you are eaten (instead of whoever the Strigoys chose).",
-            category: SPECIAL_NIGHTLY,
-            notes: "Make sure the narrator sees you pointing. Make it OBVIOUS. Make sure to stop once the narrator continues.",
-            lineHeight: 28
+            worth: 0.75,
+            category: SPECIAL_SETUP,
+            difficulty: BROKEN,
+            effect: "One Townsfolk is secretly drunk - they believe they are that role, but they're just a Peasant. Their ability has no effect or gets wrong information.",
+            notes: "Only the narrator knows who the drunk is (unless you can figure it out...)",
+            narratorNotes: "Do NOT announce if there is an Innkeeper in the game! Let players figure it out themselves."
         },
         {
             name: "Inquisitor",
@@ -415,15 +510,6 @@ export const getRoles_OLD = () => {
             difficulty: ADVANCED,
             effect: 'Once per game, secretly ask the narrator a YES/NO question about one player. You secretly get a correct reply.',
             notes: 'You can go to the narrator and ask, message them on their phone, etc.'
-        },
-        {
-            name: "Mayor",
-            nPlayers: 10,
-            team: TOWNSFOLK,
-            worth: 1.5,
-            category: NIGHTLY,
-            difficulty: INTERMEDIATE,
-            effect: '<b>Hand Raise:</b> Learn which team the Storyteller believes is winning.',
         },
         {
             name: "Dove of Peace",
@@ -455,22 +541,12 @@ export const getRoles_OLD = () => {
             notes: "It won't matter what the vote is. Only your vote will matter."
         },
         {
-            name: "Thief",
-            nPlayers: 0,
-            team: TOWNSFOLK,
-            worth: 1,
-            category: REGULAR,
-            difficulty: INTERMEDIATE,
-            effect: 'At any point in the game, reveal your card and pick another player. You each get a new random role.',
-            notes: 'You could get a Strigoy! If an Evil player became a different role, they remain Evil.'
-        },
-        {
             name: "Crusader",
             nPlayers: 10,
             team: TOWNSFOLK,
-            worth: 0.75,
+            worth: 0,
             category: REGULAR,
-            difficulty: ADVANCED,
+            difficulty: CHURCH,
             effect: "If you are hanged, reveal your card.\nYou don't die.\nThe person who argued most to hang you dies instead.",
             notes: 'Up to the narrator who that person is.'
         },
@@ -488,11 +564,20 @@ export const getRoles_OLD = () => {
             name: "Sassy Neighbor",
             nPlayers: 10,
             team: TOWNSFOLK,
-            worth: 1,
+            worth: 0,
             category: REGULAR,
             difficulty: INTERMEDIATE,
             effect: "If you are hanged, reveal your card. The narrator publicly announces how many Evils are still in the game.",
             notes: "You do NOT reveal your card if you die elsehow!"
+        },
+        {
+            name: "Bard",
+            nPlayers: 10,
+            team: TOWNSFOLK,
+            worth: 1.75,
+            category: REGULAR,
+            difficulty: EXTRAS,
+            effect: 'When you die, reveal your card. You come back to life with a new random role card.'
         },
         {
             name: "Wrestler",
@@ -503,15 +588,6 @@ export const getRoles_OLD = () => {
             difficulty: EXTRAS,
             effect: "If there are 5 or more players in the game, you can't be eaten at night (nothing happens if you're eaten)",
             notes: "The night may pass with no one being eaten."
-        },
-        {
-            name: "Bard",
-            nPlayers: 10,
-            team: TOWNSFOLK,
-            worth: 1.75,
-            category: REGULAR,
-            difficulty: EXTRAS,
-            effect: 'When you die, reveal your card. You come back to life with a new random role card.'
         },
         {
             name: "Archaeologist",
@@ -555,28 +631,184 @@ export const getRoles_OLD = () => {
             worth: 0.75,
             category: REGULAR_NEGATIVE,
             difficulty: DRUNKEN_TAVERN,
-            effect: "If you are hanged, reveal your card. The Strigoys win immediately.",
+            effect: "If you are hanged, reveal your card. The Evils win immediately.",
             ribbonColor: EVIL_COLOR,
             ribbonText: 'NEGATIVE'
-        },
-        {
-            name: "Star Child",
-            nPlayers: 12,
-            team: TOWNSFOLK,
-            worth: 2,
-            category: REGULAR,
-            difficulty: ROLES_NO_ONE_UNDERSTANDS,
-            effect: 'If you are eaten at night, a random non-Strigoy Evil player also dies (if any was still alive).'
         },
         {
             name: "Hunter",
             nPlayers: 0,
             team: TOWNSFOLK,
-            worth: 1,
+            worth: 0,
             category: REGULAR,
-            difficulty: BEGINNER,
+            difficulty: INTERMEDIATE,
             effect: "When you die, reveal your card and pick a player. That player also dies."
         },
+        {
+            name: "Alien",
+            nPlayers: 0,
+            team: OTHER,
+            worth: 1,
+            category: OTHER_CATEGORY,
+            difficulty: DRUNKEN_TAVERN,
+            effect: "You aren't on any team. You win if you die, but not by hanging. Then the game goes on."
+        },
+        {
+            name: "Diva",
+            nPlayers: 9,
+            team: TOWNSFOLK,
+            worth: 0.5,
+            category: REGULAR_NEGATIVE,
+            difficulty: CHAOS,
+            effect: "If you would die at night, a random Townsfolk dies instead. If you are hanged, both you and another random Townsfolk die.",
+            ribbonColor: EVIL_COLOR,
+            ribbonText: 'NEGATIVE'
+        },
+        {
+            name: "Hobo",
+            nPlayers: 9,
+            team: TOWNSFOLK,
+            worth: 0.5,
+            category: REGULAR_NEGATIVE,
+            difficulty: ADVANCED,
+            effect: "If you die, reveal your card. The next Night happens TWICE.",
+            notes: "There will be 2 nights in a row, without everyone waking up in between."
+        },        {
+            name: "Madman",
+            nPlayers: 0,
+            team: OTHER,
+            worth: 1,
+            category: OTHER_CATEGORY,
+            difficulty: CHAOS,
+            effect: "You aren't on any team. You win if you are hanged. Then the game goes on."
+        },
+        {
+            name: "Peasant",
+            nPlayers: 0,
+            team: TOWNSFOLK,
+            worth: 0,
+            difficulty: BEGINNER,
+            category: REGULAR,
+            effect: '',
+            notes: 'There may be any number of Peasants in the game!'
+        },
+
+    ]
+    return roles
+}
+
+export const getRoles_OLD = () => {
+    const roles = [
+        
+        {
+            name: "Bitten",
+            nPlayers: 12,
+            team: TOWNSFOLK,
+            worth: 0,
+            category: SPECIAL_NIGHTLY,
+            difficulty: EXTRAS,
+            effect: 'When the Evils open their eyes, make a ROCK sign with your hand. You become a Werewolf. You may open your eyes.',
+            type: 'Nightly',
+            ribbonColor: EVIL_COLOR,
+            ribbonText: 'NEGATIVE'
+        },
+        {
+            name: "Bell Ringer",
+            nPlayers: 12,
+            team: TOWNSFOLK,
+            worth: 1.25,
+            category: REGULAR,
+            difficulty: BROKEN,
+            effect: 'Every morning, if you are alive, the people who just died at night can talk and vote today (their powers do not work).',
+            notes: 'The narrator still announces who died this morning, but also announces Bell Ringer is in game. When night falls, they die immediately.',
+            ribbonColor: MORNING_COLOR,
+            ribbonText: 'MORNING'
+        },
+
+
+
+
+
+        {
+            name: "Fortune Teller",
+            nPlayers: 10,
+            team: TOWNSFOLK,
+            worth: 1.75,
+            category: NIGHTLY,
+            difficulty: BEGINNER,
+            isImportant: true,
+            effect: '<b>Hand Raise:</b> Point at 2 players. The Storyteller nods if either of them is Evil.',
+            type: 'Nightly',
+            ribbonText: 'HAND RAISE',
+            ribbonColor: NIGHTLY_COLOR,
+        },
+        {
+            name: "Seer",
+            nPlayers: 0,
+            team: TOWNSFOLK,
+            worth: 1.5,
+            category: SPECIAL_NIGHTLY,
+            difficulty: BEGINNER,
+            isImportant: true,
+            effect: '<b>Hand Raise:</b> See color of the top card of a location.',
+            notes: 'Wait for the narrator to tell you to open eyes.',
+            type: 'Nightly',
+            ribbonText: 'NIGHT',
+            ribbonColor: NIGHTLY_COLOR,
+        },
+        {
+            name: "Assassin",
+            nPlayers: 0,
+            team: TOWNSFOLK,
+            worth: 1.25,
+            category: SPECIAL_NIGHTLY,
+            difficulty: INTERMEDIATE,
+            effect: 'Once per game, after Strigoys close eyes, raise your arm if you want to wake up.\nThen kill someone.',
+            notes: 'Wait for the narrator to say "Assassin wake up."',
+            narratorNotes: 'Watch out for the Assassin. If their arm is raised, say "Assassin, wake up".\nThey can only do this once per game.',
+            type: 'Special Nightly'
+        },
+        {
+            name: "Priest",
+            nPlayers: 0,
+            team: TOWNSFOLK,
+            worth: 2,
+            category: NIGHTLY,
+            difficulty: BROKEN,
+            isImportant: true,
+            effect: '<b>Hand Raise:</b> Resurrect a dead player.<br/><i>(Once per game)</i>',
+            type: 'Nightly',
+            ribbonText: 'NIGHT',
+            ribbonColor: NIGHTLY_COLOR,
+        },
+        {
+            name: "Scout",
+            team: TOWNSFOLK,
+            difficulty: ROLES_NO_ONE_UNDERSTANDS,
+            worth: 1.5,
+            effect: "Every night, when Strigoys close eyes, point left or right (keep your eyes closed). If the closest alive player in that direction is Evil, you are eaten (instead of whoever the Strigoys chose).",
+            category: SPECIAL_NIGHTLY,
+            notes: "Make sure the narrator sees you pointing. Make it OBVIOUS. Make sure to stop once the narrator continues.",
+            lineHeight: 28
+        },
+
+        {
+            name: "Mayor",
+            nPlayers: 10,
+            team: TOWNSFOLK,
+            worth: 1.5,
+            category: NIGHTLY,
+            difficulty: INTERMEDIATE,
+            effect: '<b>Hand Raise:</b> Learn which team the Storyteller believes is winning.',
+        },
+
+
+    
+
+
+
+
+
         {
             name: "Exorcist",
             nPlayers: 0,
@@ -613,42 +845,13 @@ export const getRoles_OLD = () => {
             team: TOWNSFOLK,
             worth: -1,
             category: REGULAR_NEGATIVE,
-            difficulty: BEGINNER,
+            difficulty: INTERMEDIATE,
             effect: 'If you are eaten, you become a Strigoy. The narrator will announce that "Grandma was eaten and became a Strigoy".',
             ribbonColor: EVIL_COLOR,
             ribbonText: 'NEGATIVE'
         },
         
-        {
-            name: "Alien",
-            nPlayers: 0,
-            team: OTHER,
-            worth: 1,
-            category: OTHER_CATEGORY,
-            difficulty: DRUNKEN_TAVERN,
-            effect: "You aren't on any team. You win if you die, but not by hanging. Then the game goes on."
-        },
-        {
-            name: "Diva",
-            nPlayers: 9,
-            team: TOWNSFOLK,
-            worth: 0.5,
-            category: REGULAR_NEGATIVE,
-            difficulty: CHAOS,
-            effect: "If you would die at night, a random Townsfolk dies instead. If you are hanged, both you and another random Townsfolk die.",
-            ribbonColor: EVIL_COLOR,
-            ribbonText: 'NEGATIVE'
-        },
-        {
-            name: "Hobo",
-            nPlayers: 9,
-            team: TOWNSFOLK,
-            worth: 0.5,
-            category: REGULAR_NEGATIVE,
-            difficulty: ADVANCED,
-            effect: "If you die, reveal your card. The next Night happens TWICE.",
-            notes: "There will be 2 nights in a row, without everyone waking up in between."
-        },
+
         {
             name: "Samca",
             isWerewolf: true,
@@ -713,27 +916,7 @@ export const getRoles_OLD = () => {
             narratorNotes: 'As the narrator, do say "Town Guard, wake up". Continue with the normal routine, but Yaga can\'t actually protect anyone.',
             type: 'Nightly'
         },
-        {
-            name: "Madman",
-            nPlayers: 0,
-            team: OTHER,
-            worth: 1,
-            category: OTHER_CATEGORY,
-            difficulty: CHAOS,
-            effect: "You aren't on any team. You win if you are hanged. Then the game goes on."
-        },
-    
-        {
-            name: "Peasant",
-            nPlayers: 0,
-            team: TOWNSFOLK,
-            worth: 1,
-            difficulty: BEGINNER,
-            category: REGULAR,
-            effect: '',
-            notes: 'There may be any number of Peasants in the game!'
-        },
-    
+
     ]
     return sortRolesNormal(roles)
 }
@@ -788,7 +971,7 @@ export function getLocationCards() {
     const cards = [
         {
             color: "Purple",
-            name: "Death and Decay",
+            name: "Witching Hour",
             effect: "Choose a Location. <b>Blow</b> a card from it. Evils will choose someone to instantly kill tonight.",
             isLocationCard: true
         },
@@ -817,7 +1000,7 @@ export function getLocationCards() {
         },
         {
             color: "Red",
-            name: "Killing",
+            name: "Omen",
             effect: "Next Evil phase, the Evils will choose one more player to instantly kill.",
             isLocationCard: true
         },
@@ -843,7 +1026,7 @@ export function getLocationCards() {
         },
         {
             color: "Yellow",
-            name: "Double Attack",
+            name: "Attack Plans",
             effect: "Next Evil phase, the Evils will attack 2 Locations. You don't get to protect 2 locations.",
             isLocationCard: true
         },
@@ -855,7 +1038,7 @@ export function getLocationCards() {
         },
         {
             color: "Yellow",
-            name: "Bait",
+            name: "Broken Mirror",
             effect: "<b>Item.</b> The next time Townsfolk successfully protect a Location, you die.",
             isLocationCard: true
         },
@@ -893,7 +1076,7 @@ export function getLocationCards() {
         },
         {
             color: "Yellow",
-            name: "Spying Through Walls",
+            name: "Secrets",
             effect: "The next time 2 players want to wake up (legally), one of them dies (prioritizes Townsfolk death).",
             notes: "A Townsfolk from them dies if there is any. Ghouls, don't screw up!",
             isLocationCard: true
@@ -945,13 +1128,13 @@ export function getLocationCards() {
         },
         {
             color: "Green",
-            name: "Blood Dagger",
+            name: "Sacrificial Dagger",
             effect: "<b>Item. Kept through death.</b> When someone else would die, you die instead. You can vote while dead.",
             isLocationCard: true
         },
         {
             color: "Green",
-            name: "Monocle",
+            name: "Magnifying Glass",
             effect: "<b>Item. Use once:</b> The Storyteller secretly tells you the role of another random player.",
             isLocationCard: true
         },
@@ -963,8 +1146,8 @@ export function getLocationCards() {
         },
         {
             color: "Green",
-            name: "Mind Parasite",
-            effect: "<b>Get an extra random Role card.</b>",
+            name: "Revelation",
+            effect: "Get an extra random Role card.",
             notes: "If it's Evil, you become Evil. You do NOT have 2 lives. You're not a cat, get over it.",
             isLocationCard: true
         },

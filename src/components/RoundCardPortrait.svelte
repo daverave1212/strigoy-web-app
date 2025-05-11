@@ -48,8 +48,8 @@
         line-height: 1.25rem;
         width: calc(1.25 * var(--role-chooser-image-size));
         
-        bottom: 0.25rem;
-        left: calc(-0.05 * var(--role-chooser-image-size));
+        bottom: 0.6rem;
+        left: calc(-0.02 * var(--role-chooser-image-size));
         transform: rotate(-15deg);
     }
     .ribbon.evil {
@@ -71,7 +71,7 @@
         text-align: center;
         font-family: SingleDay;
 
-        font-size: 0.85rem;
+        font-size: 1.25rem;
         line-height: var(--badge-size);
 
         top: calc(0.15 * var(--role-chooser-image-size));
@@ -103,6 +103,7 @@
         isBig = false,
         src,
         category,
+        color,
         ribbonColor,
         ribbonText
     } = role
@@ -117,29 +118,41 @@
         role.worth == null?
             null:
         role.worth <= -2?
-            '--':
+            '-2':
         role.worth <= -1?
-            '-':
+            '-1':
         role.worth == 0?
             '~':
         role.worth >= 2?
-            '++':
+            '+2':
         role.worth >= 1?
-            '++':
+            '+1':
         '?'
     const badgeToColorMapping = {
-        '--': EVIL_COLOR,
-        '-': EVIL_COLOR,
+        '-2': EVIL_COLOR,
+        '-1': EVIL_COLOR,
         '~': SPECIAL_COLOR,
-        '+': SETUP_COLOR,
-        '++': NIGHTLY_COLOR,
+        '+1': SETUP_COLOR,
+        '+2': 'rgb(30, 120, 250)',
         '?': PINK_COLOR
     }
+    const borderColor =
+        color == null?
+            null
+        :color == 'Red'?
+            'rgb(225, 0, 0)'
+        :color == 'Yellow'?
+            'rgb(255, 160, 0)'
+        :color == 'Green'?
+            'rgb(0, 190, 150)'
+        :color == 'Purple'?
+            'rgb(180, 65, 200)'
+        :null
         
 </script>
 
 <div class="image-wrapper {isBig? 'big': ''}" on:click={(evt) => dispatch('click', evt)}>
-    <div class="content">
+    <div class="content" style={borderColor == null? '': `border: solid ${borderColor} 7px;`}>
         {#if isBig != true}
             {#if team == WEREWOLVES}
                 <div class="ribbon evil" style={`background-color: ${EVIL_COLOR}`}>EVIL</div>

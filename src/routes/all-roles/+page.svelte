@@ -41,8 +41,8 @@
         <RoleListWithRoles filter={filterValue} roles={getRoles().filter(role => role.difficulty == difficulty)} on:role-click={evt => currentInspectorObject = evt.detail.role}/>
     {/each}
 
-    <h2 class="center-text margin-top-4">Mods</h2>
-    <RoleListWithRoles roles={getMods()} on:role-click={evt => onClickOnRole(evt.detail.role)}/>
+    <!-- <h2 class="center-text margin-top-4">Mods</h2>
+    <RoleListWithRoles roles={getMods()} on:role-click={evt => onClickOnRole(evt.detail.role)}/> -->
 
     <h2 class="center-text margin-top-4">Events</h2>
     <RoleListWithRoles roles={getLocationCards()} on:role-click={evt => onClickOnRole(evt.detail.role)}/>
