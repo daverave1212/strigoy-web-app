@@ -1,8 +1,22 @@
+<style>
+
+    .role-wrapper {
+        width: 33%;
+        margin-top: 2rem;
+    }
+
+    .role-list {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+</style>
+
 <script>
     import { createEventDispatcher } from "svelte";
     import RoleCard from "./RoleCard.svelte";
-    import RoleList from "./RoleList.svelte";
-
 
     export let roles
     export let includeEmojis = true
@@ -16,8 +30,10 @@
 
 </script>
 
-<RoleList>
+<div class="role-list">
     {#each filteredRoleIndices as i (roles[i].name + i)}
-        <RoleCard role={roles[i]} on:role-click={_ => dispatch('role-click', { role: roles[i], i: i })}/>
+        <div class="role-wrapper">
+            <RoleCard role={roles[i]} on:role-click={_ => dispatch('role-click', { role: roles[i], i: i })}/>
+        </div>
     {/each}
-</RoleList>
+</div>

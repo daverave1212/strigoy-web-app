@@ -8,7 +8,7 @@
     import RoleCard from "../../components/RoleCard.svelte";
     import RoleList from "../../components/RoleList.svelte";
     import RoleListWithRoles from "../../components/RoleListWithRoles.svelte";
-    import { ADVANCED, BEGINNER, COMPLETE, difficultyDescriptions, difficultyNames, getAllRoleDifficulties, getLocationCards, getNormalRolePriority, getRoles, getRolesByDifficulty, getRolesForDifficulty, getSortRolesWithPriorityFunction, INTERMEDIATE, WEREWOLVES } from "../../lib/Database";
+    import { ADVANCED, BEGINNER, BROKEN, COMPLETE, difficultyDescriptions, difficultyNames, EXTRAS, getAllRoleDifficulties, getLocationCards, getNormalRolePriority, getRoles, getRolesByDifficulty, getRolesForDifficulty, getSortRolesWithPriorityFunction, INTERMEDIATE, WEREWOLVES } from "../../lib/Database";
     import { getMods } from "../../lib/ModsDatabase";
 
     let currentInspectorObject = null
@@ -21,6 +21,10 @@
     function getSortedRolesForDifficulty(difficulty) {
         return getSortRolesWithPriorityFunction(getRolesForDifficulty(difficulty), getNormalRolePriority)
     }
+
+    $:allDisplayedRoles = getAllRoleDifficulties().filter(difficulty => [
+        BROKEN, EXTRAS
+    ].includes(difficulty) == false)
 
 </script>
 
@@ -35,7 +39,7 @@
     <h2 class="center-text margin-top-4">All Roles (By Sets)</h2>
 
     <input class="search-input" bind:value={filterValue} placeholder="Filter..."/>
-    {#each getAllRoleDifficulties() as difficulty, i (difficulty)}
+    {#each allDisplayedRoles as difficulty, i (difficulty)}
         <h3 class="center-text margin-top-2">{difficultyNames[difficulty]}</h3>
         <p class="center-text margin-top-1">{difficultyDescriptions[difficulty]}</p>
         <RoleListWithRoles filter={filterValue} roles={getRoles().filter(role => role.difficulty == difficulty)} on:role-click={evt => currentInspectorObject = evt.detail.role}/>

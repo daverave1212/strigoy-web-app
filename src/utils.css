@@ -81,6 +81,18 @@
 .margin-bottom-4 {
     margin-bottom: 4rem;
 }
+.gap-1 {
+    gap: 1rem;
+}
+.gap-3q {
+    gap: 0.75rem;
+}
+.gap-half {
+    gap: 0.5rem;
+}
+.gap-quarter {
+    gap: 0.25rem;
+}
 .btn {
     border: none;
     color: white;

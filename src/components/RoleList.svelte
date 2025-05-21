@@ -17,6 +17,10 @@
     }
 </style>
 
-<div class="role-chooser-content">
+<div class="flex flex-content">
     <slot></slot>
 </div>
+
+<!-- <div class="role-chooser-content">
+    <slot></slot>
+</div> -->

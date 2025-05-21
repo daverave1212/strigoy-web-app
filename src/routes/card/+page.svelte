@@ -52,6 +52,8 @@
     }
 
     async function draw(objectBeingDrawn, canvas, x, y) {
+        console.log(`Drawing object:`)
+        console.log({objectBeingDrawn})
         clearRect(canvas, x, y, cardWidth, cardHeight)
         await drawImageOnCanvasAsync(canvas, `/images/roles/${objectBeingDrawn.name}.png`, x, y, cardWidth, cardWidth)
         if (objectBeingDrawn.isLocationCard) {
@@ -140,7 +142,8 @@
                 getRole('Peasant'),
                 getRole('Peasant'),
                 ...getRoles().filter(role => role.name != 'Peasant' && role.name != 'Strigoy' && role.name != 'Cultist'),
-                ...getMods()
+                // ...getMods(),
+                ...getLocationCards()
             ]
             
             async function draw9CardsOnNewCanvas(cards) {

@@ -7,11 +7,14 @@ export const OTHER = 'other'
 
 export const ALL_EVILS = 0
 export const BEGINNER = 1
+export const SPICE = 1.5
+export const TOWN_CENTER = 1.75
 export const INTERMEDIATE = 2
+export const TRADESFOLK = 2.15
 export const CHURCH = 2.25
-export const TOWN_CENTER = 2.35
-export const CHAOS = 2.5
-export const ADVANCED = 3
+export const ZEALOTS = 2.30
+export const CHAOS = 2.45
+export const NIGHT_AGENTS = 2.75
 export const DRUNKEN_TAVERN = 3.5
 export const MORE_CHAOS = 3.75
 export const LOTS_OF_PLAYERS = 4
@@ -19,14 +22,18 @@ export const FOR_MODS = 5
 export const ROLES_NO_ONE_UNDERSTANDS = 6
 export const EXTRAS = 7
 export const COMPLETE = 8
+export const ADVANCED = 9
 export const BROKEN = 99
 
 export const difficultyNames = {
     [ALL_EVILS]: 'Evils',
     [BEGINNER]: 'Base Roles',
+    [SPICE]: 'Extra Spice',
     [INTERMEDIATE]: 'Intermediate',
     [CHURCH]: 'Churchmen & Law',
-    [TOWN_CENTER]: 'Townsfolk Importants',
+    [ZEALOTS]: 'WITCH BURNERS',
+    [TOWN_CENTER]: 'Town\'s Personalities',
+    [TRADESFOLK]: 'Short Tradespeople', // TODO: Probably add Bombmaer and Builder to the base game, make the Red Riding Hood a different category lol
     [ADVANCED]: 'Advanced & Complex',
     [DRUNKEN_TAVERN]: 'Drunken Tavern',
     [FOR_MODS]: 'Mods & Points',
@@ -35,15 +42,20 @@ export const difficultyNames = {
     [COMPLETE]: 'Complete',
     [BROKEN]: 'Broken',
     [CHAOS]: 'Chaos',
+    [NIGHT_AGENTS]: 'Dark Nights',
     [MORE_CHAOS]: 'More Chaos',
 }
 export const difficultyDescriptions = {
     [ALL_EVILS]: 'These are all the Evils in the game. Not all may be used in the game you are playing. For example, Vampires are only used for 7 or 8 players.',
-    [BEGINNER]: 'Use these roles for the base game. Every night, call out each nightly role, even if no player is that role. The game will automatically show you the roles you should remember.',
-    [CHURCH]: 'More balanced, easy to understand roles to make the game more intriguing! Who will be who?',
-    [TOWN_CENTER]: ""
+    [BEGINNER]: 'Use these roles for the base game. The app will help you keep the game running with tips!',
+    [SPICE]: 'Add these simple roles to the game for extra spice!',
+    [CHURCH]: 'Balanced, easy to understand roles to make the game more intriguing! Who will be who?',
+    [ZEALOTS]: 'More balanced, easy to understand roles that are ready to make the Evils BURN!',
+    [TOWN_CENTER]: "Important roles! Highly recommended to play with.",
+    [TRADESFOLK]: "Roles that affect Locations, and more.",
     [INTERMEDIATE]: 'Extra roles to add to make it more interesting. Every game, there should NOT be both a Town Guard and a Priest (unless there are more than 15 players). You don\'t have to play with all of them. Only choose which roles you like to play with.',
     [CHAOS]: 'Roles that add more randomnes and crazyness in the game. Everyone will go mad!',
+    [NIGHT_AGENTS]: 'Agents of the night that speed the game up considerably!',
     [ADVANCED]: 'Roles for advanced players who know the game and want more challenge. Beware: having these roles in the game will make it more difficult to narrate!',
     [DRUNKEN_TAVERN]: 'Roles to mess with people\'s minds! Be careful with these -- explain the roles properly if you want to play with them. Otherwise, players may not understand what is happening.',
     [FOR_MODS]: 'Roles that are only in the game if you play with Mods or with points.',
@@ -51,7 +63,7 @@ export const difficultyDescriptions = {
     [EXTRAS]: "Want EVEN MORE roles? Here you go! These roles aren't particularly difficult or strange, but feel more like 'extras sauce'. All optional, maybe you will like them!",
     [COMPLETE]: 'Complete',
     [BROKEN]: 'These roles are literally broken and you should not use them. Their abilities make no sense.',
-    [MORE_CHAOS]: 'More Chaos',
+    [MORE_CHAOS]: 'If you like the Chaos roles and want more, this is exactly what you are looking for!',
 }
 
 
@@ -176,7 +188,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: -2,
             category: EVIL_SETUP,
-            difficulty: ADVANCED,
+            difficulty: NIGHT_AGENTS,
             effect: "You win if the Evils win. You don't know who the Evils are. Evils know who you are.",
             notes: 'At game start, the narrator will point the Evils to you. You NEVER open your eyes.',
             ribbonColor: EVIL_COLOR,
@@ -187,7 +199,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 1,
             category: SPECIAL_NIGHTLY,
-            difficulty: INTERMEDIATE,
+            difficulty: NIGHT_AGENTS,
             effect: "You can't die at night.<br/>If suspected of being a Werewolf, you die immediately.",
             notes: "If players check everyone of being a Werewolf or try to cheat suspicion, it doesn't work! Apply common sense.",
             deathReminder: "Remember the Werewolf can't be killed at night.",
@@ -210,10 +222,11 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 2,
             category: REGULAR,
-            difficulty: INTERMEDIATE,
+            difficulty: TOWN_CENTER,
             effect: "While you're holding an <b>Item</b>, your neighbors can't die at night.",
             notes: "You might not know you lost one life.",
-            deathReminder: "Was it the cat's last life?"
+            ribbonText: "REMINDER",
+            ribbonColor: MORNING_COLOR
         },
         {
             name: "Town Guard",
@@ -243,7 +256,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0,
             category: NIGHTLY,
-            difficulty: INTERMEDIATE,
+            difficulty: NIGHT_AGENTS,
             effect: "<b>Hand Raise:</b> Choose a player to instantly kill.",
             type: 'Nightly',
             ribbonText: 'NIGHT',
@@ -276,7 +289,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0,
             category: NIGHTLY,
-            difficulty: CHURCH,
+            difficulty: ZEALOTS,
             effect: "<b>Hand Raise:</b> Choose a player. The Storyteller shows YES if they are a Peasant.",
             notes: "They could be alive or dead.",
             type: 'Nightly',
@@ -286,9 +299,9 @@ export const getRoles = () => {
         {
             name: "Inspector",
             team: TOWNSFOLK,
-            worth: 0,
+            worth: 1,
             category: NIGHTLY,
-            difficulty: ADVANCED,
+            difficulty: TRADESFOLK,
             effect: "<b>Hand Raise:</b> Learn how many people away from you is the closest Evil.<br/><i>This has a margin of error of 1.</i>",
             notes: "E.g. your neighbors are 1 person away, but with a margin of error of 1, the Storyteller may say 2. Dead players count.",
             type: 'Nightly',
@@ -311,7 +324,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0,
             category: NIGHTLY,
-            difficulty: ADVANCED,
+            difficulty: MORE_CHAOS,
             effect: "<b>Hand Raise:</b> Choose a player. Copy their ability right now (or until next night).",
             notes: "If you don't know their ability, tough luck! Guess!",
             type: 'Nightly',
@@ -335,7 +348,7 @@ export const getRoles = () => {
             worth: -1,
             category: REGULAR_NEGATIVE,
             difficulty: BEGINNER,
-            effect: "When you die, reveal your Role card.<br/>Choose someone to get a random unused Yellow card",
+            effect: "When you die, reveal your Role card.<br/>Choose someone to get a new Yellow card",
             deathReminder: "Great Grandfather gives someone a new Yellow Card.",
             ribbonColor: EVIL_COLOR,
             ribbonText: 'NEGATIVE'
@@ -345,7 +358,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: -1,
             category: REGULAR_NEGATIVE,
-            difficulty: INTERMEDIATE,
+            difficulty: TRADESFOLK,
             effect: "When you die, an Evil's ability is secretly refreshed (do NOT reveal your Role card).",
             notes: "The Storyteller will let the Evil know their ability was refreshed.",
             deathReminder: "Refresh an Evil's ability.",
@@ -357,7 +370,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0,
             category: REGULAR_NEGATIVE,
-            difficulty: ADVANCED,
+            difficulty: DRUNKEN_TAVERN,
             effect: "When you die, someone (secretly) becomes <b>Drunk</b> (do NOT reveal your Role card).",
             deathReminder: "You will secretly choose someone will become Drunk.",
             ribbonColor: EVIL_COLOR,
@@ -368,19 +381,28 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0,
             category: REGULAR_NEGATIVE,
-            difficulty: INTERMEDIATE,
+            difficulty: TRADESFOLK,
             effect: "When you die, reveal your Role card.<br/>Someone you choose must <b>Blow</b> a card from any Location they want.",
             deathReminder: "Bombmaker will choose someone to Blow a card.",
             ribbonColor: EVIL_COLOR,
             ribbonText: 'NEGATIVE'
         },
         {
+            name: "Builder",
+            team: TOWNSFOLK,
+            worth: 0,
+            category: REGULAR,
+            difficulty: TRADESFOLK,
+            effect: "When you die (except by hanging), reveal your Role card. Choose a Location to add a new Yellow Card to. Then shuffle that Location.",
+            deathReminder: "Reveal the Builder. They choose a Location. Add a random unused Yellow card to that Location."
+        },
+        {
             name: "Santa Claus",
             team: TOWNSFOLK,
             worth: 1,
             category: REGULAR_NEGATIVE,
-            difficulty: ADVANCED,
-            effect: "When you die (except by hanging), reveal your Role card.<b/>EVERYONE alive has 50% chance to get a random unused Green Card.",
+            difficulty: MORE_CHAOS,
+            effect: "When you die (except by hanging), reveal your Role card.<b/>EVERYONE alive has 50% chance to get a new Green Card.",
             deathReminder: "Reveal the Santa. All alive players have 50% chance to get a Green card."
         },
         {
@@ -388,7 +410,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0,
             category: REGULAR,
-            difficulty: ADVANCED,
+            difficulty: TOWN_CENTER,
             effect: "Your vote secretly counts as 3 votes.",
             ribbonText: 'REMINDER',
             ribbonColor: MORNING_COLOR,
@@ -409,11 +431,21 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0,
             category: REGULAR,
-            difficulty: ADVANCED,
+            difficulty: SPICE,
             effect: "You believe you are (and get) a different Role card (not this card).<br/>You are actually a Peasant. Your Ability acts as if you're <b>Drunk.</b>",
             notes: "If players check everyone of being Goblins or try to cheat suspicion, it doesn't work! Apply common sense.",
+            narratorNotes: 'Give that player a different non-Evil role. Mark their role on the app as that role, and give it the Drunk status.',
             ribbonText: 'SETUP',
             ribbonColor: SETUP_COLOR,
+        },
+        {
+            name: "Gravedigger",
+            team: TOWNSFOLK,
+            worth: 0,
+            category: REGULAR,
+            difficulty: SPICE,
+            effect: "When you die, reveal your Role card. Choose one player to get a new Green card, and another to get a new Yellow card.",
+            deathReminder: "Gravedigger chooses a player to get a random unused Green card, and another for a random unused Yellow card."
         },
         {
             name: "Thief",
@@ -430,10 +462,10 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0,
             category: SPECIAL_SETUP,
-            difficulty: INTERMEDIATE,
+            difficulty: TOWN_CENTER,
             effect: 'When you get your role card, pick a different role from 3 unused options (could be an Evil)!',
-            narratorNotes: 'Draw 3 role cards from the unused roles (randomly, or as you like) and let the Philosopher pick one. Make sure you change the Philosopher\'s role on the app.',
-            ribbonText: '*SETUP',
+            narratorNotes: 'Publicly draw 3 role cards from the unused roles (randomly, or as you like) and let the Philosopher pick one. Make sure you change the Philosopher\'s role on the app.',
+            ribbonText: 'SETUP',
             ribbonColor: SETUP_COLOR,
         },
         {
@@ -442,7 +474,7 @@ export const getRoles = () => {
             worth: 0,
             category: REGULAR,
             difficulty: FOR_MODS,
-            effect: "  If you win and are still alive, you start next match with a random unused Green Card and you can secretly pick someone else to become the Fallen Angel next game. Otherwise, you can pick your role next game.",
+            effect: "  If you win and are still alive, you start next match with a new Green Card and you can secretly pick someone else to become the Fallen Angel next game. Otherwise, you can pick your role next game.",
             notes: "You pick who becomes the Fallen Angel before roles are drawn."
         },
         {
@@ -450,7 +482,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: -1,
             category: SETUP,
-            difficulty: INTERMEDIATE,
+            difficulty: SPICE,
             effect: 'At game start, grab a neighbor by hand. You become lovers. When one of you dies, the other dies too.',
             notes: 'The Storyteller will wake you up to grab someone by hand.',
             narratorNotes: 'If you have this role in game, make sure the players know that they may get grabbed by hand.',
@@ -473,12 +505,13 @@ export const getRoles = () => {
             nPlayers: 0,
             team: TOWNSFOLK,
             worth: 0,
-            category: SPECIAL_NIGHTLY,
+            category: REGULAR,
             difficulty: DRUNKEN_TAVERN,
             effect: 'Every night, the narrator secretly rolls a die.\nIf they roll 6, you die.',
             notes: 'In the morning, you don\'t necessarily know how you died...',
             narratorNotes: 'Alternatively, instead of rolling a die, look at the time. If the minutes are divisible by 6, the Schizophrenic dies.',
-            type: 'Special Nightly'
+            ribbonText: "REMINDER",
+            ribbonColor: MORNING_COLOR
         },
         {
             name: "Butler",
@@ -505,9 +538,9 @@ export const getRoles = () => {
             name: "Inquisitor",
             nPlayers: 12,
             team: TOWNSFOLK,
-            worth: 1.5,
+            worth: 1,
             category: REGULAR,
-            difficulty: ADVANCED,
+            difficulty: ZEALOTS,
             effect: 'Once per game, secretly ask the narrator a YES/NO question about one player. You secretly get a correct reply.',
             notes: 'You can go to the narrator and ask, message them on their phone, etc.'
         },
@@ -524,9 +557,9 @@ export const getRoles = () => {
             name: "Witch Hunter",
             nPlayers: 10,
             team: TOWNSFOLK,
-            worth: 1.25,
+            worth: 0,
             category: REGULAR,
-            difficulty: BROKEN,
+            difficulty: ZEALOTS,
             effect: "Once per game, declare you're a Witch Hunter and publicly pick a player. If the letter 'S' is in their role name, they die immediately.",
             note: 'Note that other players can bluff as a Witch Hunter!'
         },
@@ -566,7 +599,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0,
             category: REGULAR,
-            difficulty: INTERMEDIATE,
+            difficulty: ADVANCED,
             effect: "If you are hanged, reveal your card. The narrator publicly announces how many Evils are still in the game.",
             notes: "You do NOT reveal your card if you die elsehow!"
         },
@@ -574,10 +607,10 @@ export const getRoles = () => {
             name: "Bard",
             nPlayers: 10,
             team: TOWNSFOLK,
-            worth: 1.75,
+            worth: 1,
             category: REGULAR,
-            difficulty: EXTRAS,
-            effect: 'When you die, reveal your card. You come back to life with a new random role card.'
+            difficulty: TRADESFOLK,
+            effect: 'When you die, reveal your card. You come back to life with a new random Role card.'
         },
         {
             name: "Wrestler",
@@ -628,9 +661,9 @@ export const getRoles = () => {
             name: "Saint",
             nPlayers: 10,
             team: TOWNSFOLK,
-            worth: 0.75,
+            worth: -1,
             category: REGULAR_NEGATIVE,
-            difficulty: DRUNKEN_TAVERN,
+            difficulty: CHURCH,
             effect: "If you are hanged, reveal your card. The Evils win immediately.",
             ribbonColor: EVIL_COLOR,
             ribbonText: 'NEGATIVE'
@@ -641,7 +674,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0,
             category: REGULAR,
-            difficulty: INTERMEDIATE,
+            difficulty: BEGINNER,
             effect: "When you die, reveal your card and pick a player. That player also dies."
         },
         {
@@ -650,8 +683,8 @@ export const getRoles = () => {
             team: OTHER,
             worth: 1,
             category: OTHER_CATEGORY,
-            difficulty: DRUNKEN_TAVERN,
-            effect: "You aren't on any team. You win if you die, but not by hanging. Then the game goes on."
+            difficulty: BROKEN,
+            effect: "Hand Raise: Get a new Role card."
         },
         {
             name: "Diva",
@@ -670,7 +703,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0.5,
             category: REGULAR_NEGATIVE,
-            difficulty: ADVANCED,
+            difficulty: MORE_CHAOS,
             effect: "If you die, reveal your card. The next Night happens TWICE.",
             notes: "There will be 2 nights in a row, without everyone waking up in between."
         },        {
@@ -979,7 +1012,7 @@ export function getLocationCards() {
             color: "Purple",
             name: "Plague Infection",
             effect: "When you draw this, you die. Then a random player gets a Spreading Infection.",
-            notes: "If the Spreading Infection is already in the game, use a random unused Yellow card instead.",
+            notes: "If the Spreading Infection is already in the game, use a new Yellow card instead.",
             isLocationCard: true
             
         },
@@ -1015,13 +1048,13 @@ export function getLocationCards() {
         {
             color: "Yellow",
             name: "Famine",
-            effect: "Choose a Location with at least 2 Cards. <b>Blow</b> a card from it. <i>If there isn't one, get a random unused Yellow card instead.</i>",
+            effect: "Choose a Location with at least 2 Cards. <b>Blow</b> a card from it. <i>If there isn't one, get a new Yellow card instead.</i>",
             isLocationCard: true
         },
         {
             color: "Yellow",
             name: "Pentagram",
-            effect: "Refresh the Abilities of all Evils. A random player who is not a Peasant gets a random unused Green card.",
+            effect: "Refresh the Abilities of all Evils. A random player who is not a Peasant gets a new Green card.",
             isLocationCard: true
         },
         {
@@ -1052,13 +1085,13 @@ export function getLocationCards() {
         {
             color: "Yellow",
             name: "Damned Excavation",
-            effect: "Your 2 alive neighbors get a random unused Green and Yellow card (one each). You choose who gets which.",
+            effect: "Your 2 alive neighbors get a new Green and Yellow card (one each). You choose who gets which.",
             isLocationCard: true
         },
         {
             color: "Yellow",
             name: "Dead Man's Map",
-            effect: "<b>Item.</b> When the Townsfolk successfully protect a Location, <b>Blow</b> a card from a chosen Location and get a random unused Green card.",
+            effect: "<b>Item.</b> When the Townsfolk successfully protect a Location, <b>Blow</b> a card from a chosen Location and get a new Green card.",
             isLocationCard: true
         },
         {
@@ -1099,7 +1132,7 @@ export function getLocationCards() {
         {
             color: "Green",
             name: "Elden Tools",
-            effect: "<b>Item. Use once:</b> Add a random unused Red Card on top of any Location.",
+            effect: "<b>Item. Use once:</b> Add a new Red Card on top of any Location.",
             isLocationCard: true
         },
         {
@@ -1160,7 +1193,7 @@ export function getLocationCards() {
         {
             color: "Green",
             name: "Medicine",
-            effect: "<b>Item. Use once:</b> Remove an item from a different player (if any). They then get a random unused Green Card.",
+            effect: "<b>Item. Use once:</b> Remove an item from a different player (if any). They then get a new Green Card.",
             isLocationCard: true
         },
         {

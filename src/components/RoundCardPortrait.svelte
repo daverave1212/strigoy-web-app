@@ -2,7 +2,7 @@
     :root {
         --role-chooser-image-size: 20vw;
         --role-chooser-image-size-big: 20vh;
-        --badge-size: 4vw;
+        --badge-size: 4.5vw;
     }
     .image-wrapper {
         width: var(--role-chooser-image-size);
@@ -71,11 +71,14 @@
         text-align: center;
         font-family: SingleDay;
 
-        font-size: 1.25rem;
+        font-size: 1rem;
         line-height: var(--badge-size);
 
-        top: calc(0.15 * var(--role-chooser-image-size));
-        right: calc(-0.05 * var(--role-chooser-image-size));
+        top: calc(0.12 * var(--role-chooser-image-size));
+        right: calc(-0.08 * var(--role-chooser-image-size));
+
+        box-sizing: content-box;
+        border: solid 3px white;
     }
 </style>
 
@@ -148,11 +151,17 @@
         :color == 'Purple'?
             'rgb(180, 65, 200)'
         :null
+
+    const borderStyle = borderColor == null? '': `
+        box-shadow: 1px 1px 7px 6px ${borderColor};
+        -webkit-box-shadow: 1px 1px 7px 6px ${borderColor};
+        -moz-box-shadow: 1px 1px 7px 6px ${borderColor};
+    `
         
 </script>
 
 <div class="image-wrapper {isBig? 'big': ''}" on:click={(evt) => dispatch('click', evt)}>
-    <div class="content" style={borderColor == null? '': `border: solid ${borderColor} 7px;`}>
+    <div class="content" style={borderStyle}>
         {#if isBig != true}
             {#if team == WEREWOLVES}
                 <div class="ribbon evil" style={`background-color: ${EVIL_COLOR}`}>EVIL</div>
