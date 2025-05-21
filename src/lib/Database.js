@@ -301,7 +301,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 1,
             category: NIGHTLY,
-            difficulty: TRADESFOLK,
+            difficulty: SPICE,
             effect: "<b>Hand Raise:</b> Learn how many people away from you is the closest Evil.<br/><i>This has a margin of error of 1.</i>",
             notes: "E.g. your neighbors are 1 person away, but with a margin of error of 1, the Storyteller may say 2. Dead players count.",
             type: 'Nightly',
@@ -358,7 +358,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: -1,
             category: REGULAR_NEGATIVE,
-            difficulty: TRADESFOLK,
+            difficulty: TOWN_CENTER,
             effect: "When you die, an Evil's ability is secretly refreshed (do NOT reveal your Role card).",
             notes: "The Storyteller will let the Evil know their ability was refreshed.",
             deathReminder: "Refresh an Evil's ability.",
@@ -380,8 +380,9 @@ export const getRoles = () => {
             name: "Bombmaker",
             team: TOWNSFOLK,
             worth: 0,
+            locationWorth: -1,
             category: REGULAR_NEGATIVE,
-            difficulty: TRADESFOLK,
+            difficulty: BEGINNER,
             effect: "When you die, reveal your Role card.<br/>Someone you choose must <b>Blow</b> a card from any Location they want.",
             deathReminder: "Bombmaker will choose someone to Blow a card.",
             ribbonColor: EVIL_COLOR,
@@ -389,10 +390,11 @@ export const getRoles = () => {
         },
         {
             name: "Builder",
+            locationWorth: 1,
             team: TOWNSFOLK,
             worth: 0,
             category: REGULAR,
-            difficulty: TRADESFOLK,
+            difficulty: BEGINNER,
             effect: "When you die (except by hanging), reveal your Role card. Choose a Location to add a new Yellow Card to. Then shuffle that Location.",
             deathReminder: "Reveal the Builder. They choose a Location. Add a random unused Yellow card to that Location."
         },
@@ -443,7 +445,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 0,
             category: REGULAR,
-            difficulty: SPICE,
+            difficulty: CHAOS,
             effect: "When you die, reveal your Role card. Choose one player to get a new Green card, and another to get a new Yellow card.",
             deathReminder: "Gravedigger chooses a player to get a random unused Green card, and another for a random unused Yellow card."
         },
@@ -609,7 +611,7 @@ export const getRoles = () => {
             team: TOWNSFOLK,
             worth: 1,
             category: REGULAR,
-            difficulty: TRADESFOLK,
+            difficulty: CHAOS,
             effect: 'When you die, reveal your card. You come back to life with a new random Role card.'
         },
         {
@@ -675,7 +677,7 @@ export const getRoles = () => {
             worth: 0,
             category: REGULAR,
             difficulty: BEGINNER,
-            effect: "When you die, reveal your card and pick a player. That player also dies."
+            effect: "When you die, reveal your Role card and pick a player. That player immediately dies."
         },
         {
             name: "Alien",
@@ -690,7 +692,7 @@ export const getRoles = () => {
             name: "Diva",
             nPlayers: 9,
             team: TOWNSFOLK,
-            worth: 0.5,
+            worth: -1,
             category: REGULAR_NEGATIVE,
             difficulty: CHAOS,
             effect: "If you would die at night, a random Townsfolk dies instead. If you are hanged, both you and another random Townsfolk die.",
@@ -706,11 +708,12 @@ export const getRoles = () => {
             difficulty: MORE_CHAOS,
             effect: "If you die, reveal your card. The next Night happens TWICE.",
             notes: "There will be 2 nights in a row, without everyone waking up in between."
-        },        {
+        },
+        {
             name: "Madman",
             nPlayers: 0,
             team: OTHER,
-            worth: 1,
+            worth: 0,
             category: OTHER_CATEGORY,
             difficulty: CHAOS,
             effect: "You aren't on any team. You win if you are hanged. Then the game goes on."
@@ -851,37 +854,6 @@ export const getRoles_OLD = () => {
             difficulty: FOR_MODS,
             effect: "When you die, reveal your card. Choose 1 of 3 mods to add to the game.",
             notes: "The narrator picks 3 possible mods, and you choose one of them. You're still dead, sorry!"
-        },
-        {
-            name: "Gravedigger",
-            team: TOWNSFOLK,
-            worth: 1.25,
-            category: REGULAR,
-            difficulty: BROKEN,
-            effect: "When you die, reveal your card. You remain in the game as a ghost. After the next time you vote, you are out!",
-            notes: "You are good. You can't be killed as a ghost. You still close your eyes at night."
-        },
-        {
-            name: "Skinny Kid",
-            nPlayers: 0,
-            team: TOWNSFOLK,
-            worth: 0.5,
-            category: REGULAR_NEGATIVE,
-            difficulty: BEGINNER,
-            effect: "When you die, reveal your Role. Choose someone to <b>Reveal</b> a card from a location you choose.",
-            ribbonColor: EVIL_COLOR,
-            ribbonText: 'NEGATIVE'
-        },
-        {
-            name: "Grandma",
-            nPlayers: 0,
-            team: TOWNSFOLK,
-            worth: -1,
-            category: REGULAR_NEGATIVE,
-            difficulty: INTERMEDIATE,
-            effect: 'If you are eaten, you become a Strigoy. The narrator will announce that "Grandma was eaten and became a Strigoy".',
-            ribbonColor: EVIL_COLOR,
-            ribbonText: 'NEGATIVE'
         },
         
 

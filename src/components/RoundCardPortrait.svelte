@@ -108,7 +108,8 @@
         category,
         color,
         ribbonColor,
-        ribbonText
+        ribbonText,
+        locationWorth
     } = role
     
 
@@ -118,6 +119,10 @@
         (category != null && categoryToRibbon[category] != null)? categoryToRibbon[category] :
         null
     $: badgeText =
+        role.locationWorth != null?
+            (role.locationWorth > 0?
+                '+X':
+                '-X'):
         role.worth == null?
             null:
         role.worth <= -2?
@@ -137,7 +142,9 @@
         '~': SPECIAL_COLOR,
         '+1': SETUP_COLOR,
         '+2': 'rgb(30, 120, 250)',
-        '?': PINK_COLOR
+        '?': PINK_COLOR,
+        '+X': SETUP_COLOR,
+        '-X': EVIL_COLOR
     }
     const borderColor =
         color == null?
