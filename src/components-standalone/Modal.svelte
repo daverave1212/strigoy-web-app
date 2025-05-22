@@ -23,7 +23,10 @@
         position: absolute;
         width: 90vw;
         left: 5vw;
-        height: 100vh;
+        padding: 2rem;
+        
+        background-color: white;
+        border-radius: 2rem;
     }
 </style>
 
@@ -34,7 +37,7 @@
 
 </script>
 
-<div class="modal {!isOpen? 'hidden' : ''}" on:click={() => setIsOpen(false)}>
+<div class="modal center-content {!isOpen? 'hidden' : ''}" on:click={() => setIsOpen(false)}>
     <div class="modal-background"></div>
     <div class="modal-content center-content">
         <slot></slot>

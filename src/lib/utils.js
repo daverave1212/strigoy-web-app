@@ -470,3 +470,18 @@ export async function wait(ms) {
         setTimeout(resolve, ms)
     }, () => {})
 }
+
+export function executeBoolCallbackArray(_callbacks, finallyCallback) {
+    const callbacks = [..._callbacks]
+    function callNextCallback(shouldContinue=true) {
+        if (callbacks.length == 0 || shouldContinue == false) {
+            finallyCallback()
+            return
+        }
+        const nextCallback = callbacks.shift()
+        nextCallback((willContinue) => {
+            callNextCallback(willContinue)
+        })
+    }
+    callNextCallback(true)
+}

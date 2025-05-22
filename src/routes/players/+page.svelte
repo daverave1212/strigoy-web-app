@@ -21,7 +21,7 @@
     import RoleChooserDrawer from "../../components/RoleChooserDrawer.svelte";
     import { ADVANCED, BEGINNER, COMPLETE, difficultyNames, getAllRoleDifficulties, getRole, getRoles, getRolesByDifficulty, INTERMEDIATE, NIGHTLY, SETUP, SPECIAL_NIGHTLY, SPECIAL_SETUP } from "../../lib/Database";
     import Modal from "../../components-standalone/Modal.svelte";
-    import { isNumber, randomInt } from "../../lib/utils";
+    import { executeBoolCallbackArray, isNumber, randomInt } from "../../lib/utils";
     import Tooltip from "../../components-standalone/Tooltip.svelte";
     import { addedPlayers, addPlayer, addPlayerAdded, addPlayerTemporary, getAddedPlayerRoleDifficulties, removePlaceholderRoles, removePlayer, setPlayerStateI } from "../../stores/added-players-store";
     import { sortCurrentRolesNightly, sortCurrentRolesSetup } from "../../stores/added-players-store";
@@ -94,6 +94,13 @@
     let isRoleChooserOpen = false
     let currentlySelectedRoleI
 
+    // Confirm modal
+    let isModalOpen = false
+    let modalText = ""
+    let modalConfirmButtonText = "Kill!"
+    let modalOnConfirm = () => {}
+    let modalOnCancel = () => {}
+
 
     // Functions
     function openRoleChangeMenuForPlayerI(i) {
@@ -120,7 +127,7 @@
     }
 
 
-    function killPlayer(i) {
+    function togglePlayerDead(i) {
         const player = $addedPlayers[i]
         player.isDead = !player.isDead
         setPlayerStateI(i, player)
@@ -195,7 +202,27 @@
         return filterFunctions
     }
 
+    function openModal(text, buttonText, callback) {
+        isModalOpen = true
+        modalText = text
+        modalConfirmButtonText = buttonText
+        modalOnConfirm = callback
+    }
+
 </script>
+
+<Modal isOpen={isModalOpen} setIsOpen={bool => isModalOpen = bool}>
+    <div class="center-content padding-2">
+        <p class="center-text">{modalText}<br/>Proceed to kill this person?</p>
+        <div class="flex-row margin-top-1 gap-1">
+            <button class="btn red" on:click={evt => {
+                modalOnConfirm(true)
+                isModalOpen = false
+            }}>{modalConfirmButtonText}</button>
+            <button class="btn gray" on:click={() => modalOnConfirm(false)}>Cancel</button>
+        </div>
+    </div>
+</Modal>
 
 <DrawerPage
     isOpen={currentColor != null}
@@ -227,7 +254,7 @@
     onClickOutside={() => closeRoleChooserDrawerWithoutSideEffects()}
 ></RoleChooserManyDrawer>
 
-<ContactListHeader>
+<div class="contact-list-header shadowed">
     <button class="btn" style="background-color: #AA88BB; position: relative;" on:click={onClickOnCleanup}>
         Cleanup
     </button>
@@ -236,7 +263,7 @@
         Sort for Setup
     </button>
     <button class="btn" style="background-color: #44AACC" on:click={onClickOnSortNight}>Sort for Night</button>
-</ContactListHeader>
+</div>
 
 <div class="page" style="position: relative;">
     <Tooltip isShown={$hasSetRoleTooltip} top="calc(var(--contact-header-height) * 1.5)" left="50%" width="70vw">Set each player's role to the card they drew.</Tooltip>
@@ -256,10 +283,59 @@
                 on:expand={() => $hasExpandTooltip = false}
             >
                 <div class="">
-                    <!-- <button class="btn red" on:click={() => removeContact(i)}>Remove</button> -->
                     <div class="flex-content wrap">
                         <button class="btn blue" on:click={() => openRoleChangeMenuForPlayerI(i)}>Change Role</button>
-                        <button class="btn red" on:click={() => killPlayer(i)}> <img class="icon" src="/images/status/Dead.png"/> Dead</button>
+                        <button class="btn red" on:click={() => {
+                            const role = getRole($addedPlayers[i]?.role)
+                            const deathReminder = role?.deathReminder
+                            const isPlayerAlive = !$addedPlayers[i].isDead
+                            const isLover = $addedPlayers[i].statusEffects?.includes('Lover')
+
+                            function maybeShowLoverModal(callback) {
+                                if (isPlayerAlive && isLover) {
+                                    openModal("If the Lover is still alive, you should kill the Lover too afterwards.", "Kill!", (didKill) => {
+                                        setTimeout(() => {
+                                            callback(didKill)
+                                        }, 100)
+                                    })
+                                } else {
+                                    callback(true)
+                                }
+                            }
+
+                            function maybeShowDeathReminderModal(callback) {
+                                if (isPlayerAlive && deathReminder != null) {
+                                    openModal(deathReminder, "Kill!", (didKill) => {
+                                        setTimeout(() => {
+                                            callback(didKill)
+                                        }, 100)
+                                    })
+                                } else {
+                                    callback(true)
+                                }
+                            }
+
+                            maybeShowLoverModal(didKillLover => {
+                                maybeShowDeathReminderModal(didKillReminder => {
+                                    if (didKillLover && didKillReminder) {
+                                        togglePlayerDead(i)
+                                    }
+                                })
+                            })
+
+                            /*if (isPlayerAlive && isLover) {
+                                openModal("If the Lover is still alive, you should kill the Lover too afterwards.", "Kill!", () => {
+                                    togglePlayerDead(i)
+                                })
+                            } else if (isPlayerAlive && deathReminder != null) {
+                                openModal(deathReminder, "Kill!", () => {
+                                    togglePlayerDead(i)    
+                                })
+                            } else {
+                                togglePlayerDead(i)
+                            }*/
+
+                        }}><img class="icon" src="/images/status/Dead.png"/> {$addedPlayers[i]?.isDead? 'Revive': 'Kill'}</button>
                     </div>
                     <div class="flex-content wrap margin-top-1">
                         {#each statusEffects as statusEffect}

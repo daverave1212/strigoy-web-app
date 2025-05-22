@@ -33,7 +33,7 @@ export const difficultyNames = {
     [CHURCH]: 'Churchmen & Law',
     [ZEALOTS]: 'WITCH BURNERS',
     [TOWN_CENTER]: 'Town\'s Personalities',
-    [TRADESFOLK]: 'Short Tradespeople', // TODO: Probably add Bombmaer and Builder to the base game, make the Red Riding Hood a different category lol
+    [TRADESFOLK]: 'Short Tradespeople',
     [ADVANCED]: 'Advanced & Complex',
     [DRUNKEN_TAVERN]: 'Drunken Tavern',
     [FOR_MODS]: 'Mods & Points',

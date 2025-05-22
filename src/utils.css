@@ -27,7 +27,7 @@
 .center-text {
     text-align: center;
 }
-.flex-content {
+.flex-content, .flex-row {
     display: flex;
     flex-direction: row;
     gap: 1rem;
@@ -80,6 +80,9 @@
 }
 .margin-bottom-4 {
     margin-bottom: 4rem;
+}
+.gap-2 {
+    gap: 2rem;
 }
 .gap-1 {
     gap: 1rem;
