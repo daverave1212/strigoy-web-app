@@ -8,11 +8,13 @@
     import RoleCard from "../../components/RoleCard.svelte";
     import RoleList from "../../components/RoleList.svelte";
     import RoleListWithRoles from "../../components/RoleListWithRoles.svelte";
-    import { ADVANCED, BEGINNER, BROKEN, COMPLETE, difficultyDescriptions, difficultyNames, EXTRAS, getAllRoleDifficulties, getLocationCards, getNormalRolePriority, getRoles, getRolesByDifficulty, getRolesForDifficulty, getSortRolesWithPriorityFunction, INTERMEDIATE, MORNING_COLOR, NIGHTLY_COLOR, WEREWOLVES } from "../../lib/Database";
+    import { ADVANCED, ALL_EVILS, BEGINNER, BROKEN, COMPLETE, difficultyDescriptions, difficultyNames, EXTRAS, getAllRoleDifficulties, getDifficultyByFirstLetter, getFirstLetterOfDifficulty, getLocationCards, getNormalRolePriority, getRoles, getRolesByDifficulty, getRolesForDifficulty, getSortRolesWithPriorityFunction, INTERMEDIATE, MORNING_COLOR, NIGHTLY_COLOR, WEREWOLVES } from "../../lib/Database";
     import { getMods } from "../../lib/ModsDatabase";
+    import { allRolesSettingsCheckboxes, decodeCheckboxesSettings, difficultyCheckboxes, encodeAllCheckboxesSettings, toggleDifficultyCheckbox, toggleRoleSettingCheckbox } from '../../stores/settings-checkboxes-store'
 
     let currentInspectorObject = null
     let filterValue = ''
+    let isShowingSettings = false
 
     function onClickOnRole(obj) {
         currentInspectorObject = obj
@@ -21,10 +23,6 @@
     function getSortedRolesForDifficulty(difficulty) {
         return getSortRolesWithPriorityFunction(getRolesForDifficulty(difficulty), getNormalRolePriority)
     }
-
-    $:allDisplayedRoles = getAllRoleDifficulties().filter(difficulty => [
-        BROKEN, EXTRAS
-    ].includes(difficulty) == false)
 
     function sortRoles(roles) {
         // +2    +1 no ribbon     +1 reminder   +1 night    0 night     0 other ribbons     0 no ribbon     negative ribbon
@@ -82,16 +80,59 @@
 <div class="page">
 
     <h2 class="center-text margin-top-4">Roles & Mods</h2>
-    <p class="margin-top-2">Here you can find all roles and mods for the game.</p>
-    <p>Green SETUP ribbons indicate roles that wake up on game setup, while purple NIGHT ribbons indicate roles that wake up at night. A 🔇 icon indicates there's something special about that role, which the narrator should pay close attention to.</p>
+    <p class="margin-top-2 center-text">Here you can find all roles and mods for the game.</p>
+    <p class="center-text">Green SETUP ribbons indicate roles that wake up on game setup, while purple NIGHT ribbons indicate roles that wake up at night.</p>
 
-    <h2 class="center-text margin-top-4">All Roles (By Sets)</h2>
-
+    <h3 class="center-text margin-top-4">Filters</h3>
     <input class="search-input" bind:value={filterValue} placeholder="Filter..."/>
-    {#each allDisplayedRoles as difficulty, i (difficulty)}
-        <h3 class="center-text margin-top-2">{difficultyNames[difficulty]}</h3>
-        <p class="center-text margin-top-1">{difficultyDescriptions[difficulty]}</p>
-        <RoleListWithRoles filter={filterValue} roles={getSortedRolesInDifficulty(difficulty)} on:role-click={evt => currentInspectorObject = evt.detail.role}/>
+    
+    <div class="center-content flex-row">
+        <button class="btn blue" on:click={() => {
+            isShowingSettings = !isShowingSettings
+        }}>{ isShowingSettings? 'Hide Settings': 'Show Settings'}</button>
+    </div>
+
+    {#if isShowingSettings}
+        <div class="flex-row wrap margin-top-2" style="padding: 1rem; justify-content: center;">
+            {#each Object.keys($allRolesSettingsCheckboxes) as settingName (settingName)}
+                <div class="margin-top-half" style="width: 90%">
+                    <input style={`accent-color: ${NIGHTLY_COLOR}`} type="checkbox" checked={$allRolesSettingsCheckboxes[settingName]} on:click={() => toggleRoleSettingCheckbox(settingName)}>
+                    <label on:click={() => toggleRoleSettingCheckbox(settingName)}>{settingName}</label>
+                </div>
+            {/each}
+        </div>
+        <div class="flex-row wrap margin-top-2" style="padding: 1rem; justify-content: center;">
+            {#each Object.keys($difficultyCheckboxes).sort() as difficulty (difficulty)}
+                <div class="margin-top-half" style="width: 90%">
+                    <input style={`accent-color: ${NIGHTLY_COLOR}`} type="checkbox" checked={$difficultyCheckboxes[difficulty]} on:click={() => toggleDifficultyCheckbox(difficulty)}>
+                    <label on:click={() => {
+                        toggleDifficultyCheckbox(difficulty)
+                        // console.log(`Clicked on difficulty ${difficulty}: "${difficultyNames[difficulty]}"`)
+                        // console.log({allDisplayedRoleDifficulties, difficultyNames})
+                        // console.log($difficultyCheckboxes)
+                        // console.log(encodeAllCheckboxesSettings())
+
+                        const firstLetter = getFirstLetterOfDifficulty(difficulty)
+                        const difficultyByLetter = getDifficultyByFirstLetter(firstLetter)
+                        console.log({firstLetter, difficultyByLetter})
+                    }}>{difficultyNames[difficulty]}</label>
+                </div>
+            {/each}
+        </div>
+    {/if}
+
+    {#each getAllRoleDifficulties() as difficulty, i (difficulty)}
+        {#if $difficultyCheckboxes[difficulty] == true}
+            <h3 class="center-text margin-top-2">{difficultyNames[difficulty]}</h3>
+            <p class="center-text margin-top-1">{difficultyDescriptions[difficulty]}</p>
+            <RoleListWithRoles
+                roles={getSortedRolesInDifficulty(difficulty)}
+                hasBadges={$allRolesSettingsCheckboxes['Show Value Badges']}
+                hasRibbons={$allRolesSettingsCheckboxes['Show Helper Ribbons']}
+                filter={filterValue}
+                on:role-click={evt => currentInspectorObject = evt.detail.role}
+            />
+        {/if}
     {/each}
 
     <!-- <h2 class="center-text margin-top-4">Mods</h2>

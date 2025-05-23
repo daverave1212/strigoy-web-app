@@ -9,7 +9,12 @@ export function randomInt(low, high){
 export function randomOf(...args){
     return args[randomInt(0, args.length - 1)];
 }
-
+export function baseStrToNumber(binaryStr, base) {
+    return parseInt(binaryStr, base)
+}
+export function numberToBaseStr(number, base) {
+    return number.toString(base)
+}
 
 
 

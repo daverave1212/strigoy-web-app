@@ -41,6 +41,15 @@
     export let onClickOnRole
     export let onClickOutside
 
+    $:rolesInGame = roleStates
+        .keys()
+        .filter(i => roleStates[i].isInGame != false)
+        .map(i => roleStates[i])
+    $:rolesNotInGame = roleStates
+        .keys()
+        .filter(i => roleStates[i].isInGame == false)
+        .map(i => roleStates[i])
+
     function onPortraitClick(i) {
         if (roleStates[i].isValid == false) {
             return

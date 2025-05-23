@@ -31,7 +31,7 @@
     import { onMount } from "svelte";
     import { clearCanvas, clearRect, drawImageOnCanvasAsync, drawText, drawTextLines, drawTextWordsWithHTML } from "../../lib/utils";
     import RoleChooserDrawer from "../../components/RoleChooserDrawer.svelte";
-    import { EVIL_COLOR, getLocationCards, getNormalRolePriority, getRole, getRoles, getSortRolesWithPriorityFunction, SPECIAL_COLOR, WEREWOLVES } from "../../lib/Database";
+    import { EVIL_COLOR, getEvent, getLocationCards, getNormalRolePriority, getRole, getRoles, getSortRolesWithPriorityFunction, SPECIAL_COLOR, WEREWOLVES } from "../../lib/Database";
     import { getMods } from "../../lib/ModsDatabase";
 
     const cardWidth = 756
@@ -123,6 +123,51 @@
         }
     }
 
+    const __DEBUG__ROLES = [
+        'Cultist', 'Cultist',
+        'Ghoul', 'Ghoul',
+        'Vampire',
+        'Strigoy', 'Strigoy',
+        'Nosferatu', 'Nosferatu',
+
+        'Builder',
+        'Town Guard',
+        'Fortune Teller',
+        'Scout',
+        'Seer',
+        'Great Grandfather',
+        'Bombmaker',
+        
+        'Inspector', 'Joe',
+
+        'Blacksmith',
+        'Mayor',
+        'Grandma',
+
+        'Priest',
+
+        'Politician',
+        
+        'Gravedigger',
+        
+        'Fool',
+        'Bartender',
+
+        'Werewolf',
+        'Mime',
+
+        'Fallen Angel',
+
+        'Goblins'
+    ]
+    const __allRolesAndMods = [
+        ...__DEBUG__ROLES.map(roleName => getRole(roleName)),
+        getEvent("Stakes and Crosses"),
+        getEvent("Omen"),
+        getEvent("Ambush"),
+        ...getLocationCards()
+    ]
+
     let isLoading = false
     async function generatePrints() {
 
@@ -145,6 +190,7 @@
                 // ...getMods(),
                 ...getLocationCards()
             ]
+            allRolesAndMods = __allRolesAndMods // TODO: REMOVE THIS
             
             async function draw9CardsOnNewCanvas(cards) {
                 const canvas = document.createElement('canvas')

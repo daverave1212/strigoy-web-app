@@ -58,7 +58,7 @@
     $: areSortButtonsDisabled = $addedPlayers.filter(p => p.role == null).length > 0
 
     const statusEffects = [
-        'Hazed',
+        'Protected',
         'Drunk',
         'Lover',
         'Used Ability',
@@ -290,6 +290,19 @@
                             const deathReminder = role?.deathReminder
                             const isPlayerAlive = !$addedPlayers[i].isDead
                             const isLover = $addedPlayers[i].statusEffects?.includes('Lover')
+                            const isProtected = $addedPlayers[i].statusEffects?.includes('Protected')
+
+                            function maybeShowProtectedModal(callback) {
+                                if (isPlayerAlive && isProtected) {
+                                    openModal("This person is protected. Check if the protection should still apply.", "Kill!", (didKill) => {
+                                        setTimeout(() => {
+                                            callback(didKill)
+                                        }, 100)
+                                    })
+                                } else {
+                                    callback(true)
+                                }
+                            }
 
                             function maybeShowLoverModal(callback) {
                                 if (isPlayerAlive && isLover) {
@@ -315,11 +328,20 @@
                                 }
                             }
 
-                            maybeShowLoverModal(didKillLover => {
-                                maybeShowDeathReminderModal(didKillReminder => {
-                                    if (didKillLover && didKillReminder) {
-                                        togglePlayerDead(i)
+                            maybeShowProtectedModal(willContinue0 => {
+                                if (!willContinue0) {
+                                    return false
+                                }
+                                maybeShowLoverModal(willContinue1 => {
+                                    if (!willContinue1) {
+                                        return false
                                     }
+                                    maybeShowDeathReminderModal(willContinue2 => {
+                                        if (!willContinue2) {
+                                            return false
+                                        }
+                                        togglePlayerDead(i)
+                                    })
                                 })
                             })
 

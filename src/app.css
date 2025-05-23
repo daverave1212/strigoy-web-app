@@ -10,6 +10,17 @@
 
 input {
     font-size: 16px;
+    padding: 1rem;
+}
+
+label {
+    font-size: 1rem;
+    line-height: 1rem;
+}
+input[type="checkbox"] {
+    height: 1rem;
+    transform: scale(1.25, 1.25);
+    margin-right: 0.25rem;
 }
 
 .search-input {
@@ -30,6 +41,13 @@ input {
     justify-content: end;
     padding: 1rem;
     gap: 0.5rem;
+}
+
+.role-list {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 @font-face {

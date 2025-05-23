@@ -19,7 +19,7 @@
     export let style = ''
     export let onClickOnColor = function(color) {}
 
-    const colors = ['green', 'yellow', 'orange', 'red']
+    const colors = ['green', 'yellow', 'red', 'purple']
 
 </script>
 

@@ -14,8 +14,8 @@ export const TRADESFOLK = 2.15
 export const CHURCH = 2.25
 export const ZEALOTS = 2.30
 export const CHAOS = 2.45
-export const NIGHT_AGENTS = 2.75
-export const DRUNKEN_TAVERN = 3.5
+export const DRUNKEN_TAVERN = 2.75
+export const NIGHT_AGENTS = 3.5
 export const MORE_CHAOS = 3.75
 export const LOTS_OF_PLAYERS = 4
 export const FOR_MODS = 5
@@ -28,22 +28,43 @@ export const BROKEN = 99
 export const difficultyNames = {
     [ALL_EVILS]: 'Evils',
     [BEGINNER]: 'Base Roles',
-    [SPICE]: 'Extra Spice',
-    [INTERMEDIATE]: 'Intermediate',
-    [CHURCH]: 'Churchmen & Law',
+    [SPICE]: 'Spice',
+    [CHURCH]: 'Holy Church',
     [ZEALOTS]: 'WITCH BURNERS',
-    [TOWN_CENTER]: 'Town\'s Personalities',
-    [TRADESFOLK]: 'Short Tradespeople',
-    [ADVANCED]: 'Advanced & Complex',
-    [DRUNKEN_TAVERN]: 'Drunken Tavern',
-    [FOR_MODS]: 'Mods & Points',
-    [ROLES_NO_ONE_UNDERSTANDS]: 'Roles You Should Not Use',
-    [EXTRAS]: 'Extra Roles',
-    [COMPLETE]: 'Complete',
-    [BROKEN]: 'Broken',
+    [TOWN_CENTER]: 'Important People',
+    [ADVANCED]: 'Zzz...',
+    [DRUNKEN_TAVERN]: 'Tavern',
+    [FOR_MODS]: 'Points & Other',
+    [EXTRAS]: 'Other Roles',
     [CHAOS]: 'Chaos',
     [NIGHT_AGENTS]: 'Dark Nights',
     [MORE_CHAOS]: 'More Chaos',
+
+    [INTERMEDIATE]: '--Intermediate',
+    [COMPLETE]: '--Complete',
+    [TRADESFOLK]: '--Hmm...',
+    [ROLES_NO_ONE_UNDERSTANDS]: '--Roles You Should Not Use',
+    [BROKEN]: '--Broken',
+}
+setTimeout(() => {
+    const usedDifficultyLetters = Object.keys(difficultyNames)
+        .filter(dfc => difficultyNames[dfc].startsWith('--') == false)
+        .map(dfc => difficultyNames[dfc])
+        .map(name => name.charAt(0))
+    
+
+}, 1500)
+export function getFirstLetterOfDifficulty(difficulty) {
+    return difficultyNames[difficulty].substring(0, 1)
+}
+export function getDifficultyByFirstLetter(firstLetter) {
+    firstLetter = firstLetter.toUpperCase()
+    for (const difficulty of Object.keys(difficultyNames)) {
+        if (difficultyNames[difficulty].startsWith(firstLetter)) {
+            return difficulty
+        }
+    }
+    return BEGINNER
 }
 export const difficultyDescriptions = {
     [ALL_EVILS]: 'These are all the Evils in the game. Not all may be used in the game you are playing. For example, Vampires are only used for 7 or 8 players.',
@@ -140,7 +161,7 @@ export const getRoles = () => {
             difficulty: ALL_EVILS,
             type: 'Nightly',
             effect: '<b>Hand Raise (once per game)</b>: No other Townsfolk can wake up right now.',
-            notes: 'You raise your hand during the Townsfolk night phase.',
+            notes: 'You raise your hand during the Townsfolk night phase (nobody wakes up if there are 2 or more people with their hand raised).',
             ribbonColor: NIGHTLY_COLOR,
             ribbonText: 'HAND RAISE'
         },
@@ -151,10 +172,10 @@ export const getRoles = () => {
             nPlayers: 0,                        // Minimum number of players in game to have this role
             worth: -1,                          // A heuristic for balancing
             category: NIGHTLY_WEREWOLVES,       // Categorization
-            difficulty: ALL_EVILS,               // Role categories are split into difficulty categories
+            difficulty: ALL_EVILS,              // Role categories are split into difficulty categories
             isImportant: false,                 // The game must contain at least a number of important roles
             type: 'Nightly',
-            effect: 'Once per game, during the Evil phase, raise your hand to kill a player. <i>(but not on first night</i>)',
+            effect: 'Once per game, during the Evil phase, show 🤘🏻 and point to a player to kill them.<br/><i>(but not on first night</i>)',
             ribbonColor: SPECIAL_COLOR,
             ribbonText: 'EVIL PHASE'
         },
@@ -165,7 +186,7 @@ export const getRoles = () => {
             worth: 0,
             category: REGULAR,
             difficulty: ALL_EVILS,
-            effect: "Once per game, during the Evil phase, you can make one more attack and Townsfolk can protect one more time.",
+            effect: "Once per game, during the Evil phase, show 🤘🏻 to make one more attack (and Townsfolk will protect one more time).",
             notes: "The Storyteller must announce it. You can attack the same location, and the same location can be protected one more time.",
             ribbonColor: SPECIAL_COLOR,
             ribbonText: 'EVIL PHASE'
@@ -178,7 +199,7 @@ export const getRoles = () => {
             category: NIGHTLY_WEREWOLVES,
             difficulty: ALL_EVILS,
             type: 'Nightly',
-            effect: 'Once per game, during the Evil phase, raise your hand and choose a player to instantly kill (<i>but not on first night</i>).',
+            effect: '<i>Twice</i> per game, during the Evil phase, show 🤘🏻 and point to a player to kill them.<br/><i>(but not on first night</i>)',
             ribbonColor: SPECIAL_COLOR,
             ribbonText: 'EVIL PHASE'
         },
@@ -215,7 +236,7 @@ export const getRoles = () => {
             difficulty: BEGINNER,
             effect: 'You have 2 lives. If you would die the first time, nothing happens.',
             notes: "You might not know you lost one life.",
-            deathReminder: "Was it the cat's last life?"
+            deathReminder: "Does the cat still have 2 lives? If yes, cancel the kill and give it the 'used ability' status."
         },
         {
             name: "Blacksmith",
@@ -223,8 +244,7 @@ export const getRoles = () => {
             worth: 2,
             category: REGULAR,
             difficulty: TOWN_CENTER,
-            effect: "While you're holding an <b>Item</b>, your neighbors can't die at night.",
-            notes: "You might not know you lost one life.",
+            effect: "While you're alive and holding an <b>Item</b>, your neighbors can't die at night.",
             ribbonText: "REMINDER",
             ribbonColor: MORNING_COLOR
         },
@@ -243,7 +263,7 @@ export const getRoles = () => {
         {
             name: "Priest",
             team: TOWNSFOLK,
-            worth: 1,
+            worth: 2,
             category: NIGHTLY,
             difficulty: CHURCH,
             effect: "<b>Hand Raise:</b> Choose a dead player to resurrect. Then you die.",
@@ -431,7 +451,7 @@ export const getRoles = () => {
         {
             name: "Joe",
             team: TOWNSFOLK,
-            worth: 0,
+            worth: -1,
             category: REGULAR,
             difficulty: SPICE,
             effect: "You believe you are (and get) a different Role card (not this card).<br/>You are actually a Peasant. Your Ability acts as if you're <b>Drunk.</b>",
@@ -494,19 +514,10 @@ export const getRoles = () => {
             ribbonColor: EVIL_COLOR
         },
         {
-            name: "Leper",
-            nPlayers: 0,
-            team: TOWNSFOLK,
-            worth: 0.5,
-            category: REGULAR,
-            difficulty: BROKEN,
-            effect: "If you are hanged or eaten, reveal your card. The next Night happens TWICE (in a row).",
-        },
-        {
             name: "Schizophrenic",
             nPlayers: 0,
             team: TOWNSFOLK,
-            worth: 0,
+            worth: -1,
             category: REGULAR,
             difficulty: DRUNKEN_TAVERN,
             effect: 'Every night, the narrator secretly rolls a die.\nIf they roll 6, you die.',
@@ -519,28 +530,17 @@ export const getRoles = () => {
             name: "Butler",
             nPlayers: 0,
             team: TOWNSFOLK,
-            worth: 0.75,
+            worth: 0,
             category: REGULAR,
             difficulty: EXTRAS,
             effect: 'You must always vote the same as the closest alive person to your right.',
             notes: 'If they don\'t vote, you don\'t vote'
         },
         {
-            name: "Innkeeper",
-            nPlayers: 0,
-            team: TOWNSFOLK,
-            worth: 0.75,
-            category: SPECIAL_SETUP,
-            difficulty: BROKEN,
-            effect: "One Townsfolk is secretly drunk - they believe they are that role, but they're just a Peasant. Their ability has no effect or gets wrong information.",
-            notes: "Only the narrator knows who the drunk is (unless you can figure it out...)",
-            narratorNotes: "Do NOT announce if there is an Innkeeper in the game! Let players figure it out themselves."
-        },
-        {
             name: "Inquisitor",
             nPlayers: 12,
             team: TOWNSFOLK,
-            worth: 1,
+            worth: 0,
             category: REGULAR,
             difficulty: ZEALOTS,
             effect: 'Once per game, secretly ask the narrator a YES/NO question about one player. You secretly get a correct reply.',
@@ -550,10 +550,11 @@ export const getRoles = () => {
             name: "Dove of Peace",
             nPlayers: 10,
             team: TOWNSFOLK,
-            worth: 0.5,
+            worth: 0,
             category: REGULAR,
             difficulty: ADVANCED,
             effect: 'When you die, reveal your card. Nobody can be hanged the upcoming day.',
+            deathReminder: 'Reveal the fucking Dove of Peace. Fuck this guy.'
         },
         {
             name: "Witch Hunter",
@@ -569,7 +570,7 @@ export const getRoles = () => {
             name: "Gangster",
             nPlayers: 0,
             team: TOWNSFOLK,
-            worth: 1.25,
+            worth: 0,
             category: REGULAR,
             difficulty: EXTRAS,
             effect: 'At any point in the game, reveal your card. From then on, you can veto any vote.',
@@ -583,6 +584,7 @@ export const getRoles = () => {
             category: REGULAR,
             difficulty: CHURCH,
             effect: "If you are hanged, reveal your card.\nYou don't die.\nThe person who argued most to hang you dies instead.",
+            deathReminder: 'If the Crusader was hanged, cancel the kill and choose who else dies.',
             notes: 'Up to the narrator who that person is.'
         },
         {
@@ -612,17 +614,19 @@ export const getRoles = () => {
             worth: 1,
             category: REGULAR,
             difficulty: CHAOS,
-            effect: 'When you die, reveal your card. You come back to life with a new random Role card.'
+            effect: 'When you die, reveal your card. You come back to life with a new random Role card.',
+            deathReminder: 'Reveal the Bard. Give them a new role.'
         },
         {
             name: "Wrestler",
             nPlayers: 8,
             team: TOWNSFOLK,
-            worth: 2,
+            worth: 1,
             category: REGULAR,
             difficulty: EXTRAS,
             effect: "If there are 5 or more players in the game, you can't be eaten at night (nothing happens if you're eaten)",
-            notes: "The night may pass with no one being eaten."
+            notes: "The night may pass with no one being eaten.",
+            deathReminder: 'Remember the Wrestler can not die if there are 5 or more players in the game.'
         },
         {
             name: "Archaeologist",
@@ -641,19 +645,20 @@ export const getRoles = () => {
             name: "Fool",
             nPlayers: 2,
             team: TOWNSFOLK,
-            worth: 1,
+            worth: 0,
             category: REGULAR,
             difficulty: DRUNKEN_TAVERN,
             effect: "You are immune to other players' abilities and items. If they would get information about you, it might be wrong information.",
             notes: "You are immune to Evil abilities as well, but you may still be hanged or affected by cards.",
             ribbonColor: MORNING_COLOR,
-            ribbonText: 'REMINDER'
+            ribbonText: 'REMINDER',
+            deathReminder: "Remember the Fool can not be killed by other players' powers!"
         },
         {
             name: "Sad Poet",
             nPlayers: 0,
             team: TOWNSFOLK,
-            worth: 1.5,
+            worth: 1,
             category: REGULAR,
             difficulty: EXTRAS,
             effect: "In the morning, if someone died last night, you can reveal your card and die. That person comes back to life.",
@@ -667,6 +672,7 @@ export const getRoles = () => {
             category: REGULAR_NEGATIVE,
             difficulty: CHURCH,
             effect: "If you are hanged, reveal your card. The Evils win immediately.",
+            deathReminder: 'If the Saint was hanged, the game is over',
             ribbonColor: EVIL_COLOR,
             ribbonText: 'NEGATIVE'
         },
@@ -677,16 +683,8 @@ export const getRoles = () => {
             worth: 0,
             category: REGULAR,
             difficulty: BEGINNER,
-            effect: "When you die, reveal your Role card and pick a player. That player immediately dies."
-        },
-        {
-            name: "Alien",
-            nPlayers: 0,
-            team: OTHER,
-            worth: 1,
-            category: OTHER_CATEGORY,
-            difficulty: BROKEN,
-            effect: "Hand Raise: Get a new Role card."
+            effect: "When you die, reveal your Role card and pick a player. That player immediately dies.",
+            deathReminder: 'Reveal the Hunter. They pick a player to kill.'
         },
         {
             name: "Diva",
@@ -696,6 +694,7 @@ export const getRoles = () => {
             category: REGULAR_NEGATIVE,
             difficulty: CHAOS,
             effect: "If you would die at night, a random Townsfolk dies instead. If you are hanged, both you and another random Townsfolk die.",
+            deathReminder: 'Remember that the Diva can\'t be killed at night, and someone else will die instead!',
             ribbonColor: EVIL_COLOR,
             ribbonText: 'NEGATIVE'
         },
@@ -703,11 +702,12 @@ export const getRoles = () => {
             name: "Hobo",
             nPlayers: 9,
             team: TOWNSFOLK,
-            worth: 0.5,
+            worth: -1,
             category: REGULAR_NEGATIVE,
             difficulty: MORE_CHAOS,
             effect: "If you die, reveal your card. The next Night happens TWICE.",
-            notes: "There will be 2 nights in a row, without everyone waking up in between."
+            notes: "There will be 2 nights in a row, without everyone waking up in between.",
+            deathReminder: "The next night will happen twice (if it's currently night, continue as normal)"
         },
         {
             name: "Madman",
@@ -716,7 +716,8 @@ export const getRoles = () => {
             worth: 0,
             category: OTHER_CATEGORY,
             difficulty: CHAOS,
-            effect: "You aren't on any team. You win if you are hanged. Then the game goes on."
+            effect: "You aren't on any team. You win if you are hanged. Then the game goes on.",
+            deathReminder: "If the Madman was hanged, they win and can choose their role next game."
         },
         {
             name: "Peasant",
@@ -1381,6 +1382,9 @@ export function getSortRolesWithPriorityFunction(roles, getRolePriority) {
 
 export function getRole(name) {
     return getRoles().find(role => role.name == name)
+}
+export function getEvent(name) {
+    return getLocationCards().find(card => card.name == name)
 }
 
 

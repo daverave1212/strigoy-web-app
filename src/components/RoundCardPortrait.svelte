@@ -99,6 +99,8 @@
     const dispatch = createEventDispatcher();
 
     export let role
+    export let hasRibbon = true
+    export let hasBadge = true
 
     let {
         name,
@@ -115,10 +117,13 @@
 
     $: imagePath = src != null? src : `images/role-thumbnails/${name}.webp`
     $: ribbon =
+        !hasRibbon? null:
         (ribbonText != null && ribbonColor != null)? { text: ribbonText, color: ribbonColor } :
         (category != null && categoryToRibbon[category] != null)? categoryToRibbon[category] :
         null
     $: badgeText =
+        !hasBadge?
+            null:
         role.locationWorth != null?
             (role.locationWorth > 0?
                 '+X':
@@ -130,7 +135,7 @@
         role.worth <= -1?
             '-1':
         role.worth == 0?
-            '~':
+            '':
         role.worth >= 2?
             '+2':
         role.worth >= 1?
@@ -139,7 +144,7 @@
     const badgeToColorMapping = {
         '-2': EVIL_COLOR,
         '-1': EVIL_COLOR,
-        '~': SPECIAL_COLOR,
+        '': SPECIAL_COLOR,
         '+1': SETUP_COLOR,
         '+2': 'rgb(30, 120, 250)',
         '?': PINK_COLOR,
