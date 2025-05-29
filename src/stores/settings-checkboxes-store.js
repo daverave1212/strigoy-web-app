@@ -1,7 +1,8 @@
 import { get, writable } from 'svelte/store'
-import { ALL_EVILS, getAllRoleDifficulties } from "../lib/Database";
-import { localStorageWritable } from "../lib/svelteUtils";
+import { ALL_EVILS, getAllRoleDifficulties, getDifficultyName, getNameToDifficulty } from "../lib/Database";
+import { getUrlWithParams, localStorageWritable } from "../lib/svelteUtils";
 import { baseStrToNumber, numberToBaseStr } from '../lib/utils';
+import { browser } from '$app/environment'
 
 export function resetDifficultyCheckboxes() {
     difficultyCheckboxes.set(DEFAULT_CHECKBOXES)
@@ -20,6 +21,18 @@ const DEFAULT_ALL_ROLES_SETTINGS_CHECKBOXES = {
 export const difficultyCheckboxes = localStorageWritable('difficultyCheckboxes', DEFAULT_CHECKBOXES)
 export const allRolesSettingsCheckboxes = localStorageWritable('allRolesSettingsCheckboxes', DEFAULT_ALL_ROLES_SETTINGS_CHECKBOXES)
 
+export function setDifficultyCheckboxesToLSForce(difficultyCheckboxes) {
+    if (difficultyCheckboxes == null) {
+        alert('Null data received. Continuing to roles normally.')
+        return
+    }
+    if (browser) {
+        localStorage.setItem('difficultyCheckboxes', JSON.stringify(difficultyCheckboxes))
+    } else {
+        throw `Not in a browser`
+    }
+}
+
 export function toggleDifficultyCheckbox(difficulty) {
     const newCheckboxes = get(difficultyCheckboxes)
     newCheckboxes[difficulty] = !newCheckboxes[difficulty]
@@ -34,6 +47,41 @@ export function toggleRoleSettingCheckbox(name) {
     return newCheckboxes[name]
 }
 
+// Use with $page.url (import { page } from '$app/stores')
+export function getCheckedBoxesDifficultyNumFromUrl(url) /* -> number */ {
+    const hasDifficulties = url.searchParams.has('difficulties')
+
+    if (!hasDifficulties) {
+        return []
+    }
+
+    const difficultyNamesArray = JSON.parse(url.searchParams.get('difficulties'))
+    return difficultyNamesArray.map(name => getNameToDifficulty(name))
+}
+export function getCompleteURLWithCheckboxes(baseUrl) {
+    const difficultyCheckboxesObj = get(difficultyCheckboxes)
+    const checkedBoxesNames = Object.keys(difficultyCheckboxesObj).filter(key => difficultyCheckboxesObj[key] == true)
+    const objToEncode = {
+        'difficulties': checkedBoxesNames.map(d => getDifficultyName(d))
+    }
+    return getUrlWithParams(baseUrl, objToEncode)
+}
+export function getDifficultiesFromUrl(url) {
+    const difficulties = getCheckedBoxesDifficultyNumFromUrl(url)
+    if (difficulties.length == 0) {
+        return
+    }
+    const currentDifficulties = get(difficultyCheckboxes)
+    for (const difficulty of Object.keys(currentDifficulties)) {
+        if (difficulties.includes(difficulty)) {
+            currentDifficulties[difficulty] = true
+        } else {
+            currentDifficulties[difficulty] = false
+        }
+    }
+
+    return currentDifficulties
+}
 
 export function encodeAllCheckboxesSettings() {
     const roleCheckboxes = Object.values(get(difficultyCheckboxes))

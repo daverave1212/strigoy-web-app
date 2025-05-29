@@ -1,1 +1,1 @@
-export { default as component } from "../../../../src/routes/difficulty-select/+page.svelte";
+export { default as component } from "../../../../src/routes/custom-difficulties-share/+page.svelte";

@@ -12,7 +12,8 @@ export const nodes = [
 	() => import('./nodes/8'),
 	() => import('./nodes/9'),
 	() => import('./nodes/10'),
-	() => import('./nodes/11')
+	() => import('./nodes/11'),
+	() => import('./nodes/12')
 ];
 
 export const server_loads = [];
@@ -22,12 +23,13 @@ export const dictionary = {
 		"/add-players": [3],
 		"/all-roles": [4],
 		"/card": [5],
-		"/difficulty-select": [6],
-		"/how-to-play": [7],
-		"/players": [8],
-		"/reset": [9],
-		"/role-select": [10],
-		"/roles": [11]
+		"/custom-difficulties-share": [6],
+		"/difficulty-select": [7],
+		"/how-to-play": [8],
+		"/players": [9],
+		"/reset": [10],
+		"/role-select": [11],
+		"/roles": [12]
 	};
 
 export const hooks = {

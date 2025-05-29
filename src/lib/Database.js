@@ -1,4 +1,4 @@
-import { arrayFindHighest, arrayFindIndexLowest, arrayFindLowest, groupArrayBy, percentChance, popArrayElementAt, popArrayElementFind, randomOf, randomizeArray, sum, times } from "./utils"
+import { arrayFindHighest, arrayFindIndexLowest, arrayFindLowest, groupArrayBy, percentChance, popArrayElementAt, popArrayElementFind, randomOf, randomizeArray, reverseObject, sum, times } from "./utils"
 import { browser } from '$app/environment'
 
 export const WEREWOLVES = 'werewolves'
@@ -46,14 +46,13 @@ export const difficultyNames = {
     [ROLES_NO_ONE_UNDERSTANDS]: '--Roles You Should Not Use',
     [BROKEN]: '--Broken',
 }
-setTimeout(() => {
-    const usedDifficultyLetters = Object.keys(difficultyNames)
-        .filter(dfc => difficultyNames[dfc].startsWith('--') == false)
-        .map(dfc => difficultyNames[dfc])
-        .map(name => name.charAt(0))
-    
-
-}, 1500)
+export const reversedDifficultyNames = reverseObject(difficultyNames)
+export function getDifficultyName(difficulty) {
+    return difficultyNames[difficulty]
+}
+export function getNameToDifficulty(difficultyName) {
+    return reversedDifficultyNames[difficultyName]
+}
 export function getFirstLetterOfDifficulty(difficulty) {
     return difficultyNames[difficulty].substring(0, 1)
 }

@@ -1,3 +1,6 @@
+:root {
+    --blue-color: rgb(52, 138, 250);
+}
 .page {
     width: 100vw;
     max-width: 100%;

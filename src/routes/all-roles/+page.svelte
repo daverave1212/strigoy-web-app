@@ -10,7 +10,10 @@
     import RoleListWithRoles from "../../components/RoleListWithRoles.svelte";
     import { ADVANCED, ALL_EVILS, BEGINNER, BROKEN, COMPLETE, difficultyDescriptions, difficultyNames, EXTRAS, getAllRoleDifficulties, getDifficultyByFirstLetter, getFirstLetterOfDifficulty, getLocationCards, getNormalRolePriority, getRoles, getRolesByDifficulty, getRolesForDifficulty, getSortRolesWithPriorityFunction, INTERMEDIATE, MORNING_COLOR, NIGHTLY_COLOR, WEREWOLVES } from "../../lib/Database";
     import { getMods } from "../../lib/ModsDatabase";
-    import { allRolesSettingsCheckboxes, decodeCheckboxesSettings, difficultyCheckboxes, encodeAllCheckboxesSettings, toggleDifficultyCheckbox, toggleRoleSettingCheckbox } from '../../stores/settings-checkboxes-store'
+    import { showQR } from "../../lib/svelteUtils";
+    import { allRolesSettingsCheckboxes, difficultyCheckboxes, getCompleteURLWithCheckboxes, toggleDifficultyCheckbox, toggleRoleSettingCheckbox } from '../../stores/settings-checkboxes-store'
+
+    let qrDiv
 
     let currentInspectorObject = null
     let filterValue = ''
@@ -73,6 +76,11 @@
         return sortRoles(rolesInDifficulty)
     }
 
+    async function shareQR() {
+        const url = getCompleteURLWithCheckboxes('/custom-difficulties-share')
+        await showQR(qrDiv, url)
+    }
+
 </script>
 
 <InspectRoleDrawer isOpen={currentInspectorObject != null} role={currentInspectorObject} setIsOpen={() => currentInspectorObject = null}/>
@@ -105,19 +113,15 @@
             {#each Object.keys($difficultyCheckboxes).sort() as difficulty (difficulty)}
                 <div class="margin-top-half" style="width: 90%">
                     <input style={`accent-color: ${NIGHTLY_COLOR}`} type="checkbox" checked={$difficultyCheckboxes[difficulty]} on:click={() => toggleDifficultyCheckbox(difficulty)}>
-                    <label on:click={() => {
-                        toggleDifficultyCheckbox(difficulty)
-                        // console.log(`Clicked on difficulty ${difficulty}: "${difficultyNames[difficulty]}"`)
-                        // console.log({allDisplayedRoleDifficulties, difficultyNames})
-                        // console.log($difficultyCheckboxes)
-                        // console.log(encodeAllCheckboxesSettings())
-
-                        const firstLetter = getFirstLetterOfDifficulty(difficulty)
-                        const difficultyByLetter = getDifficultyByFirstLetter(firstLetter)
-                        console.log({firstLetter, difficultyByLetter})
-                    }}>{difficultyNames[difficulty]}</label>
+                    <label on:click={() => { toggleDifficultyCheckbox(difficulty) }}>{difficultyNames[difficulty]}</label>
                 </div>
             {/each}
+        </div>
+        <div class="center-content margin-top-2">
+            <button class="btn blue" on:click={shareQR}>Share QR</button>
+            <div bind:this={qrDiv} style="width: 80%">
+
+            </div>
         </div>
     {/if}
 

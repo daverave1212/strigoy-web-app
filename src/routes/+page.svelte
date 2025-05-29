@@ -38,6 +38,8 @@
     import { fade, fly } from 'svelte/transition'
     import { page, navigating } from '$app/stores'
 
+    let qrCodeWrapperDiv
+
     let willAnimate = false
     onMount(() => {
         willAnimate = true
@@ -66,6 +68,13 @@
                 <a in:fly={{y: 100, delay: 150 }} class="btn big colorful" href="/add-players">Play!</a>
             </div>
         {/if}
+        
+        <div class="margin-top-1 center-content">
+            <div style="width: 70%" bind:this={qrCodeWrapperDiv}>
+                <!-- QR Code will be generated here -->
+            </div>
+        </div>
+
     </div>
 
 </div>
