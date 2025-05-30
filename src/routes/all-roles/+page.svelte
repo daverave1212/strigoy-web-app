@@ -8,7 +8,8 @@
     import RoleCard from "../../components/RoleCard.svelte";
     import RoleList from "../../components/RoleList.svelte";
     import RoleListWithRoles from "../../components/RoleListWithRoles.svelte";
-    import { ADVANCED, ALL_EVILS, BEGINNER, BROKEN, COMPLETE, difficultyDescriptions, difficultyNames, EXTRAS, getAllRoleDifficulties, getDifficultyByFirstLetter, getFirstLetterOfDifficulty, getLocationCards, getNormalRolePriority, getRoles, getRolesByDifficulty, getRolesForDifficulty, getSortRolesWithPriorityFunction, INTERMEDIATE, MORNING_COLOR, NIGHTLY_COLOR, WEREWOLVES } from "../../lib/Database";
+    import RoleListWithRolesBySelectedDifficulties from "../../components/RoleListWithRolesBySelectedDifficulties.svelte";
+    import { ADVANCED, ALL_EVILS, BEGINNER, BROKEN, COMPLETE, difficultyDescriptions, difficultyNames, EXTRAS, getAllRoleDifficulties, getDifficultyByFirstLetter, getFirstLetterOfDifficulty, getLocationCards, getNormalRolePriority, getRoles, getRolesByDifficulty, getRolesForDifficulty, getSortedRolesInDifficulty, getSortRolesWithPriorityFunction, INTERMEDIATE, MORNING_COLOR, NIGHTLY_COLOR, WEREWOLVES } from "../../lib/Database";
     import { getMods } from "../../lib/ModsDatabase";
     import { showQR } from "../../lib/svelteUtils";
     import { allRolesSettingsCheckboxes, difficultyCheckboxes, getCompleteURLWithCheckboxes, toggleDifficultyCheckbox, toggleRoleSettingCheckbox } from '../../stores/settings-checkboxes-store'
@@ -21,59 +22,6 @@
 
     function onClickOnRole(obj) {
         currentInspectorObject = obj
-    }
-
-    function getSortedRolesForDifficulty(difficulty) {
-        return getSortRolesWithPriorityFunction(getRolesForDifficulty(difficulty), getNormalRolePriority)
-    }
-
-    function sortRoles(roles) {
-        // +2    +1 no ribbon     +1 reminder   +1 night    0 night     0 other ribbons     0 no ribbon     negative ribbon
-        const LOWEST = -1000
-        const VERY_LOW = -100
-        const LOW = -10
-        const NORMAL = 10
-        const HIGH = 100
-        const VERY_HIGH = 1000
-        const HIGHEST = 10000
-        function getRoleSortValue(role) {
-            const roleBaseValue =
-                role.name == 'Peasant'?
-                    LOWEST
-                :role.locationWorth < 0?
-                    VERY_LOW
-                :role.locationWorth > 0?
-                    HIGHEST
-                :role.worth > 0?
-                    role.worth * VERY_HIGH
-                :role.worth == 0? (
-                    role.ribbonColor != null?
-                        HIGH
-                    :NORMAL
-                )
-                :LOW
-            const roleSecondaryValue =
-                role.ribbonColor == null?
-                    9
-                :role.ribbonColor == MORNING_COLOR?
-                    8
-                :role.ribbonColor == NIGHTLY_COLOR?
-                    7
-                :6
-
-            return roleBaseValue + roleSecondaryValue
-        }
-
-        let sortedRoles = [...roles]
-        sortedRoles.sort((a, b) => getRoleSortValue(b) - getRoleSortValue(a))
-        sortedRoles = sortedRoles.map(role => ({...role, roleValue: getRoleSortValue(role)}))
-        console.log({sortedRoles})
-        return sortedRoles
-    }
-
-    function getSortedRolesInDifficulty(difficulty) {
-        const rolesInDifficulty = getRoles().filter(role => role.difficulty == difficulty)
-        return sortRoles(rolesInDifficulty)
     }
 
     async function shareQR() {
@@ -125,7 +73,9 @@
         </div>
     {/if}
 
-    {#each getAllRoleDifficulties() as difficulty, i (difficulty)}
+    <RoleListWithRolesBySelectedDifficulties filterValue={filterValue} onClickOnRole={evt => currentInspectorObject = evt.detail.role}/>
+
+    <!-- {#each getAllRoleDifficulties() as difficulty, i (difficulty)}
         {#if $difficultyCheckboxes[difficulty] == true}
             <h3 class="center-text margin-top-2">{difficultyNames[difficulty]}</h3>
             <p class="center-text margin-top-1">{difficultyDescriptions[difficulty]}</p>
@@ -137,7 +87,7 @@
                 on:role-click={evt => currentInspectorObject = evt.detail.role}
             />
         {/if}
-    {/each}
+    {/each} -->
 
     <!-- <h2 class="center-text margin-top-4">Mods</h2>
     <RoleListWithRoles roles={getMods()} on:role-click={evt => onClickOnRole(evt.detail.role)}/> -->

@@ -13,6 +13,7 @@
     import { selectedRoles } from '../../stores/selected-roles-store'
     import { goto } from '$app/navigation'
     import { addedPlayers } from "../../stores/added-players-store";
+    import RoleListWithRolesBySelectedDifficulties from "../../components/RoleListWithRolesBySelectedDifficulties.svelte";
 
     let currentInspectorObject = null
     let filterValue = ''
@@ -80,11 +81,12 @@
     <h2 class="center-text margin-top-4">All Roles (By Sets)</h2>
 
     <input class="search-input" bind:value={filterValue} placeholder="Filter..."/>
-    {#each getAllRoleDifficulties() as difficulty, i (difficulty)}
+    <RoleListWithRolesBySelectedDifficulties filterValue={filterValue} onClickOnRole={evt => currentInspectorObject = evt.detail.role}/>
+    <!-- {#each getAllRoleDifficulties() as difficulty, i (difficulty)}
         <h3 class="center-text margin-top-2">{difficultyNames[difficulty]}</h3>
         <p class="center-text margin-top-1">{difficultyDescriptions[difficulty]}</p>
         <RoleListWithRoles filter={filterValue} roles={getRoles().filter(role => role.difficulty == difficulty)} on:role-click={evt => currentInspectorObject = evt.detail.role}/>
-    {/each}
+    {/each} -->
 
 
 </div>

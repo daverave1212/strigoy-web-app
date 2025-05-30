@@ -20,7 +20,6 @@
     import RoleList from "../../components/RoleList.svelte";
     import { getMods } from "../../lib/ModsDatabase";
     import RoleCard from "../../components/RoleCard.svelte";
-    import { autochooseBOTCTRoles, isSecretBOTCT } from "../../stores/secret-botct-store";
     
     let currentlyOpenObject
 

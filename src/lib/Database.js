@@ -65,6 +65,53 @@ export function getDifficultyByFirstLetter(firstLetter) {
     }
     return BEGINNER
 }
+export function sortRoles(roles) {
+    // +2    +1 no ribbon     +1 reminder   +1 night    0 night     0 other ribbons     0 no ribbon     negative ribbon
+    const LOWEST = -1000
+    const VERY_LOW = -100
+    const LOW = -10
+    const NORMAL = 10
+    const HIGH = 100
+    const VERY_HIGH = 1000
+    const HIGHEST = 10000
+    function getRoleSortValue(role) {
+        const roleBaseValue =
+            role.name == 'Peasant'?
+                LOWEST
+            :role.locationWorth < 0?
+                VERY_LOW
+            :role.locationWorth > 0?
+                HIGHEST
+            :role.worth > 0?
+                role.worth * VERY_HIGH
+            :role.worth == 0? (
+                role.ribbonColor != null?
+                    HIGH
+                :NORMAL
+            )
+            :LOW
+        const roleSecondaryValue =
+            role.ribbonColor == null?
+                9
+            :role.ribbonColor == MORNING_COLOR?
+                8
+            :role.ribbonColor == NIGHTLY_COLOR?
+                7
+            :6
+
+        return roleBaseValue + roleSecondaryValue
+    }
+
+    let sortedRoles = [...roles]
+    sortedRoles.sort((a, b) => getRoleSortValue(b) - getRoleSortValue(a))
+    sortedRoles = sortedRoles.map(role => ({...role, roleValue: getRoleSortValue(role)}))
+    console.log({sortedRoles})
+    return sortedRoles
+}
+export function getSortedRolesInDifficulty(difficulty) {
+    const rolesInDifficulty = getRoles().filter(role => role.difficulty == difficulty)
+    return sortRoles(rolesInDifficulty)
+}
 export const difficultyDescriptions = {
     [ALL_EVILS]: 'These are all the Evils in the game. Not all may be used in the game you are playing. For example, Vampires are only used for 7 or 8 players.',
     [BEGINNER]: 'Use these roles for the base game. The app will help you keep the game running with tips!',

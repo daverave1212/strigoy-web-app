@@ -35,8 +35,10 @@
     import { randomInt } from "../lib/utils";
     import RoleCard from "./RoleCard.svelte";
     import RoleList from "./RoleList.svelte";
+    import { getRoles } from "../lib/Database";
 
-    export let roles
+    const roles = getRoles()
+
     export let sectionFilters   // Array<i -> boolean>
     export let sectionTitles    // Array<str>
     export let sectionTexts     // Array<str>

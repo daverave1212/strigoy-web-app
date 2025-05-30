@@ -7,7 +7,6 @@
 
 <script>
 	import { selectedRoles } from './../../stores/selected-roles-store.js';
-	import { getBOTCTRole } from './../../lib/BOTCTDatabase.js';
 	import { rolesDistribution } from './../../stores/roles-store.js';
 	import InspectRoleDrawer from './../../components/InspectRoleDrawer.svelte';
 
@@ -28,13 +27,13 @@
     import { hasExpandTooltip, hasInspectTooltip, hasSetRoleTooltip, hasSortTooltip } from '../../stores/tutorial-store';
     import ModContact from '../../components/Contact/ModContact.svelte';
     import { currentlySelectedMod } from '../../stores/mods-store.js';
-    import { isSecretBOTCT } from '../../stores/secret-botct-store.js';
     import RoleChooserManyDrawer from '../../components/RoleChooserManyDrawer.svelte';
 
     import '../../components/add-contact-button.css'
     import SimpleContact from '../../components/Contact/SimpleContact.svelte';
     import ColorDisplay from '../../components/ColorDisplay.svelte';
     import LocationPicker from '../../components/LocationPicker.svelte';
+    import { difficultyCheckboxes } from '../../stores/settings-checkboxes-store.js';
     
     $:{
         console.log('added:')
@@ -72,14 +71,7 @@
     function openModalWithRoleName(roleName) {
         $hasInspectTooltip = false
         console.log(`Opening modal with ${roleName}`)
-        if ($isSecretBOTCT) {
-            currentModalObject = getBOTCTRole(roleName)
-        } else {
-            currentModalObject = getRole(roleName)
-        }
-    }
-    function onModPortraitClick() {
-        currentModalObject = $currentlySelectedMod
+        currentModalObject = getRole(roleName)
     }
     function closeModal() {
         currentModalObject = null
@@ -192,14 +184,24 @@
         removePlayer(i)
     }
 
+    function getUsedDifficulties() {
+        return getAllRoleDifficulties().filter(difficulty => $difficultyCheckboxes[difficulty] == true)
+    }
+
     function getSectionFilters() {
-        const difficulties = getAllRoleDifficulties()
+        const difficulties = getUsedDifficulties()
         const filterFunctions = []
         for (const difficulty of difficulties) {
             const filter = i => allRoles[i].difficulty == difficulty
             filterFunctions.push(filter)
         }
         return filterFunctions
+    }
+    function getSectionTitles() {
+        return getUsedDifficulties().map(difficulty => difficultyNames[difficulty])
+    }
+    function getSectionTexts() {
+        return getUsedDifficulties().map(difficulty => '')
     }
 
     function openModal(text, buttonText, callback) {
@@ -244,11 +246,10 @@
 
 <RoleChooserManyDrawer
     isOpen={isRoleChooserOpen}
-    roles={getRoles()}
     
     sectionFilters={getSectionFilters()}
-    sectionTitles={getAllRoleDifficulties().map(difficulty => difficultyNames[difficulty])}
-    sectionTexts={getAllRoleDifficulties().map(difficulty => '')}
+    sectionTitles={getSectionTitles()}
+    sectionTexts={getSectionTexts()}
 
     onClickOnRole={clickedRoleI => changeRole(currentlySelectedRoleI, clickedRoleI)}
     onClickOutside={() => closeRoleChooserDrawerWithoutSideEffects()}
